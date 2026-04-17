@@ -147,9 +147,13 @@ exports.Prisma.PatientProfileScalarFieldEnum = {
 exports.Prisma.AppointmentScalarFieldEnum = {
   id: 'id',
   date: 'date',
+  time: 'time',
+  reason: 'reason',
   status: 'status',
   doctorId: 'doctorId',
-  patientId: 'patientId'
+  patientId: 'patientId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.PrescriptionScalarFieldEnum = {

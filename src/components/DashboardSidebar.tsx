@@ -20,13 +20,14 @@ import {
 const SIDEBAR_LINKS = {
   PATIENT: [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/dashboard#appointments", label: "Appointments", icon: Calendar },
     { href: "/dashboard#vault", label: "Medical Vault", icon: FolderOpen },
     { href: "/dashboard#prescriptions", label: "Prescriptions", icon: FileText },
   ],
   DOCTOR: [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/dashboard#prescriptions", label: "Prescriptions", icon: FileText },
     { href: "/dashboard#appointments", label: "Appointments", icon: Calendar },
+    { href: "/dashboard#prescriptions", label: "Prescriptions", icon: FileText },
   ],
   ADMIN: [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },

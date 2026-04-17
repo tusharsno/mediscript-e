@@ -221,13 +221,15 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import db from "@/lib/db";
 import FileUpload from "@/components/FileUpload";
 import PrescriptionForm from "@/components/PrescriptionForm";
 import DownloadPDF from "@/components/DownloadPDF";
 import RecordItem from "@/components/RecordItem";
 import DashboardLayout from "@/components/DashboardLayout";
+import BookAppointment from "@/components/BookAppointment";
+import MyAppointments from "@/components/MyAppointments";
+import DoctorAppointments from "@/components/DoctorAppointments";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -267,14 +269,20 @@ export default async function DashboardPage() {
           {/* PATIENT INTERFACE */}
           {user?.role === "PATIENT" && (
             <div className="space-y-6">
-              <div className="bg-emerald-50 border border-emerald-100 p-6 rounded-2xl shadow-sm">
+              {/* Book Appointment Section */}
+              <BookAppointment />
+
+              {/* My Appointments Section */}
+              <MyAppointments />
+
+              <div id="vault" className="bg-emerald-50 border border-emerald-100 p-6 rounded-2xl shadow-sm scroll-mt-20">
                 <h2 className="text-xl font-bold text-emerald-900 mb-2">
                   Medical Vault
                 </h2>
                 <FileUpload />
               </div>
 
-              <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+              <div id="records" className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden scroll-mt-20">
                 <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-blue-50 rounded-lg">
@@ -313,7 +321,7 @@ export default async function DashboardPage() {
                 </div>
               </div>
 
-              <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+              <div id="prescriptions" className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden scroll-mt-20">
                 <h2 className="text-xl font-bold p-6 border-b text-slate-800">
                   Issued Prescriptions
                 </h2>
@@ -346,6 +354,9 @@ export default async function DashboardPage() {
           {/* DOCTOR INTERFACE */}
           {user?.role === "DOCTOR" && (
             <div className="space-y-6">
+              {/* Appointment Management Section */}
+              <DoctorAppointments />
+
               <div className="bg-blue-50 border border-blue-100 p-8 rounded-2xl">
                 <h2 className="text-2xl font-bold text-blue-900 mb-6 flex items-center gap-2">
                   <span className="p-2 bg-blue-600 rounded-lg text-white text-[10px] font-black uppercase tracking-widest">
@@ -372,7 +383,7 @@ export default async function DashboardPage() {
                   </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-inner">
+              <div id="prescriptions" className="bg-white p-6 rounded-2xl border border-slate-200 shadow-inner scroll-mt-20">
                   <h3 className="font-bold text-slate-800 mb-4 tracking-tighter italic">
                     Write New Prescription
                   </h3>

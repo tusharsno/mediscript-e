@@ -4892,25 +4892,37 @@ export namespace Prisma {
   export type AppointmentMinAggregateOutputType = {
     id: string | null
     date: Date | null
+    time: string | null
+    reason: string | null
     status: string | null
     doctorId: string | null
     patientId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type AppointmentMaxAggregateOutputType = {
     id: string | null
     date: Date | null
+    time: string | null
+    reason: string | null
     status: string | null
     doctorId: string | null
     patientId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type AppointmentCountAggregateOutputType = {
     id: number
     date: number
+    time: number
+    reason: number
     status: number
     doctorId: number
     patientId: number
+    createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -4918,25 +4930,37 @@ export namespace Prisma {
   export type AppointmentMinAggregateInputType = {
     id?: true
     date?: true
+    time?: true
+    reason?: true
     status?: true
     doctorId?: true
     patientId?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type AppointmentMaxAggregateInputType = {
     id?: true
     date?: true
+    time?: true
+    reason?: true
     status?: true
     doctorId?: true
     patientId?: true
+    createdAt?: true
+    updatedAt?: true
   }
 
   export type AppointmentCountAggregateInputType = {
     id?: true
     date?: true
+    time?: true
+    reason?: true
     status?: true
     doctorId?: true
     patientId?: true
+    createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -5015,9 +5039,13 @@ export namespace Prisma {
   export type AppointmentGroupByOutputType = {
     id: string
     date: Date
+    time: string
+    reason: string | null
     status: string
     doctorId: string
     patientId: string
+    createdAt: Date
+    updatedAt: Date
     _count: AppointmentCountAggregateOutputType | null
     _min: AppointmentMinAggregateOutputType | null
     _max: AppointmentMaxAggregateOutputType | null
@@ -5040,9 +5068,13 @@ export namespace Prisma {
   export type AppointmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     date?: boolean
+    time?: boolean
+    reason?: boolean
     status?: boolean
     doctorId?: boolean
     patientId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     doctor?: boolean | DoctorProfileDefaultArgs<ExtArgs>
     patient?: boolean | PatientProfileDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["appointment"]>
@@ -5050,9 +5082,13 @@ export namespace Prisma {
   export type AppointmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     date?: boolean
+    time?: boolean
+    reason?: boolean
     status?: boolean
     doctorId?: boolean
     patientId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     doctor?: boolean | DoctorProfileDefaultArgs<ExtArgs>
     patient?: boolean | PatientProfileDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["appointment"]>
@@ -5060,9 +5096,13 @@ export namespace Prisma {
   export type AppointmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     date?: boolean
+    time?: boolean
+    reason?: boolean
     status?: boolean
     doctorId?: boolean
     patientId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
     doctor?: boolean | DoctorProfileDefaultArgs<ExtArgs>
     patient?: boolean | PatientProfileDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["appointment"]>
@@ -5070,12 +5110,16 @@ export namespace Prisma {
   export type AppointmentSelectScalar = {
     id?: boolean
     date?: boolean
+    time?: boolean
+    reason?: boolean
     status?: boolean
     doctorId?: boolean
     patientId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type AppointmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "date" | "status" | "doctorId" | "patientId", ExtArgs["result"]["appointment"]>
+  export type AppointmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "date" | "time" | "reason" | "status" | "doctorId" | "patientId" | "createdAt" | "updatedAt", ExtArgs["result"]["appointment"]>
   export type AppointmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     doctor?: boolean | DoctorProfileDefaultArgs<ExtArgs>
     patient?: boolean | PatientProfileDefaultArgs<ExtArgs>
@@ -5098,9 +5142,13 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       date: Date
+      time: string
+      reason: string | null
       status: string
       doctorId: string
       patientId: string
+      createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["appointment"]>
     composites: {}
   }
@@ -5528,9 +5576,13 @@ export namespace Prisma {
   interface AppointmentFieldRefs {
     readonly id: FieldRef<"Appointment", 'String'>
     readonly date: FieldRef<"Appointment", 'DateTime'>
+    readonly time: FieldRef<"Appointment", 'String'>
+    readonly reason: FieldRef<"Appointment", 'String'>
     readonly status: FieldRef<"Appointment", 'String'>
     readonly doctorId: FieldRef<"Appointment", 'String'>
     readonly patientId: FieldRef<"Appointment", 'String'>
+    readonly createdAt: FieldRef<"Appointment", 'DateTime'>
+    readonly updatedAt: FieldRef<"Appointment", 'DateTime'>
   }
     
 
@@ -9160,9 +9212,13 @@ export namespace Prisma {
   export const AppointmentScalarFieldEnum: {
     id: 'id',
     date: 'date',
+    time: 'time',
+    reason: 'reason',
     status: 'status',
     doctorId: 'doctorId',
-    patientId: 'patientId'
+    patientId: 'patientId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type AppointmentScalarFieldEnum = (typeof AppointmentScalarFieldEnum)[keyof typeof AppointmentScalarFieldEnum]
@@ -9480,9 +9536,13 @@ export namespace Prisma {
     NOT?: AppointmentWhereInput | AppointmentWhereInput[]
     id?: StringFilter<"Appointment"> | string
     date?: DateTimeFilter<"Appointment"> | Date | string
+    time?: StringFilter<"Appointment"> | string
+    reason?: StringNullableFilter<"Appointment"> | string | null
     status?: StringFilter<"Appointment"> | string
     doctorId?: StringFilter<"Appointment"> | string
     patientId?: StringFilter<"Appointment"> | string
+    createdAt?: DateTimeFilter<"Appointment"> | Date | string
+    updatedAt?: DateTimeFilter<"Appointment"> | Date | string
     doctor?: XOR<DoctorProfileScalarRelationFilter, DoctorProfileWhereInput>
     patient?: XOR<PatientProfileScalarRelationFilter, PatientProfileWhereInput>
   }
@@ -9490,9 +9550,13 @@ export namespace Prisma {
   export type AppointmentOrderByWithRelationInput = {
     id?: SortOrder
     date?: SortOrder
+    time?: SortOrder
+    reason?: SortOrderInput | SortOrder
     status?: SortOrder
     doctorId?: SortOrder
     patientId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     doctor?: DoctorProfileOrderByWithRelationInput
     patient?: PatientProfileOrderByWithRelationInput
   }
@@ -9503,9 +9567,13 @@ export namespace Prisma {
     OR?: AppointmentWhereInput[]
     NOT?: AppointmentWhereInput | AppointmentWhereInput[]
     date?: DateTimeFilter<"Appointment"> | Date | string
+    time?: StringFilter<"Appointment"> | string
+    reason?: StringNullableFilter<"Appointment"> | string | null
     status?: StringFilter<"Appointment"> | string
     doctorId?: StringFilter<"Appointment"> | string
     patientId?: StringFilter<"Appointment"> | string
+    createdAt?: DateTimeFilter<"Appointment"> | Date | string
+    updatedAt?: DateTimeFilter<"Appointment"> | Date | string
     doctor?: XOR<DoctorProfileScalarRelationFilter, DoctorProfileWhereInput>
     patient?: XOR<PatientProfileScalarRelationFilter, PatientProfileWhereInput>
   }, "id">
@@ -9513,9 +9581,13 @@ export namespace Prisma {
   export type AppointmentOrderByWithAggregationInput = {
     id?: SortOrder
     date?: SortOrder
+    time?: SortOrder
+    reason?: SortOrderInput | SortOrder
     status?: SortOrder
     doctorId?: SortOrder
     patientId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: AppointmentCountOrderByAggregateInput
     _max?: AppointmentMaxOrderByAggregateInput
     _min?: AppointmentMinOrderByAggregateInput
@@ -9527,9 +9599,13 @@ export namespace Prisma {
     NOT?: AppointmentScalarWhereWithAggregatesInput | AppointmentScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Appointment"> | string
     date?: DateTimeWithAggregatesFilter<"Appointment"> | Date | string
+    time?: StringWithAggregatesFilter<"Appointment"> | string
+    reason?: StringNullableWithAggregatesFilter<"Appointment"> | string | null
     status?: StringWithAggregatesFilter<"Appointment"> | string
     doctorId?: StringWithAggregatesFilter<"Appointment"> | string
     patientId?: StringWithAggregatesFilter<"Appointment"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Appointment"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Appointment"> | Date | string
   }
 
   export type PrescriptionWhereInput = {
@@ -9903,24 +9979,36 @@ export namespace Prisma {
 
   export type AppointmentCreateInput = {
     id?: string
-    date?: Date | string
+    date: Date | string
+    time: string
+    reason?: string | null
     status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
     doctor: DoctorProfileCreateNestedOneWithoutAppointmentsInput
     patient: PatientProfileCreateNestedOneWithoutAppointmentsInput
   }
 
   export type AppointmentUncheckedCreateInput = {
     id?: string
-    date?: Date | string
+    date: Date | string
+    time: string
+    reason?: string | null
     status?: string
     doctorId: string
     patientId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type AppointmentUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
+    time?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     doctor?: DoctorProfileUpdateOneRequiredWithoutAppointmentsNestedInput
     patient?: PatientProfileUpdateOneRequiredWithoutAppointmentsNestedInput
   }
@@ -9928,31 +10016,47 @@ export namespace Prisma {
   export type AppointmentUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
+    time?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     doctorId?: StringFieldUpdateOperationsInput | string
     patientId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AppointmentCreateManyInput = {
     id?: string
-    date?: Date | string
+    date: Date | string
+    time: string
+    reason?: string | null
     status?: string
     doctorId: string
     patientId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type AppointmentUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
+    time?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AppointmentUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
+    time?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     doctorId?: StringFieldUpdateOperationsInput | string
     patientId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PrescriptionCreateInput = {
@@ -10377,25 +10481,37 @@ export namespace Prisma {
   export type AppointmentCountOrderByAggregateInput = {
     id?: SortOrder
     date?: SortOrder
+    time?: SortOrder
+    reason?: SortOrder
     status?: SortOrder
     doctorId?: SortOrder
     patientId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type AppointmentMaxOrderByAggregateInput = {
     id?: SortOrder
     date?: SortOrder
+    time?: SortOrder
+    reason?: SortOrder
     status?: SortOrder
     doctorId?: SortOrder
     patientId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type AppointmentMinOrderByAggregateInput = {
     id?: SortOrder
     date?: SortOrder
+    time?: SortOrder
+    reason?: SortOrder
     status?: SortOrder
     doctorId?: SortOrder
     patientId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type PrescriptionCountOrderByAggregateInput = {
@@ -11119,16 +11235,24 @@ export namespace Prisma {
 
   export type AppointmentCreateWithoutDoctorInput = {
     id?: string
-    date?: Date | string
+    date: Date | string
+    time: string
+    reason?: string | null
     status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
     patient: PatientProfileCreateNestedOneWithoutAppointmentsInput
   }
 
   export type AppointmentUncheckedCreateWithoutDoctorInput = {
     id?: string
-    date?: Date | string
+    date: Date | string
+    time: string
+    reason?: string | null
     status?: string
     patientId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type AppointmentCreateOrConnectWithoutDoctorInput = {
@@ -11222,9 +11346,13 @@ export namespace Prisma {
     NOT?: AppointmentScalarWhereInput | AppointmentScalarWhereInput[]
     id?: StringFilter<"Appointment"> | string
     date?: DateTimeFilter<"Appointment"> | Date | string
+    time?: StringFilter<"Appointment"> | string
+    reason?: StringNullableFilter<"Appointment"> | string | null
     status?: StringFilter<"Appointment"> | string
     doctorId?: StringFilter<"Appointment"> | string
     patientId?: StringFilter<"Appointment"> | string
+    createdAt?: DateTimeFilter<"Appointment"> | Date | string
+    updatedAt?: DateTimeFilter<"Appointment"> | Date | string
   }
 
   export type PrescriptionUpsertWithWhereUniqueWithoutDoctorInput = {
@@ -11284,16 +11412,24 @@ export namespace Prisma {
 
   export type AppointmentCreateWithoutPatientInput = {
     id?: string
-    date?: Date | string
+    date: Date | string
+    time: string
+    reason?: string | null
     status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
     doctor: DoctorProfileCreateNestedOneWithoutAppointmentsInput
   }
 
   export type AppointmentUncheckedCreateWithoutPatientInput = {
     id?: string
-    date?: Date | string
+    date: Date | string
+    time: string
+    reason?: string | null
     status?: string
     doctorId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type AppointmentCreateOrConnectWithoutPatientInput = {
@@ -11702,9 +11838,13 @@ export namespace Prisma {
 
   export type AppointmentCreateManyDoctorInput = {
     id?: string
-    date?: Date | string
+    date: Date | string
+    time: string
+    reason?: string | null
     status?: string
     patientId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type PrescriptionCreateManyDoctorInput = {
@@ -11718,22 +11858,34 @@ export namespace Prisma {
   export type AppointmentUpdateWithoutDoctorInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
+    time?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     patient?: PatientProfileUpdateOneRequiredWithoutAppointmentsNestedInput
   }
 
   export type AppointmentUncheckedUpdateWithoutDoctorInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
+    time?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     patientId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AppointmentUncheckedUpdateManyWithoutDoctorInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
+    time?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     patientId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PrescriptionUpdateWithoutDoctorInput = {
@@ -11762,9 +11914,13 @@ export namespace Prisma {
 
   export type AppointmentCreateManyPatientInput = {
     id?: string
-    date?: Date | string
+    date: Date | string
+    time: string
+    reason?: string | null
     status?: string
     doctorId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type PrescriptionCreateManyPatientInput = {
@@ -11785,22 +11941,34 @@ export namespace Prisma {
   export type AppointmentUpdateWithoutPatientInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
+    time?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     doctor?: DoctorProfileUpdateOneRequiredWithoutAppointmentsNestedInput
   }
 
   export type AppointmentUncheckedUpdateWithoutPatientInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
+    time?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     doctorId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AppointmentUncheckedUpdateManyWithoutPatientInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
+    time?: StringFieldUpdateOperationsInput | string
+    reason?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     doctorId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PrescriptionUpdateWithoutPatientInput = {

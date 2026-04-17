@@ -75,3 +75,12 @@ model MedicalVault {
   patient   PatientProfile @relation(fields: [patientId], references: [id])
   createdAt DateTime @default(now())
 }
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  company   String?
+  createdAt DateTime @default(now())
+}

@@ -398,6 +398,8 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Shield, ArrowRight } from "lucide-react";
 import PowerFeatures from "@/components/PowerFeatures";
+import SecuritySection from "@/components/SecuritySection";
+import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import useScrollHash from "@/hooks/useScrollHash";
 
@@ -410,7 +412,7 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
   
   return (
     <>
-    <div className="bg-white text-slate-900 font-sans overflow-x-hidden pt-[5.5rem]">
+    <div className="bg-white text-slate-900 font-sans overflow-x-hidden pt-[0.5rem]">
       {/* ── Hero Section - Updated to match the requested look ── */}
       <section className="min-h-[97vh] grid grid-cols-1 md:grid-cols-2 gap-2.5 mx-2.5">
         {/* Left Column - Image (Refined Roundness) */}
@@ -546,6 +548,12 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
       <div className="mt-0">
         <PowerFeatures isLoggedIn={isLoggedIn} />
       </div>
+
+      {/* ── Security Section ── */}
+      <SecuritySection />
+
+      {/* ── Contact Section ── */}
+      <ContactSection />
     </div>
     
     {/* Footer */}

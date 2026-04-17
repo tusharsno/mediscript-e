@@ -3,14 +3,21 @@
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
+
+interface RegisterFormData {
+  name: string;
+  email: string;
+  password: string;
+  role: string;
+}
 
 export default function RegisterPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm<RegisterFormData>();
 
-  const onSubmit = async (data: { name: string; email: string; password: string; role: string }) => {
+  const onSubmit: SubmitHandler<RegisterFormData> = async (data) => {
     setLoading(true);
     try {
       const response = await axios.post("/api/register", data);

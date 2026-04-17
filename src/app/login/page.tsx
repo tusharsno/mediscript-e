@@ -3,15 +3,20 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
+
+interface LoginFormData {
+  email: string;
+  password: string;
+}
 
 export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm<LoginFormData>();
 
-  const onSubmit = async (data: { email: string; password: string }) => {
+  const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     setLoading(true);
     setError("");
     

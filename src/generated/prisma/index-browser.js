@@ -169,6 +169,15 @@ exports.Prisma.MedicalVaultScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.ContactMessageScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  email: 'email',
+  phone: 'phone',
+  company: 'company',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -195,7 +204,8 @@ exports.Prisma.ModelName = {
   PatientProfile: 'PatientProfile',
   Appointment: 'Appointment',
   Prescription: 'Prescription',
-  MedicalVault: 'MedicalVault'
+  MedicalVault: 'MedicalVault',
+  ContactMessage: 'ContactMessage'
 };
 
 /**

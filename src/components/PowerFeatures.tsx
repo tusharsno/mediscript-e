@@ -117,7 +117,7 @@ export default function PowerFeatures({ isLoggedIn }: PowerFeaturesProps) {
           {/* রিডাইরেক্ট লজিক সহ বাটন */}
           <button
             onClick={handleAction}
-            className="group flex items-center gap-3 bg-[#1A6080] hover:bg-cyan-700 text-white rounded-full font-bold transition-all px-4 py-2 text-sm shadow-2xl border border-white/10 backdrop-blur-sm"
+            className="h-[3.5rem] group flex items-center gap-3 bg-[#1A6080] hover:bg-cyan-700 text-white rounded-full font-bold transition-all px-4 text-sm shadow-2xl border border-white/10 backdrop-blur-sm"
           >
             {isLoggedIn ? "Go to Dashboard" : "Get Started Now"}
             <span className="bg-white/20 p-2 rounded-full group-hover:translate-x-2 transition-transform">

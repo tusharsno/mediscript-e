@@ -36,8 +36,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Providers from "@/components/Providers"; // নিশ্চিত করুন আপনার কাছে SessionProvider এর ফাইলটি আছে
+import ConditionalNavbar from "@/components/ConditionalNavbar";
+import Providers from "@/components/Providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -71,10 +71,8 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <Providers>
-          <div className="relative">
-            <Navbar />
-            <main className="flex-grow">{children}</main>
-          </div>
+          <ConditionalNavbar />
+          <main className="flex-grow">{children}</main>
         </Providers>
       </body>
     </html>

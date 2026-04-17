@@ -398,16 +398,21 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Shield, ArrowRight } from "lucide-react";
 import PowerFeatures from "@/components/PowerFeatures";
+import Footer from "@/components/Footer";
+import useScrollHash from "@/hooks/useScrollHash";
 
 interface LandingPageProps {
   isLoggedIn: boolean;
 }
 
 export default function LandingPage({ isLoggedIn }: LandingPageProps) {
+  useScrollHash();
+  
   return (
-    <div className="bg-white text-slate-900 font-sans overflow-x-hidden">
+    <>
+    <div className="bg-white text-slate-900 font-sans overflow-x-hidden pt-[5.5rem]">
       {/* ── Hero Section - Updated to match the requested look ── */}
-      <section className="min-h-[97vh] grid grid-cols-1 md:grid-cols-2 gap-2.5 mt-2 mx-2.5">
+      <section className="min-h-[97vh] grid grid-cols-1 md:grid-cols-2 gap-2.5 mx-2.5">
         {/* Left Column - Image (Refined Roundness) */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
@@ -497,7 +502,7 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
                   >
                     <Link
                       href="/register"
-                      className="inline-flex items-center gap-3 pr-2 pl-6 py-2 text-white rounded-full font-bold text-sm shadow-md hover:shadow-lg transition-all"
+                      className="h-[3.5rem] inline-flex items-center gap-3 pr-2 pl-6 text-white rounded-full font-bold text-sm shadow-md hover:shadow-lg transition-all"
                       style={{ backgroundColor: "#1A6080" }}
                     >
                       Get Started Free
@@ -542,5 +547,9 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
         <PowerFeatures isLoggedIn={isLoggedIn} />
       </div>
     </div>
+    
+    {/* Footer */}
+    <Footer />
+    </>
   );
 }

@@ -35,11 +35,19 @@ const NAV_LINKS = {
   PATIENT: [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/dashboard#vault", label: "Health Records", icon: FolderOpen },
-    { href: "/dashboard#prescriptions", label: "Prescriptions", icon: FileText },
+    {
+      href: "/dashboard#prescriptions",
+      label: "Prescriptions",
+      icon: FileText,
+    },
   ],
   DOCTOR: [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/dashboard#prescriptions", label: "Prescriptions", icon: FileText },
+    {
+      href: "/dashboard#prescriptions",
+      label: "Prescriptions",
+      icon: FileText,
+    },
     { href: "/dashboard#appointments", label: "Appointments", icon: Calendar },
   ],
   ADMIN: [
@@ -48,32 +56,60 @@ const NAV_LINKS = {
   ],
 };
 
-const ROLE_STYLES: Record<string, { badge: string; dot: string; avatar: string }> = {
-  DOCTOR:  { badge: "bg-blue-50 text-blue-700 border-blue-200",    dot: "bg-blue-500",    avatar: "from-blue-500 to-blue-700" },
-  PATIENT: { badge: "bg-emerald-50 text-emerald-700 border-emerald-200", dot: "bg-emerald-500", avatar: "from-emerald-500 to-teal-600" },
-  ADMIN:   { badge: "bg-purple-50 text-purple-700 border-purple-200",  dot: "bg-purple-500",  avatar: "from-purple-500 to-purple-700" },
+const ROLE_STYLES: Record<
+  string,
+  { badge: string; dot: string; avatar: string }
+> = {
+  DOCTOR: {
+    badge: "bg-blue-50 text-blue-700 border-blue-200",
+    dot: "bg-blue-500",
+    avatar: "from-blue-500 to-blue-700",
+  },
+  PATIENT: {
+    badge: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    dot: "bg-emerald-500",
+    avatar: "from-emerald-500 to-teal-600",
+  },
+  ADMIN: {
+    badge: "bg-purple-50 text-purple-700 border-purple-200",
+    dot: "bg-purple-500",
+    avatar: "from-purple-500 to-purple-700",
+  },
 };
 
 // ─── Animation Variants ─────────────────────────────────────────────────────
 const navbarVariants: Variants = {
   hidden: { y: -80, opacity: 0 },
-  visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 200, damping: 25 } },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { type: "spring", stiffness: 200, damping: 25 },
+  },
 };
 
 const dropdownVariants: Variants = {
   hidden: { opacity: 0, y: -8, scale: 0.96 },
-  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.15, ease: "easeOut" } },
-  exit:   { opacity: 0, y: -8, scale: 0.96, transition: { duration: 0.1 } },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.15, ease: "easeOut" },
+  },
+  exit: { opacity: 0, y: -8, scale: 0.96, transition: { duration: 0.1 } },
 };
 
 const mobileMenuVariants: Variants = {
   hidden: { opacity: 0, height: 0 },
-  visible: { opacity: 1, height: "auto", transition: { duration: 0.25, ease: "easeOut" } },
-  exit:   { opacity: 0, height: 0, transition: { duration: 0.2 } },
+  visible: {
+    opacity: 1,
+    height: "auto",
+    transition: { duration: 0.25, ease: "easeOut" },
+  },
+  exit: { opacity: 0, height: 0, transition: { duration: 0.2 } },
 };
 
 const linkVariants: Variants = {
-  rest:  { y: 0 },
+  rest: { y: 0 },
   hover: { y: -2, transition: { duration: 0.15 } },
 };
 
@@ -109,17 +145,22 @@ function SearchButton() {
 // ─── Main Navbar ─────────────────────────────────────────────────────────────
 export default function Navbar() {
   const { data: session } = useSession();
-  const [menuOpen, setMenuOpen]       = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const role      = session?.user?.role as keyof typeof NAV_LINKS | undefined;
-  const navLinks  = role ? (NAV_LINKS[role] ?? NAV_LINKS.PUBLIC) : NAV_LINKS.PUBLIC;
+  const role = session?.user?.role as keyof typeof NAV_LINKS | undefined;
+  const navLinks = role
+    ? (NAV_LINKS[role] ?? NAV_LINKS.PUBLIC)
+    : NAV_LINKS.PUBLIC;
   const roleStyle = role ? ROLE_STYLES[role] : null;
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
         setDropdownOpen(false);
       }
     };
@@ -132,15 +173,25 @@ export default function Navbar() {
       variants={navbarVariants}
       initial="hidden"
       animate="visible"
-      className="absolute top-0 left-0 right-0 z-50 px-6 pt-3.5"
+      className="fixed top-0 left-0 right-0 z-50 px-6 pt-3.5"
     >
       <nav className="max-w-7xl mx-auto bg-white/100 backdrop-blur-lg border border-slate-200/70 rounded-full shadow-lg shadow-slate-200/50 px-8 h-[4.5rem] flex items-center justify-between">
-
         {/* ── Logo + Nav Links (Left Side) ── */}
         <div className="flex items-center gap-0 flex-shrink-0">
-          <Link href="/" className="flex items-center gap-2.5 group flex-shrink-0">
-            <Image src="/logo.png" alt="MediScript Logo" width={56} height={36} className="rounded-full object-cover" />
-            <span className="text-[1.65rem] font-black tracking-tight text-slate-900">MediScript</span>
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 group flex-shrink-0"
+          >
+            <Image
+              src="/logo.png"
+              alt="MediScript Logo"
+              width={56}
+              height={36}
+              className="rounded-full object-cover"
+            />
+            <span className="text-[1.65rem] font-black tracking-tight text-slate-900">
+              MediScript
+            </span>
           </Link>
 
           {/* Vertical Divider */}
@@ -161,7 +212,12 @@ export default function Navbar() {
               {navLinks.map((link) => {
                 const Icon = link.icon;
                 return (
-                  <motion.div key={link.href} variants={linkVariants} initial="rest" whileHover="hover">
+                  <motion.div
+                    key={link.href}
+                    variants={linkVariants}
+                    initial="rest"
+                    whileHover="hover"
+                  >
                     <Link
                       href={link.href}
                       className="flex items-center gap-1.5 px-4 py-2 text-slate-900 hover:text-teal-600 hover:bg-teal-50/80 rounded-full text-sm font-semibold transition-colors"
@@ -200,17 +256,23 @@ export default function Navbar() {
                     className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full border border-slate-200 hover:border-blue-200 hover:bg-blue-50/50 transition-all"
                   >
                     <div className="relative">
-                      <div className={`w-7 h-7 rounded-full bg-gradient-to-br ${roleStyle?.avatar ?? "from-blue-500 to-blue-700"} flex items-center justify-center text-white font-black text-xs shadow-sm`}>
+                      <div
+                        className={`w-7 h-7 rounded-full bg-gradient-to-br ${roleStyle?.avatar ?? "from-blue-500 to-blue-700"} flex items-center justify-center text-white font-black text-xs shadow-sm`}
+                      >
                         {session.user?.name?.charAt(0).toUpperCase() ?? "U"}
                       </div>
                       {roleStyle && (
-                        <span className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${roleStyle.dot}`} />
+                        <span
+                          className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${roleStyle.dot}`}
+                        />
                       )}
                     </div>
                     <span className="text-sm font-bold text-slate-700 max-w-[80px] truncate">
                       {session.user?.name?.split(" ")[0]}
                     </span>
-                    <ChevronDown className={`h-3 w-3 text-slate-400 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`} />
+                    <ChevronDown
+                      className={`h-3 w-3 text-slate-400 transition-transform duration-200 ${dropdownOpen ? "rotate-180" : ""}`}
+                    />
                   </motion.button>
 
                   {/* Dropdown Menu */}
@@ -226,16 +288,25 @@ export default function Navbar() {
                         {/* Header */}
                         <div className="px-4 py-3 bg-slate-50/80 border-b border-slate-100">
                           <div className="flex items-center gap-2.5">
-                            <div className={`w-8 h-8 rounded-xl bg-gradient-to-br ${roleStyle?.avatar ?? "from-blue-500 to-blue-700"} flex items-center justify-center text-white font-black text-sm`}>
-                              {session.user?.name?.charAt(0).toUpperCase() ?? "U"}
+                            <div
+                              className={`w-8 h-8 rounded-xl bg-gradient-to-br ${roleStyle?.avatar ?? "from-blue-500 to-blue-700"} flex items-center justify-center text-white font-black text-sm`}
+                            >
+                              {session.user?.name?.charAt(0).toUpperCase() ??
+                                "U"}
                             </div>
                             <div className="min-w-0">
-                              <p className="text-xs font-black text-slate-800 truncate">{session.user?.name}</p>
-                              <p className="text-[10px] text-slate-400 truncate">{session.user?.email}</p>
+                              <p className="text-xs font-black text-slate-800 truncate">
+                                {session.user?.name}
+                              </p>
+                              <p className="text-[10px] text-slate-400 truncate">
+                                {session.user?.email}
+                              </p>
                             </div>
                           </div>
                           {roleStyle && (
-                            <span className={`mt-2 inline-block text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border ${roleStyle.badge}`}>
+                            <span
+                              className={`mt-2 inline-block text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border ${roleStyle.badge}`}
+                            >
                               {role}
                             </span>
                           )}
@@ -243,20 +314,29 @@ export default function Navbar() {
 
                         {/* Links */}
                         <div className="p-1.5">
-                          <Link href="/dashboard" onClick={() => setDropdownOpen(false)}
-                            className="flex items-center gap-2.5 px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl text-xs font-semibold transition-all">
-                            <LayoutDashboard className="h-3.5 w-3.5" /> Dashboard
+                          <Link
+                            href="/dashboard"
+                            onClick={() => setDropdownOpen(false)}
+                            className="flex items-center gap-2.5 px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl text-xs font-semibold transition-all"
+                          >
+                            <LayoutDashboard className="h-3.5 w-3.5" />{" "}
+                            Dashboard
                           </Link>
-                          <Link href="/settings" onClick={() => setDropdownOpen(false)}
-                            className="flex items-center gap-2.5 px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl text-xs font-semibold transition-all">
+                          <Link
+                            href="/settings"
+                            onClick={() => setDropdownOpen(false)}
+                            className="flex items-center gap-2.5 px-3 py-2 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-xl text-xs font-semibold transition-all"
+                          >
                             <Settings className="h-3.5 w-3.5" /> Settings
                           </Link>
                         </div>
 
                         {/* Sign Out */}
                         <div className="p-1.5 border-t border-slate-100">
-                          <button onClick={() => signOut({ callbackUrl: "/" })}
-                            className="flex items-center gap-2.5 w-full px-3 py-2 text-red-500 hover:bg-red-50 rounded-xl text-xs font-semibold transition-all">
+                          <button
+                            onClick={() => signOut({ callbackUrl: "/" })}
+                            className="flex items-center gap-2.5 w-full px-3 py-2 text-red-500 hover:bg-red-50 rounded-xl text-xs font-semibold transition-all"
+                          >
                             <LogOut className="h-3.5 w-3.5" /> Sign Out
                           </button>
                         </div>
@@ -275,24 +355,43 @@ export default function Navbar() {
                 className="flex items-center gap-2"
               >
                 <div className="flex items-center gap-3 mr-2 text-slate-500">
-                  <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }} className="p-2 rounded-full hover:bg-slate-100 transition-colors" title="Contact">
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="p-2 rounded-full hover:bg-slate-100 transition-colors"
+                    title="Contact"
+                  >
                     <Phone className="h-4 w-4" />
                   </motion.button>
-                  <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }} className="p-2 rounded-full hover:bg-slate-100 transition-colors" title="Mail">
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="p-2 rounded-full hover:bg-slate-100 transition-colors"
+                    title="Mail"
+                  >
                     <Mail className="h-4 w-4" />
                   </motion.button>
-                  <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }} className="p-2 rounded-full hover:bg-slate-100 transition-colors" title="Location">
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="p-2 rounded-full hover:bg-slate-100 transition-colors"
+                    title="Location"
+                  >
                     <MapPin className="h-4 w-4" />
                   </motion.button>
                 </div>
-                <Link href="/login"
-                  className="px-4 py-2 text-slate-900 font-semibold text-sm hover:text-teal-600 transition-colors rounded-full hover:bg-teal-50">
+                <Link
+                  href="/login"
+                  className="px-4 py-2 text-slate-900 font-semibold text-sm hover:text-teal-600 transition-colors rounded-full hover:bg-teal-50"
+                >
                   Log In
                 </Link>
                 <motion.div whileTap={{ scale: 0.95 }}>
-                  <Link href="/register"
-                    style={{ backgroundColor: '#1A6080' }}
-                    className="px-5 py-3.5 text-white rounded-full font-bold text-sm shadow-md hover:opacity-80 transition-opacity">
+                  <Link
+                    href="/register"
+                    style={{ backgroundColor: "#1A6080" }}
+                    className="h-[3.5rem] px-5 flex items-center justify-center text-white rounded-full font-bold text-sm shadow-md hover:opacity-80 transition-opacity"
+                  >
                     Get Started
                   </Link>
                 </motion.div>
@@ -326,15 +425,23 @@ export default function Navbar() {
                 <>
                   {/* User Card */}
                   <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-100 mb-3">
-                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${roleStyle?.avatar ?? "from-blue-500 to-blue-700"} flex items-center justify-center text-white font-black shadow-sm`}>
+                    <div
+                      className={`w-10 h-10 rounded-xl bg-gradient-to-br ${roleStyle?.avatar ?? "from-blue-500 to-blue-700"} flex items-center justify-center text-white font-black shadow-sm`}
+                    >
                       {session.user?.name?.charAt(0).toUpperCase() ?? "U"}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-black text-slate-700 truncate">{session.user?.name}</p>
-                      <p className="text-xs text-slate-400 truncate">{session.user?.email}</p>
+                      <p className="text-sm font-black text-slate-700 truncate">
+                        {session.user?.name}
+                      </p>
+                      <p className="text-xs text-slate-400 truncate">
+                        {session.user?.email}
+                      </p>
                     </div>
                     {roleStyle && (
-                      <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-1 rounded-full border ${roleStyle.badge}`}>
+                      <span
+                        className={`text-[9px] font-black uppercase tracking-wider px-2 py-1 rounded-full border ${roleStyle.badge}`}
+                      >
                         {role}
                       </span>
                     )}
@@ -343,16 +450,22 @@ export default function Navbar() {
                   {navLinks.map((link) => {
                     const Icon = link.icon;
                     return (
-                      <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)}
-                        className="flex items-center gap-2.5 w-full px-4 py-3 text-slate-600 font-semibold text-sm hover:bg-blue-50 hover:text-blue-600 rounded-2xl transition-all">
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => setMenuOpen(false)}
+                        className="flex items-center gap-2.5 w-full px-4 py-3 text-slate-600 font-semibold text-sm hover:bg-blue-50 hover:text-blue-600 rounded-2xl transition-all"
+                      >
                         <Icon className="h-4 w-4" /> {link.label}
                       </Link>
                     );
                   })}
 
                   <div className="pt-2 border-t border-slate-100">
-                    <button onClick={() => signOut({ callbackUrl: "/" })}
-                      className="flex items-center gap-2.5 w-full px-4 py-3 text-red-500 font-semibold text-sm hover:bg-red-50 rounded-2xl transition-all">
+                    <button
+                      onClick={() => signOut({ callbackUrl: "/" })}
+                      className="flex items-center gap-2.5 w-full px-4 py-3 text-red-500 font-semibold text-sm hover:bg-red-50 rounded-2xl transition-all"
+                    >
                       <LogOut className="h-4 w-4" /> Sign Out
                     </button>
                   </div>
@@ -362,19 +475,29 @@ export default function Navbar() {
                   {navLinks.map((link) => {
                     const Icon = link.icon;
                     return (
-                      <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)}
-                        className="flex items-center gap-2.5 w-full px-4 py-3 text-slate-600 font-semibold text-sm hover:bg-blue-50 hover:text-blue-600 rounded-2xl transition-all">
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => setMenuOpen(false)}
+                        className="flex items-center gap-2.5 w-full px-4 py-3 text-slate-600 font-semibold text-sm hover:bg-blue-50 hover:text-blue-600 rounded-2xl transition-all"
+                      >
                         <Icon className="h-4 w-4" /> {link.label}
                       </Link>
                     );
                   })}
                   <div className="pt-2 border-t border-slate-100 space-y-2">
-                    <Link href="/login" onClick={() => setMenuOpen(false)}
-                      className="block w-full px-4 py-3 text-center text-slate-600 font-semibold text-sm hover:bg-slate-50 rounded-2xl transition-all">
+                    <Link
+                      href="/login"
+                      onClick={() => setMenuOpen(false)}
+                      className="block w-full px-4 py-3 text-center text-slate-600 font-semibold text-sm hover:bg-slate-50 rounded-2xl transition-all"
+                    >
                       Log In
                     </Link>
-                    <Link href="/register" onClick={() => setMenuOpen(false)}
-                      className="block w-full px-4 py-3 text-center bg-blue-600 text-white font-bold text-sm rounded-2xl shadow-md shadow-blue-100 hover:bg-blue-700 transition-all">
+                    <Link
+                      href="/register"
+                      onClick={() => setMenuOpen(false)}
+                      className="block w-full px-4 py-3 text-center bg-blue-600 text-white font-bold text-sm rounded-2xl shadow-md shadow-blue-100 hover:bg-blue-700 transition-all"
+                    >
                       Get Started
                     </Link>
                   </div>

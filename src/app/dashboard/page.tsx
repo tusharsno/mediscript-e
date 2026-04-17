@@ -227,6 +227,7 @@ import FileUpload from "@/components/FileUpload";
 import PrescriptionForm from "@/components/PrescriptionForm";
 import DownloadPDF from "@/components/DownloadPDF";
 import RecordItem from "@/components/RecordItem";
+import DashboardLayout from "@/components/DashboardLayout";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -249,54 +250,23 @@ export default async function DashboardPage() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 p-6 md:p-12 font-sans">
-      <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200">
-        {/* Updated Header with Prominent Logout Button */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-white">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-extrabold tracking-tight">
-                Welcome, {user?.name}
-              </h1>
-              <p className="opacity-90 mt-1 font-medium text-blue-50">
-                {user?.email}
-              </p>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <span className="bg-white/20 backdrop-blur-md px-4 py-2 rounded-xl text-[10px] font-black border border-white/30 uppercase tracking-widest">
-                {user?.role}
-              </span>
-
-              {/* New Visible Logout Button */}
-              <Link
-                href="/api/auth/signout"
-                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl text-xs font-black shadow-lg transition-all active:scale-95 flex items-center gap-2 border border-red-400"
-              >
-                <span>Logout</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                  />
-                </svg>
-              </Link>
+    <DashboardLayout>
+      <div className="p-6 md:p-12">
+        <div className="max-w-5xl mx-auto">
+          {/* Header Card */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mb-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-black text-slate-900 mb-2">
+                  Welcome back, {user?.name}
+                </h1>
+                <p className="text-slate-500 font-medium">{user?.email}</p>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div className="p-8">
           {/* PATIENT INTERFACE */}
           {user?.role === "PATIENT" && (
-            <div className="space-y-8">
+            <div className="space-y-6">
               <div className="bg-emerald-50 border border-emerald-100 p-6 rounded-2xl shadow-sm">
                 <h2 className="text-xl font-bold text-emerald-900 mb-2">
                   Medical Vault
@@ -375,7 +345,7 @@ export default async function DashboardPage() {
 
           {/* DOCTOR INTERFACE */}
           {user?.role === "DOCTOR" && (
-            <div className="space-y-8">
+            <div className="space-y-6">
               <div className="bg-blue-50 border border-blue-100 p-8 rounded-2xl">
                 <h2 className="text-2xl font-bold text-blue-900 mb-6 flex items-center gap-2">
                   <span className="p-2 bg-blue-600 rounded-lg text-white text-[10px] font-black uppercase tracking-widest">
@@ -412,14 +382,7 @@ export default async function DashboardPage() {
             </div>
           )}
         </div>
-
-        {/* Brand Footer */}
-        <div className="bg-slate-50 p-6 text-center border-t border-slate-100">
-          <p className="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em]">
-            MediScript Digital Health System
-          </p>
-        </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 }

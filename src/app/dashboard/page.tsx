@@ -221,10 +221,12 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import db from "@/lib/db";
 import FileUpload from "@/components/FileUpload";
 import PrescriptionForm from "@/components/PrescriptionForm";
 import DownloadPDF from "@/components/DownloadPDF";
+import RecordItem from "@/components/RecordItem";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -267,7 +269,7 @@ export default async function DashboardPage() {
               </span>
 
               {/* New Visible Logout Button */}
-              <a
+              <Link
                 href="/api/auth/signout"
                 className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl text-xs font-black shadow-lg transition-all active:scale-95 flex items-center gap-2 border border-red-400"
               >
@@ -286,7 +288,7 @@ export default async function DashboardPage() {
                     d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                   />
                 </svg>
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -300,6 +302,45 @@ export default async function DashboardPage() {
                   Medical Vault
                 </h2>
                 <FileUpload />
+              </div>
+
+              <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-50 rounded-lg">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h2 className="text-base font-black text-slate-800 tracking-tight">Your Records</h2>
+                      <p className="text-[11px] text-slate-400 font-medium">All uploaded medical documents</p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-black bg-blue-50 text-blue-600 px-3 py-1 rounded-full uppercase tracking-widest">
+                    {user.patientProfile?.medicalVault.length ?? 0} files
+                  </span>
+                </div>
+
+                <div className="p-6">
+                  {!user.patientProfile?.medicalVault || user.patientProfile.medicalVault.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-10 text-center">
+                      <div className="p-4 bg-slate-50 rounded-full mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                      <p className="text-slate-400 font-semibold text-sm">No records uploaded yet</p>
+                      <p className="text-slate-300 text-xs mt-1">Upload your first medical document above</p>
+                    </div>
+                  ) : (
+                    <div className="grid gap-3">
+                      {user.patientProfile.medicalVault.map((record, index) => (
+                        <RecordItem key={record.id} record={record} index={index} />
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">

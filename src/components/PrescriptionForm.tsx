@@ -31,7 +31,7 @@ export default function PrescriptionForm() {
         const err = await res.json();
         alert("Error: " + err.message);
       }
-    } catch (error) {
+    } catch {
       alert("Something went wrong!");
     } finally {
       setLoading(false);

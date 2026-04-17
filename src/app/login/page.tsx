@@ -11,7 +11,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const { register, handleSubmit } = useForm();
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: { email: string; password: string }) => {
     setLoading(true);
     setError("");
     
@@ -66,7 +66,7 @@ export default function LoginPage() {
         </form>
 
         <p className="mt-6 text-center text-sm text-gray-600">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <a href="/register" className="text-blue-600 font-bold hover:underline">Register</a>
         </p>
       </div>

@@ -67,12 +67,14 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body
-        className="min-h-full flex flex-col bg-slate-50"
+        className="min-h-full flex flex-col bg-white"
         suppressHydrationWarning
       >
         <Providers>
-          <Navbar />
-          <main className="flex-grow">{children}</main>
+          <div className="relative">
+            <Navbar />
+            <main className="flex-grow">{children}</main>
+          </div>
         </Providers>
       </body>
     </html>

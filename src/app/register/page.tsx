@@ -8,9 +8,9 @@ import { useForm } from "react-hook-form";
 export default function RegisterPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit } = useForm();
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: { name: string; email: string; password: string; role: string }) => {
     setLoading(true);
     try {
       const response = await axios.post("/api/register", data);
@@ -18,8 +18,11 @@ export default function RegisterPage() {
         alert("Registration Successful!");
         router.push("/login");
       }
-    } catch (error: any) {
-      alert(error.response?.data?.message || "Something went wrong!");
+    } catch (error: unknown) {
+      const errorMessage = axios.isAxiosError(error) 
+        ? error.response?.data?.message || "Something went wrong!"
+        : "Something went wrong!";
+      alert(errorMessage);
     } finally {
       setLoading(false);
     }

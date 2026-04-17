@@ -37,8 +37,9 @@ export default function FileUpload() {
 
       alert("File uploaded and saved to vault!");
       window.location.reload(); // পেজ রিফ্রেশ করে আপডেট দেখা
-    } catch (error: any) {
-      alert(error.message);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Upload failed";
+      alert(errorMessage);
     } finally {
       setUploading(false);
     }

@@ -35,10 +35,11 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(record, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("VAULT_ERROR", error);
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
-      { message: "Internal Error", error: error.message },
+      { message: "Internal Error", error: errorMessage },
       { status: 500 },
     );
   }

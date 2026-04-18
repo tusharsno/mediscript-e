@@ -450,7 +450,7 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
             >
               <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
               <span className="text-slate-600 text-xs md:text-sm font-semibold">
-                Secure Digital Health Platform
+                NextAuth • PostgreSQL • TypeScript
               </span>
             </motion.div>
 
@@ -461,7 +461,7 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-4xl md:text-5xl lg:text-[3.5rem] font-black mb-6 leading-[1.1] tracking-tight text-slate-900"
             >
-              Digital Healthcare, <span className="block">Redefined.</span>
+              Modern Healthcare <span className="block">Management System</span>
             </motion.h1>
 
             {/* Subtitle */}
@@ -471,9 +471,8 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-base md:text-lg text-slate-500 mb-10 font-medium leading-relaxed"
             >
-              Experience the future of medical care with MediScript. Seamlessly
-              connect with your healthcare providers and manage your health
-              records like never before.
+              Book appointments, manage prescriptions, set medicine reminders, and
+              securely store medical records — all in one platform built with Next.js and TypeScript.
             </motion.p>
 
             {/* CTA Buttons */}
@@ -519,7 +518,7 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
                   >
                     <Link
                       href="/login"
-                      className="inline-flex items-center px-8 py-4 bg-white text-slate-700 rounded-full font-bold text-sm border border-slate-200 shadow-sm hover:border-slate-400 transition-all"
+                      className="h-[3.5rem] inline-flex items-center px-8 py-4 bg-white text-slate-700 rounded-full font-bold text-sm border border-slate-200 shadow-sm hover:border-slate-400 transition-all"
                     >
                       Log In
                     </Link>
@@ -537,7 +536,7 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
             >
               <Shield className="h-4 w-4 text-emerald-500 flex-shrink-0" />
               <span>
-                End-to-end encrypted • HIPAA compliant • Free to start
+                NextAuth Secured • bcrypt Encrypted • Role-Based Access
               </span>
             </motion.div>
           </div>

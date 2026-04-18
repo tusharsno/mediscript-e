@@ -34,6 +34,7 @@ A modern, secure digital healthcare platform built with Next.js 16, enabling sea
 - **Modern Design**: Tailwind CSS with custom styling
 - **Responsive Layout**: Mobile-first design approach
 - **Smooth Animations**: Framer Motion integration
+- **Interactive Modals**: Feature details with professional modal system
 - **Dashboard Sidebar**: Easy navigation with hash-based routing
 
 ## 🛠️ Tech Stack
@@ -165,6 +166,7 @@ mediscript-e/
 │   │   ├── DashboardSidebar.tsx
 │   │   ├── DoctorAppointments.tsx
 │   │   ├── DownloadPDF.tsx
+│   │   ├── FeatureModal.tsx
 │   │   ├── FileUpload.tsx
 │   │   ├── Footer.tsx
 │   │   ├── LandingPage.tsx

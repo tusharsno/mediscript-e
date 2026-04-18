@@ -48,7 +48,7 @@ export default function LoginPage() {
               {...register("email", { required: true })}
               type="email"
               placeholder="Email Address"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black"
             />
           </div>
 
@@ -57,7 +57,7 @@ export default function LoginPage() {
               {...register("password", { required: true })}
               type="password"
               placeholder="Password"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black"
             />
           </div>
 

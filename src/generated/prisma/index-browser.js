@@ -182,6 +182,21 @@ exports.Prisma.ContactMessageScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.MedicineReminderScalarFieldEnum = {
+  id: 'id',
+  medicineName: 'medicineName',
+  dosage: 'dosage',
+  frequency: 'frequency',
+  time: 'time',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  taken: 'taken',
+  takenAt: 'takenAt',
+  patientId: 'patientId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -209,7 +224,8 @@ exports.Prisma.ModelName = {
   Appointment: 'Appointment',
   Prescription: 'Prescription',
   MedicalVault: 'MedicalVault',
-  ContactMessage: 'ContactMessage'
+  ContactMessage: 'ContactMessage',
+  MedicineReminder: 'MedicineReminder'
 };
 
 /**

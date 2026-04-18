@@ -44,6 +44,7 @@ model PatientProfile {
   appointments   Appointment[]
   prescriptions  Prescription[]
   medicalVault   MedicalVault[]
+  medicineReminders MedicineReminder[]
 }
 
 model Appointment {
@@ -87,4 +88,20 @@ model ContactMessage {
   phone     String?
   company   String?
   createdAt DateTime @default(now())
+}
+
+model MedicineReminder {
+  id           String   @id @default(cuid())
+  medicineName String
+  dosage       String
+  frequency    String
+  time         String
+  startDate    DateTime
+  endDate      DateTime
+  taken        Boolean  @default(false)
+  takenAt      DateTime?
+  patientId    String
+  patient      PatientProfile @relation(fields: [patientId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }

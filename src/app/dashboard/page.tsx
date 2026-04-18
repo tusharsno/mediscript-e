@@ -230,6 +230,8 @@ import DashboardLayout from "@/components/DashboardLayout";
 import BookAppointment from "@/components/BookAppointment";
 import MyAppointments from "@/components/MyAppointments";
 import DoctorAppointments from "@/components/DoctorAppointments";
+import AddMedicineReminder from "@/components/AddMedicineReminder";
+import MedicineReminders from "@/components/MedicineReminders";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -274,6 +276,12 @@ export default async function DashboardPage() {
 
               {/* My Appointments Section */}
               <MyAppointments />
+
+              {/* Medicine Reminders Section */}
+              <div id="reminders" className="scroll-mt-20">
+                <AddMedicineReminder />
+              </div>
+              <MedicineReminders />
 
               <div id="vault" className="bg-emerald-50 border border-emerald-100 p-6 rounded-2xl shadow-sm scroll-mt-20">
                 <h2 className="text-xl font-bold text-emerald-900 mb-2">

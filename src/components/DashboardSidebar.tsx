@@ -21,6 +21,7 @@ const SIDEBAR_LINKS = {
   PATIENT: [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/dashboard#appointments", label: "Appointments", icon: Calendar },
+    { href: "/dashboard#reminders", label: "Medicine Reminders", icon: FileText },
     { href: "/dashboard#vault", label: "Medical Vault", icon: FolderOpen },
     { href: "/dashboard#prescriptions", label: "Prescriptions", icon: FileText },
   ],

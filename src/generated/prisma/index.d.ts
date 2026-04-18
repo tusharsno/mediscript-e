@@ -48,6 +48,11 @@ export type MedicalVault = $Result.DefaultSelection<Prisma.$MedicalVaultPayload>
  * 
  */
 export type ContactMessage = $Result.DefaultSelection<Prisma.$ContactMessagePayload>
+/**
+ * Model MedicineReminder
+ * 
+ */
+export type MedicineReminder = $Result.DefaultSelection<Prisma.$MedicineReminderPayload>
 
 /**
  * Enums
@@ -257,6 +262,16 @@ export class PrismaClient<
     * ```
     */
   get contactMessage(): Prisma.ContactMessageDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.medicineReminder`: Exposes CRUD operations for the **MedicineReminder** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more MedicineReminders
+    * const medicineReminders = await prisma.medicineReminder.findMany()
+    * ```
+    */
+  get medicineReminder(): Prisma.MedicineReminderDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -697,7 +712,8 @@ export namespace Prisma {
     Appointment: 'Appointment',
     Prescription: 'Prescription',
     MedicalVault: 'MedicalVault',
-    ContactMessage: 'ContactMessage'
+    ContactMessage: 'ContactMessage',
+    MedicineReminder: 'MedicineReminder'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -713,7 +729,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "doctorProfile" | "patientProfile" | "appointment" | "prescription" | "medicalVault" | "contactMessage"
+      modelProps: "user" | "doctorProfile" | "patientProfile" | "appointment" | "prescription" | "medicalVault" | "contactMessage" | "medicineReminder"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1235,6 +1251,80 @@ export namespace Prisma {
           }
         }
       }
+      MedicineReminder: {
+        payload: Prisma.$MedicineReminderPayload<ExtArgs>
+        fields: Prisma.MedicineReminderFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MedicineReminderFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MedicineReminderPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MedicineReminderFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MedicineReminderPayload>
+          }
+          findFirst: {
+            args: Prisma.MedicineReminderFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MedicineReminderPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MedicineReminderFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MedicineReminderPayload>
+          }
+          findMany: {
+            args: Prisma.MedicineReminderFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MedicineReminderPayload>[]
+          }
+          create: {
+            args: Prisma.MedicineReminderCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MedicineReminderPayload>
+          }
+          createMany: {
+            args: Prisma.MedicineReminderCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MedicineReminderCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MedicineReminderPayload>[]
+          }
+          delete: {
+            args: Prisma.MedicineReminderDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MedicineReminderPayload>
+          }
+          update: {
+            args: Prisma.MedicineReminderUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MedicineReminderPayload>
+          }
+          deleteMany: {
+            args: Prisma.MedicineReminderDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MedicineReminderUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MedicineReminderUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MedicineReminderPayload>[]
+          }
+          upsert: {
+            args: Prisma.MedicineReminderUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MedicineReminderPayload>
+          }
+          aggregate: {
+            args: Prisma.MedicineReminderAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMedicineReminder>
+          }
+          groupBy: {
+            args: Prisma.MedicineReminderGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MedicineReminderGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MedicineReminderCountArgs<ExtArgs>
+            result: $Utils.Optional<MedicineReminderCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1350,6 +1440,7 @@ export namespace Prisma {
     prescription?: PrescriptionOmit
     medicalVault?: MedicalVaultOmit
     contactMessage?: ContactMessageOmit
+    medicineReminder?: MedicineReminderOmit
   }
 
   /* Types for Logging */
@@ -1473,12 +1564,14 @@ export namespace Prisma {
     appointments: number
     prescriptions: number
     medicalVault: number
+    medicineReminders: number
   }
 
   export type PatientProfileCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     appointments?: boolean | PatientProfileCountOutputTypeCountAppointmentsArgs
     prescriptions?: boolean | PatientProfileCountOutputTypeCountPrescriptionsArgs
     medicalVault?: boolean | PatientProfileCountOutputTypeCountMedicalVaultArgs
+    medicineReminders?: boolean | PatientProfileCountOutputTypeCountMedicineRemindersArgs
   }
 
   // Custom InputTypes
@@ -1511,6 +1604,13 @@ export namespace Prisma {
    */
   export type PatientProfileCountOutputTypeCountMedicalVaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MedicalVaultWhereInput
+  }
+
+  /**
+   * PatientProfileCountOutputType without action
+   */
+  export type PatientProfileCountOutputTypeCountMedicineRemindersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MedicineReminderWhereInput
   }
 
 
@@ -3903,6 +4003,7 @@ export namespace Prisma {
     appointments?: boolean | PatientProfile$appointmentsArgs<ExtArgs>
     prescriptions?: boolean | PatientProfile$prescriptionsArgs<ExtArgs>
     medicalVault?: boolean | PatientProfile$medicalVaultArgs<ExtArgs>
+    medicineReminders?: boolean | PatientProfile$medicineRemindersArgs<ExtArgs>
     _count?: boolean | PatientProfileCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["patientProfile"]>
 
@@ -3935,6 +4036,7 @@ export namespace Prisma {
     appointments?: boolean | PatientProfile$appointmentsArgs<ExtArgs>
     prescriptions?: boolean | PatientProfile$prescriptionsArgs<ExtArgs>
     medicalVault?: boolean | PatientProfile$medicalVaultArgs<ExtArgs>
+    medicineReminders?: boolean | PatientProfile$medicineRemindersArgs<ExtArgs>
     _count?: boolean | PatientProfileCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type PatientProfileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3951,6 +4053,7 @@ export namespace Prisma {
       appointments: Prisma.$AppointmentPayload<ExtArgs>[]
       prescriptions: Prisma.$PrescriptionPayload<ExtArgs>[]
       medicalVault: Prisma.$MedicalVaultPayload<ExtArgs>[]
+      medicineReminders: Prisma.$MedicineReminderPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4355,6 +4458,7 @@ export namespace Prisma {
     appointments<T extends PatientProfile$appointmentsArgs<ExtArgs> = {}>(args?: Subset<T, PatientProfile$appointmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     prescriptions<T extends PatientProfile$prescriptionsArgs<ExtArgs> = {}>(args?: Subset<T, PatientProfile$prescriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PrescriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     medicalVault<T extends PatientProfile$medicalVaultArgs<ExtArgs> = {}>(args?: Subset<T, PatientProfile$medicalVaultArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicalVaultPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    medicineReminders<T extends PatientProfile$medicineRemindersArgs<ExtArgs> = {}>(args?: Subset<T, PatientProfile$medicineRemindersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicineReminderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4858,6 +4962,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: MedicalVaultScalarFieldEnum | MedicalVaultScalarFieldEnum[]
+  }
+
+  /**
+   * PatientProfile.medicineReminders
+   */
+  export type PatientProfile$medicineRemindersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MedicineReminder
+     */
+    select?: MedicineReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MedicineReminder
+     */
+    omit?: MedicineReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MedicineReminderInclude<ExtArgs> | null
+    where?: MedicineReminderWhereInput
+    orderBy?: MedicineReminderOrderByWithRelationInput | MedicineReminderOrderByWithRelationInput[]
+    cursor?: MedicineReminderWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MedicineReminderScalarFieldEnum | MedicineReminderScalarFieldEnum[]
   }
 
   /**
@@ -9163,6 +9291,1160 @@ export namespace Prisma {
 
 
   /**
+   * Model MedicineReminder
+   */
+
+  export type AggregateMedicineReminder = {
+    _count: MedicineReminderCountAggregateOutputType | null
+    _min: MedicineReminderMinAggregateOutputType | null
+    _max: MedicineReminderMaxAggregateOutputType | null
+  }
+
+  export type MedicineReminderMinAggregateOutputType = {
+    id: string | null
+    medicineName: string | null
+    dosage: string | null
+    frequency: string | null
+    time: string | null
+    startDate: Date | null
+    endDate: Date | null
+    taken: boolean | null
+    takenAt: Date | null
+    patientId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MedicineReminderMaxAggregateOutputType = {
+    id: string | null
+    medicineName: string | null
+    dosage: string | null
+    frequency: string | null
+    time: string | null
+    startDate: Date | null
+    endDate: Date | null
+    taken: boolean | null
+    takenAt: Date | null
+    patientId: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type MedicineReminderCountAggregateOutputType = {
+    id: number
+    medicineName: number
+    dosage: number
+    frequency: number
+    time: number
+    startDate: number
+    endDate: number
+    taken: number
+    takenAt: number
+    patientId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type MedicineReminderMinAggregateInputType = {
+    id?: true
+    medicineName?: true
+    dosage?: true
+    frequency?: true
+    time?: true
+    startDate?: true
+    endDate?: true
+    taken?: true
+    takenAt?: true
+    patientId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MedicineReminderMaxAggregateInputType = {
+    id?: true
+    medicineName?: true
+    dosage?: true
+    frequency?: true
+    time?: true
+    startDate?: true
+    endDate?: true
+    taken?: true
+    takenAt?: true
+    patientId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type MedicineReminderCountAggregateInputType = {
+    id?: true
+    medicineName?: true
+    dosage?: true
+    frequency?: true
+    time?: true
+    startDate?: true
+    endDate?: true
+    taken?: true
+    takenAt?: true
+    patientId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type MedicineReminderAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MedicineReminder to aggregate.
+     */
+    where?: MedicineReminderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MedicineReminders to fetch.
+     */
+    orderBy?: MedicineReminderOrderByWithRelationInput | MedicineReminderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MedicineReminderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MedicineReminders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MedicineReminders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned MedicineReminders
+    **/
+    _count?: true | MedicineReminderCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MedicineReminderMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MedicineReminderMaxAggregateInputType
+  }
+
+  export type GetMedicineReminderAggregateType<T extends MedicineReminderAggregateArgs> = {
+        [P in keyof T & keyof AggregateMedicineReminder]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMedicineReminder[P]>
+      : GetScalarType<T[P], AggregateMedicineReminder[P]>
+  }
+
+
+
+
+  export type MedicineReminderGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MedicineReminderWhereInput
+    orderBy?: MedicineReminderOrderByWithAggregationInput | MedicineReminderOrderByWithAggregationInput[]
+    by: MedicineReminderScalarFieldEnum[] | MedicineReminderScalarFieldEnum
+    having?: MedicineReminderScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MedicineReminderCountAggregateInputType | true
+    _min?: MedicineReminderMinAggregateInputType
+    _max?: MedicineReminderMaxAggregateInputType
+  }
+
+  export type MedicineReminderGroupByOutputType = {
+    id: string
+    medicineName: string
+    dosage: string
+    frequency: string
+    time: string
+    startDate: Date
+    endDate: Date
+    taken: boolean
+    takenAt: Date | null
+    patientId: string
+    createdAt: Date
+    updatedAt: Date
+    _count: MedicineReminderCountAggregateOutputType | null
+    _min: MedicineReminderMinAggregateOutputType | null
+    _max: MedicineReminderMaxAggregateOutputType | null
+  }
+
+  type GetMedicineReminderGroupByPayload<T extends MedicineReminderGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MedicineReminderGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MedicineReminderGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MedicineReminderGroupByOutputType[P]>
+            : GetScalarType<T[P], MedicineReminderGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MedicineReminderSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    medicineName?: boolean
+    dosage?: boolean
+    frequency?: boolean
+    time?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    taken?: boolean
+    takenAt?: boolean
+    patientId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    patient?: boolean | PatientProfileDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["medicineReminder"]>
+
+  export type MedicineReminderSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    medicineName?: boolean
+    dosage?: boolean
+    frequency?: boolean
+    time?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    taken?: boolean
+    takenAt?: boolean
+    patientId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    patient?: boolean | PatientProfileDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["medicineReminder"]>
+
+  export type MedicineReminderSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    medicineName?: boolean
+    dosage?: boolean
+    frequency?: boolean
+    time?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    taken?: boolean
+    takenAt?: boolean
+    patientId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    patient?: boolean | PatientProfileDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["medicineReminder"]>
+
+  export type MedicineReminderSelectScalar = {
+    id?: boolean
+    medicineName?: boolean
+    dosage?: boolean
+    frequency?: boolean
+    time?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    taken?: boolean
+    takenAt?: boolean
+    patientId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type MedicineReminderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "medicineName" | "dosage" | "frequency" | "time" | "startDate" | "endDate" | "taken" | "takenAt" | "patientId" | "createdAt" | "updatedAt", ExtArgs["result"]["medicineReminder"]>
+  export type MedicineReminderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    patient?: boolean | PatientProfileDefaultArgs<ExtArgs>
+  }
+  export type MedicineReminderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    patient?: boolean | PatientProfileDefaultArgs<ExtArgs>
+  }
+  export type MedicineReminderIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    patient?: boolean | PatientProfileDefaultArgs<ExtArgs>
+  }
+
+  export type $MedicineReminderPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "MedicineReminder"
+    objects: {
+      patient: Prisma.$PatientProfilePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      medicineName: string
+      dosage: string
+      frequency: string
+      time: string
+      startDate: Date
+      endDate: Date
+      taken: boolean
+      takenAt: Date | null
+      patientId: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["medicineReminder"]>
+    composites: {}
+  }
+
+  type MedicineReminderGetPayload<S extends boolean | null | undefined | MedicineReminderDefaultArgs> = $Result.GetResult<Prisma.$MedicineReminderPayload, S>
+
+  type MedicineReminderCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MedicineReminderFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MedicineReminderCountAggregateInputType | true
+    }
+
+  export interface MedicineReminderDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MedicineReminder'], meta: { name: 'MedicineReminder' } }
+    /**
+     * Find zero or one MedicineReminder that matches the filter.
+     * @param {MedicineReminderFindUniqueArgs} args - Arguments to find a MedicineReminder
+     * @example
+     * // Get one MedicineReminder
+     * const medicineReminder = await prisma.medicineReminder.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MedicineReminderFindUniqueArgs>(args: SelectSubset<T, MedicineReminderFindUniqueArgs<ExtArgs>>): Prisma__MedicineReminderClient<$Result.GetResult<Prisma.$MedicineReminderPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one MedicineReminder that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MedicineReminderFindUniqueOrThrowArgs} args - Arguments to find a MedicineReminder
+     * @example
+     * // Get one MedicineReminder
+     * const medicineReminder = await prisma.medicineReminder.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MedicineReminderFindUniqueOrThrowArgs>(args: SelectSubset<T, MedicineReminderFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MedicineReminderClient<$Result.GetResult<Prisma.$MedicineReminderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MedicineReminder that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MedicineReminderFindFirstArgs} args - Arguments to find a MedicineReminder
+     * @example
+     * // Get one MedicineReminder
+     * const medicineReminder = await prisma.medicineReminder.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MedicineReminderFindFirstArgs>(args?: SelectSubset<T, MedicineReminderFindFirstArgs<ExtArgs>>): Prisma__MedicineReminderClient<$Result.GetResult<Prisma.$MedicineReminderPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first MedicineReminder that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MedicineReminderFindFirstOrThrowArgs} args - Arguments to find a MedicineReminder
+     * @example
+     * // Get one MedicineReminder
+     * const medicineReminder = await prisma.medicineReminder.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MedicineReminderFindFirstOrThrowArgs>(args?: SelectSubset<T, MedicineReminderFindFirstOrThrowArgs<ExtArgs>>): Prisma__MedicineReminderClient<$Result.GetResult<Prisma.$MedicineReminderPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more MedicineReminders that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MedicineReminderFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all MedicineReminders
+     * const medicineReminders = await prisma.medicineReminder.findMany()
+     * 
+     * // Get first 10 MedicineReminders
+     * const medicineReminders = await prisma.medicineReminder.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const medicineReminderWithIdOnly = await prisma.medicineReminder.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MedicineReminderFindManyArgs>(args?: SelectSubset<T, MedicineReminderFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicineReminderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a MedicineReminder.
+     * @param {MedicineReminderCreateArgs} args - Arguments to create a MedicineReminder.
+     * @example
+     * // Create one MedicineReminder
+     * const MedicineReminder = await prisma.medicineReminder.create({
+     *   data: {
+     *     // ... data to create a MedicineReminder
+     *   }
+     * })
+     * 
+     */
+    create<T extends MedicineReminderCreateArgs>(args: SelectSubset<T, MedicineReminderCreateArgs<ExtArgs>>): Prisma__MedicineReminderClient<$Result.GetResult<Prisma.$MedicineReminderPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many MedicineReminders.
+     * @param {MedicineReminderCreateManyArgs} args - Arguments to create many MedicineReminders.
+     * @example
+     * // Create many MedicineReminders
+     * const medicineReminder = await prisma.medicineReminder.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MedicineReminderCreateManyArgs>(args?: SelectSubset<T, MedicineReminderCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many MedicineReminders and returns the data saved in the database.
+     * @param {MedicineReminderCreateManyAndReturnArgs} args - Arguments to create many MedicineReminders.
+     * @example
+     * // Create many MedicineReminders
+     * const medicineReminder = await prisma.medicineReminder.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many MedicineReminders and only return the `id`
+     * const medicineReminderWithIdOnly = await prisma.medicineReminder.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MedicineReminderCreateManyAndReturnArgs>(args?: SelectSubset<T, MedicineReminderCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicineReminderPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a MedicineReminder.
+     * @param {MedicineReminderDeleteArgs} args - Arguments to delete one MedicineReminder.
+     * @example
+     * // Delete one MedicineReminder
+     * const MedicineReminder = await prisma.medicineReminder.delete({
+     *   where: {
+     *     // ... filter to delete one MedicineReminder
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MedicineReminderDeleteArgs>(args: SelectSubset<T, MedicineReminderDeleteArgs<ExtArgs>>): Prisma__MedicineReminderClient<$Result.GetResult<Prisma.$MedicineReminderPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one MedicineReminder.
+     * @param {MedicineReminderUpdateArgs} args - Arguments to update one MedicineReminder.
+     * @example
+     * // Update one MedicineReminder
+     * const medicineReminder = await prisma.medicineReminder.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MedicineReminderUpdateArgs>(args: SelectSubset<T, MedicineReminderUpdateArgs<ExtArgs>>): Prisma__MedicineReminderClient<$Result.GetResult<Prisma.$MedicineReminderPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more MedicineReminders.
+     * @param {MedicineReminderDeleteManyArgs} args - Arguments to filter MedicineReminders to delete.
+     * @example
+     * // Delete a few MedicineReminders
+     * const { count } = await prisma.medicineReminder.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MedicineReminderDeleteManyArgs>(args?: SelectSubset<T, MedicineReminderDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MedicineReminders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MedicineReminderUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many MedicineReminders
+     * const medicineReminder = await prisma.medicineReminder.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MedicineReminderUpdateManyArgs>(args: SelectSubset<T, MedicineReminderUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more MedicineReminders and returns the data updated in the database.
+     * @param {MedicineReminderUpdateManyAndReturnArgs} args - Arguments to update many MedicineReminders.
+     * @example
+     * // Update many MedicineReminders
+     * const medicineReminder = await prisma.medicineReminder.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more MedicineReminders and only return the `id`
+     * const medicineReminderWithIdOnly = await prisma.medicineReminder.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MedicineReminderUpdateManyAndReturnArgs>(args: SelectSubset<T, MedicineReminderUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MedicineReminderPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one MedicineReminder.
+     * @param {MedicineReminderUpsertArgs} args - Arguments to update or create a MedicineReminder.
+     * @example
+     * // Update or create a MedicineReminder
+     * const medicineReminder = await prisma.medicineReminder.upsert({
+     *   create: {
+     *     // ... data to create a MedicineReminder
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the MedicineReminder we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MedicineReminderUpsertArgs>(args: SelectSubset<T, MedicineReminderUpsertArgs<ExtArgs>>): Prisma__MedicineReminderClient<$Result.GetResult<Prisma.$MedicineReminderPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of MedicineReminders.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MedicineReminderCountArgs} args - Arguments to filter MedicineReminders to count.
+     * @example
+     * // Count the number of MedicineReminders
+     * const count = await prisma.medicineReminder.count({
+     *   where: {
+     *     // ... the filter for the MedicineReminders we want to count
+     *   }
+     * })
+    **/
+    count<T extends MedicineReminderCountArgs>(
+      args?: Subset<T, MedicineReminderCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MedicineReminderCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a MedicineReminder.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MedicineReminderAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MedicineReminderAggregateArgs>(args: Subset<T, MedicineReminderAggregateArgs>): Prisma.PrismaPromise<GetMedicineReminderAggregateType<T>>
+
+    /**
+     * Group by MedicineReminder.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MedicineReminderGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MedicineReminderGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MedicineReminderGroupByArgs['orderBy'] }
+        : { orderBy?: MedicineReminderGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MedicineReminderGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMedicineReminderGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the MedicineReminder model
+   */
+  readonly fields: MedicineReminderFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for MedicineReminder.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MedicineReminderClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    patient<T extends PatientProfileDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PatientProfileDefaultArgs<ExtArgs>>): Prisma__PatientProfileClient<$Result.GetResult<Prisma.$PatientProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the MedicineReminder model
+   */
+  interface MedicineReminderFieldRefs {
+    readonly id: FieldRef<"MedicineReminder", 'String'>
+    readonly medicineName: FieldRef<"MedicineReminder", 'String'>
+    readonly dosage: FieldRef<"MedicineReminder", 'String'>
+    readonly frequency: FieldRef<"MedicineReminder", 'String'>
+    readonly time: FieldRef<"MedicineReminder", 'String'>
+    readonly startDate: FieldRef<"MedicineReminder", 'DateTime'>
+    readonly endDate: FieldRef<"MedicineReminder", 'DateTime'>
+    readonly taken: FieldRef<"MedicineReminder", 'Boolean'>
+    readonly takenAt: FieldRef<"MedicineReminder", 'DateTime'>
+    readonly patientId: FieldRef<"MedicineReminder", 'String'>
+    readonly createdAt: FieldRef<"MedicineReminder", 'DateTime'>
+    readonly updatedAt: FieldRef<"MedicineReminder", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * MedicineReminder findUnique
+   */
+  export type MedicineReminderFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MedicineReminder
+     */
+    select?: MedicineReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MedicineReminder
+     */
+    omit?: MedicineReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MedicineReminderInclude<ExtArgs> | null
+    /**
+     * Filter, which MedicineReminder to fetch.
+     */
+    where: MedicineReminderWhereUniqueInput
+  }
+
+  /**
+   * MedicineReminder findUniqueOrThrow
+   */
+  export type MedicineReminderFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MedicineReminder
+     */
+    select?: MedicineReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MedicineReminder
+     */
+    omit?: MedicineReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MedicineReminderInclude<ExtArgs> | null
+    /**
+     * Filter, which MedicineReminder to fetch.
+     */
+    where: MedicineReminderWhereUniqueInput
+  }
+
+  /**
+   * MedicineReminder findFirst
+   */
+  export type MedicineReminderFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MedicineReminder
+     */
+    select?: MedicineReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MedicineReminder
+     */
+    omit?: MedicineReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MedicineReminderInclude<ExtArgs> | null
+    /**
+     * Filter, which MedicineReminder to fetch.
+     */
+    where?: MedicineReminderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MedicineReminders to fetch.
+     */
+    orderBy?: MedicineReminderOrderByWithRelationInput | MedicineReminderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MedicineReminders.
+     */
+    cursor?: MedicineReminderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MedicineReminders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MedicineReminders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MedicineReminders.
+     */
+    distinct?: MedicineReminderScalarFieldEnum | MedicineReminderScalarFieldEnum[]
+  }
+
+  /**
+   * MedicineReminder findFirstOrThrow
+   */
+  export type MedicineReminderFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MedicineReminder
+     */
+    select?: MedicineReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MedicineReminder
+     */
+    omit?: MedicineReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MedicineReminderInclude<ExtArgs> | null
+    /**
+     * Filter, which MedicineReminder to fetch.
+     */
+    where?: MedicineReminderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MedicineReminders to fetch.
+     */
+    orderBy?: MedicineReminderOrderByWithRelationInput | MedicineReminderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for MedicineReminders.
+     */
+    cursor?: MedicineReminderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MedicineReminders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MedicineReminders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MedicineReminders.
+     */
+    distinct?: MedicineReminderScalarFieldEnum | MedicineReminderScalarFieldEnum[]
+  }
+
+  /**
+   * MedicineReminder findMany
+   */
+  export type MedicineReminderFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MedicineReminder
+     */
+    select?: MedicineReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MedicineReminder
+     */
+    omit?: MedicineReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MedicineReminderInclude<ExtArgs> | null
+    /**
+     * Filter, which MedicineReminders to fetch.
+     */
+    where?: MedicineReminderWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of MedicineReminders to fetch.
+     */
+    orderBy?: MedicineReminderOrderByWithRelationInput | MedicineReminderOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing MedicineReminders.
+     */
+    cursor?: MedicineReminderWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` MedicineReminders from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` MedicineReminders.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of MedicineReminders.
+     */
+    distinct?: MedicineReminderScalarFieldEnum | MedicineReminderScalarFieldEnum[]
+  }
+
+  /**
+   * MedicineReminder create
+   */
+  export type MedicineReminderCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MedicineReminder
+     */
+    select?: MedicineReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MedicineReminder
+     */
+    omit?: MedicineReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MedicineReminderInclude<ExtArgs> | null
+    /**
+     * The data needed to create a MedicineReminder.
+     */
+    data: XOR<MedicineReminderCreateInput, MedicineReminderUncheckedCreateInput>
+  }
+
+  /**
+   * MedicineReminder createMany
+   */
+  export type MedicineReminderCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many MedicineReminders.
+     */
+    data: MedicineReminderCreateManyInput | MedicineReminderCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * MedicineReminder createManyAndReturn
+   */
+  export type MedicineReminderCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MedicineReminder
+     */
+    select?: MedicineReminderSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MedicineReminder
+     */
+    omit?: MedicineReminderOmit<ExtArgs> | null
+    /**
+     * The data used to create many MedicineReminders.
+     */
+    data: MedicineReminderCreateManyInput | MedicineReminderCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MedicineReminderIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * MedicineReminder update
+   */
+  export type MedicineReminderUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MedicineReminder
+     */
+    select?: MedicineReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MedicineReminder
+     */
+    omit?: MedicineReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MedicineReminderInclude<ExtArgs> | null
+    /**
+     * The data needed to update a MedicineReminder.
+     */
+    data: XOR<MedicineReminderUpdateInput, MedicineReminderUncheckedUpdateInput>
+    /**
+     * Choose, which MedicineReminder to update.
+     */
+    where: MedicineReminderWhereUniqueInput
+  }
+
+  /**
+   * MedicineReminder updateMany
+   */
+  export type MedicineReminderUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update MedicineReminders.
+     */
+    data: XOR<MedicineReminderUpdateManyMutationInput, MedicineReminderUncheckedUpdateManyInput>
+    /**
+     * Filter which MedicineReminders to update
+     */
+    where?: MedicineReminderWhereInput
+    /**
+     * Limit how many MedicineReminders to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * MedicineReminder updateManyAndReturn
+   */
+  export type MedicineReminderUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MedicineReminder
+     */
+    select?: MedicineReminderSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the MedicineReminder
+     */
+    omit?: MedicineReminderOmit<ExtArgs> | null
+    /**
+     * The data used to update MedicineReminders.
+     */
+    data: XOR<MedicineReminderUpdateManyMutationInput, MedicineReminderUncheckedUpdateManyInput>
+    /**
+     * Filter which MedicineReminders to update
+     */
+    where?: MedicineReminderWhereInput
+    /**
+     * Limit how many MedicineReminders to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MedicineReminderIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * MedicineReminder upsert
+   */
+  export type MedicineReminderUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MedicineReminder
+     */
+    select?: MedicineReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MedicineReminder
+     */
+    omit?: MedicineReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MedicineReminderInclude<ExtArgs> | null
+    /**
+     * The filter to search for the MedicineReminder to update in case it exists.
+     */
+    where: MedicineReminderWhereUniqueInput
+    /**
+     * In case the MedicineReminder found by the `where` argument doesn't exist, create a new MedicineReminder with this data.
+     */
+    create: XOR<MedicineReminderCreateInput, MedicineReminderUncheckedCreateInput>
+    /**
+     * In case the MedicineReminder was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MedicineReminderUpdateInput, MedicineReminderUncheckedUpdateInput>
+  }
+
+  /**
+   * MedicineReminder delete
+   */
+  export type MedicineReminderDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MedicineReminder
+     */
+    select?: MedicineReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MedicineReminder
+     */
+    omit?: MedicineReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MedicineReminderInclude<ExtArgs> | null
+    /**
+     * Filter which MedicineReminder to delete.
+     */
+    where: MedicineReminderWhereUniqueInput
+  }
+
+  /**
+   * MedicineReminder deleteMany
+   */
+  export type MedicineReminderDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which MedicineReminders to delete
+     */
+    where?: MedicineReminderWhereInput
+    /**
+     * Limit how many MedicineReminders to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * MedicineReminder without action
+   */
+  export type MedicineReminderDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the MedicineReminder
+     */
+    select?: MedicineReminderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the MedicineReminder
+     */
+    omit?: MedicineReminderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MedicineReminderInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -9259,6 +10541,24 @@ export namespace Prisma {
   export type ContactMessageScalarFieldEnum = (typeof ContactMessageScalarFieldEnum)[keyof typeof ContactMessageScalarFieldEnum]
 
 
+  export const MedicineReminderScalarFieldEnum: {
+    id: 'id',
+    medicineName: 'medicineName',
+    dosage: 'dosage',
+    frequency: 'frequency',
+    time: 'time',
+    startDate: 'startDate',
+    endDate: 'endDate',
+    taken: 'taken',
+    takenAt: 'takenAt',
+    patientId: 'patientId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type MedicineReminderScalarFieldEnum = (typeof MedicineReminderScalarFieldEnum)[keyof typeof MedicineReminderScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -9327,6 +10627,13 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -9483,6 +10790,7 @@ export namespace Prisma {
     appointments?: AppointmentListRelationFilter
     prescriptions?: PrescriptionListRelationFilter
     medicalVault?: MedicalVaultListRelationFilter
+    medicineReminders?: MedicineReminderListRelationFilter
   }
 
   export type PatientProfileOrderByWithRelationInput = {
@@ -9494,6 +10802,7 @@ export namespace Prisma {
     appointments?: AppointmentOrderByRelationAggregateInput
     prescriptions?: PrescriptionOrderByRelationAggregateInput
     medicalVault?: MedicalVaultOrderByRelationAggregateInput
+    medicineReminders?: MedicineReminderOrderByRelationAggregateInput
   }
 
   export type PatientProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -9508,6 +10817,7 @@ export namespace Prisma {
     appointments?: AppointmentListRelationFilter
     prescriptions?: PrescriptionListRelationFilter
     medicalVault?: MedicalVaultListRelationFilter
+    medicineReminders?: MedicineReminderListRelationFilter
   }, "id" | "userId">
 
   export type PatientProfileOrderByWithAggregationInput = {
@@ -9783,6 +11093,96 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"ContactMessage"> | Date | string
   }
 
+  export type MedicineReminderWhereInput = {
+    AND?: MedicineReminderWhereInput | MedicineReminderWhereInput[]
+    OR?: MedicineReminderWhereInput[]
+    NOT?: MedicineReminderWhereInput | MedicineReminderWhereInput[]
+    id?: StringFilter<"MedicineReminder"> | string
+    medicineName?: StringFilter<"MedicineReminder"> | string
+    dosage?: StringFilter<"MedicineReminder"> | string
+    frequency?: StringFilter<"MedicineReminder"> | string
+    time?: StringFilter<"MedicineReminder"> | string
+    startDate?: DateTimeFilter<"MedicineReminder"> | Date | string
+    endDate?: DateTimeFilter<"MedicineReminder"> | Date | string
+    taken?: BoolFilter<"MedicineReminder"> | boolean
+    takenAt?: DateTimeNullableFilter<"MedicineReminder"> | Date | string | null
+    patientId?: StringFilter<"MedicineReminder"> | string
+    createdAt?: DateTimeFilter<"MedicineReminder"> | Date | string
+    updatedAt?: DateTimeFilter<"MedicineReminder"> | Date | string
+    patient?: XOR<PatientProfileScalarRelationFilter, PatientProfileWhereInput>
+  }
+
+  export type MedicineReminderOrderByWithRelationInput = {
+    id?: SortOrder
+    medicineName?: SortOrder
+    dosage?: SortOrder
+    frequency?: SortOrder
+    time?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    taken?: SortOrder
+    takenAt?: SortOrderInput | SortOrder
+    patientId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    patient?: PatientProfileOrderByWithRelationInput
+  }
+
+  export type MedicineReminderWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: MedicineReminderWhereInput | MedicineReminderWhereInput[]
+    OR?: MedicineReminderWhereInput[]
+    NOT?: MedicineReminderWhereInput | MedicineReminderWhereInput[]
+    medicineName?: StringFilter<"MedicineReminder"> | string
+    dosage?: StringFilter<"MedicineReminder"> | string
+    frequency?: StringFilter<"MedicineReminder"> | string
+    time?: StringFilter<"MedicineReminder"> | string
+    startDate?: DateTimeFilter<"MedicineReminder"> | Date | string
+    endDate?: DateTimeFilter<"MedicineReminder"> | Date | string
+    taken?: BoolFilter<"MedicineReminder"> | boolean
+    takenAt?: DateTimeNullableFilter<"MedicineReminder"> | Date | string | null
+    patientId?: StringFilter<"MedicineReminder"> | string
+    createdAt?: DateTimeFilter<"MedicineReminder"> | Date | string
+    updatedAt?: DateTimeFilter<"MedicineReminder"> | Date | string
+    patient?: XOR<PatientProfileScalarRelationFilter, PatientProfileWhereInput>
+  }, "id">
+
+  export type MedicineReminderOrderByWithAggregationInput = {
+    id?: SortOrder
+    medicineName?: SortOrder
+    dosage?: SortOrder
+    frequency?: SortOrder
+    time?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    taken?: SortOrder
+    takenAt?: SortOrderInput | SortOrder
+    patientId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: MedicineReminderCountOrderByAggregateInput
+    _max?: MedicineReminderMaxOrderByAggregateInput
+    _min?: MedicineReminderMinOrderByAggregateInput
+  }
+
+  export type MedicineReminderScalarWhereWithAggregatesInput = {
+    AND?: MedicineReminderScalarWhereWithAggregatesInput | MedicineReminderScalarWhereWithAggregatesInput[]
+    OR?: MedicineReminderScalarWhereWithAggregatesInput[]
+    NOT?: MedicineReminderScalarWhereWithAggregatesInput | MedicineReminderScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"MedicineReminder"> | string
+    medicineName?: StringWithAggregatesFilter<"MedicineReminder"> | string
+    dosage?: StringWithAggregatesFilter<"MedicineReminder"> | string
+    frequency?: StringWithAggregatesFilter<"MedicineReminder"> | string
+    time?: StringWithAggregatesFilter<"MedicineReminder"> | string
+    startDate?: DateTimeWithAggregatesFilter<"MedicineReminder"> | Date | string
+    endDate?: DateTimeWithAggregatesFilter<"MedicineReminder"> | Date | string
+    taken?: BoolWithAggregatesFilter<"MedicineReminder"> | boolean
+    takenAt?: DateTimeNullableWithAggregatesFilter<"MedicineReminder"> | Date | string | null
+    patientId?: StringWithAggregatesFilter<"MedicineReminder"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"MedicineReminder"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"MedicineReminder"> | Date | string
+  }
+
   export type UserCreateInput = {
     id?: string
     name?: string | null
@@ -9925,6 +11325,7 @@ export namespace Prisma {
     appointments?: AppointmentCreateNestedManyWithoutPatientInput
     prescriptions?: PrescriptionCreateNestedManyWithoutPatientInput
     medicalVault?: MedicalVaultCreateNestedManyWithoutPatientInput
+    medicineReminders?: MedicineReminderCreateNestedManyWithoutPatientInput
   }
 
   export type PatientProfileUncheckedCreateInput = {
@@ -9935,6 +11336,7 @@ export namespace Prisma {
     appointments?: AppointmentUncheckedCreateNestedManyWithoutPatientInput
     prescriptions?: PrescriptionUncheckedCreateNestedManyWithoutPatientInput
     medicalVault?: MedicalVaultUncheckedCreateNestedManyWithoutPatientInput
+    medicineReminders?: MedicineReminderUncheckedCreateNestedManyWithoutPatientInput
   }
 
   export type PatientProfileUpdateInput = {
@@ -9945,6 +11347,7 @@ export namespace Prisma {
     appointments?: AppointmentUpdateManyWithoutPatientNestedInput
     prescriptions?: PrescriptionUpdateManyWithoutPatientNestedInput
     medicalVault?: MedicalVaultUpdateManyWithoutPatientNestedInput
+    medicineReminders?: MedicineReminderUpdateManyWithoutPatientNestedInput
   }
 
   export type PatientProfileUncheckedUpdateInput = {
@@ -9955,6 +11358,7 @@ export namespace Prisma {
     appointments?: AppointmentUncheckedUpdateManyWithoutPatientNestedInput
     prescriptions?: PrescriptionUncheckedUpdateManyWithoutPatientNestedInput
     medicalVault?: MedicalVaultUncheckedUpdateManyWithoutPatientNestedInput
+    medicineReminders?: MedicineReminderUncheckedUpdateManyWithoutPatientNestedInput
   }
 
   export type PatientProfileCreateManyInput = {
@@ -10238,6 +11642,110 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type MedicineReminderCreateInput = {
+    id?: string
+    medicineName: string
+    dosage: string
+    frequency: string
+    time: string
+    startDate: Date | string
+    endDate: Date | string
+    taken?: boolean
+    takenAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    patient: PatientProfileCreateNestedOneWithoutMedicineRemindersInput
+  }
+
+  export type MedicineReminderUncheckedCreateInput = {
+    id?: string
+    medicineName: string
+    dosage: string
+    frequency: string
+    time: string
+    startDate: Date | string
+    endDate: Date | string
+    taken?: boolean
+    takenAt?: Date | string | null
+    patientId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MedicineReminderUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    medicineName?: StringFieldUpdateOperationsInput | string
+    dosage?: StringFieldUpdateOperationsInput | string
+    frequency?: StringFieldUpdateOperationsInput | string
+    time?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    taken?: BoolFieldUpdateOperationsInput | boolean
+    takenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    patient?: PatientProfileUpdateOneRequiredWithoutMedicineRemindersNestedInput
+  }
+
+  export type MedicineReminderUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    medicineName?: StringFieldUpdateOperationsInput | string
+    dosage?: StringFieldUpdateOperationsInput | string
+    frequency?: StringFieldUpdateOperationsInput | string
+    time?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    taken?: BoolFieldUpdateOperationsInput | boolean
+    takenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    patientId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MedicineReminderCreateManyInput = {
+    id?: string
+    medicineName: string
+    dosage: string
+    frequency: string
+    time: string
+    startDate: Date | string
+    endDate: Date | string
+    taken?: boolean
+    takenAt?: Date | string | null
+    patientId: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MedicineReminderUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    medicineName?: StringFieldUpdateOperationsInput | string
+    dosage?: StringFieldUpdateOperationsInput | string
+    frequency?: StringFieldUpdateOperationsInput | string
+    time?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    taken?: BoolFieldUpdateOperationsInput | boolean
+    takenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MedicineReminderUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    medicineName?: StringFieldUpdateOperationsInput | string
+    dosage?: StringFieldUpdateOperationsInput | string
+    frequency?: StringFieldUpdateOperationsInput | string
+    time?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    taken?: BoolFieldUpdateOperationsInput | boolean
+    takenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    patientId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -10443,7 +11951,17 @@ export namespace Prisma {
     none?: MedicalVaultWhereInput
   }
 
+  export type MedicineReminderListRelationFilter = {
+    every?: MedicineReminderWhereInput
+    some?: MedicineReminderWhereInput
+    none?: MedicineReminderWhereInput
+  }
+
   export type MedicalVaultOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type MedicineReminderOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -10590,6 +12108,89 @@ export namespace Prisma {
     phone?: SortOrder
     company?: SortOrder
     createdAt?: SortOrder
+  }
+
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type MedicineReminderCountOrderByAggregateInput = {
+    id?: SortOrder
+    medicineName?: SortOrder
+    dosage?: SortOrder
+    frequency?: SortOrder
+    time?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    taken?: SortOrder
+    takenAt?: SortOrder
+    patientId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MedicineReminderMaxOrderByAggregateInput = {
+    id?: SortOrder
+    medicineName?: SortOrder
+    dosage?: SortOrder
+    frequency?: SortOrder
+    time?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    taken?: SortOrder
+    takenAt?: SortOrder
+    patientId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type MedicineReminderMinOrderByAggregateInput = {
+    id?: SortOrder
+    medicineName?: SortOrder
+    dosage?: SortOrder
+    frequency?: SortOrder
+    time?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    taken?: SortOrder
+    takenAt?: SortOrder
+    patientId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type DoctorProfileCreateNestedOneWithoutUserInput = {
@@ -10797,6 +12398,13 @@ export namespace Prisma {
     connect?: MedicalVaultWhereUniqueInput | MedicalVaultWhereUniqueInput[]
   }
 
+  export type MedicineReminderCreateNestedManyWithoutPatientInput = {
+    create?: XOR<MedicineReminderCreateWithoutPatientInput, MedicineReminderUncheckedCreateWithoutPatientInput> | MedicineReminderCreateWithoutPatientInput[] | MedicineReminderUncheckedCreateWithoutPatientInput[]
+    connectOrCreate?: MedicineReminderCreateOrConnectWithoutPatientInput | MedicineReminderCreateOrConnectWithoutPatientInput[]
+    createMany?: MedicineReminderCreateManyPatientInputEnvelope
+    connect?: MedicineReminderWhereUniqueInput | MedicineReminderWhereUniqueInput[]
+  }
+
   export type AppointmentUncheckedCreateNestedManyWithoutPatientInput = {
     create?: XOR<AppointmentCreateWithoutPatientInput, AppointmentUncheckedCreateWithoutPatientInput> | AppointmentCreateWithoutPatientInput[] | AppointmentUncheckedCreateWithoutPatientInput[]
     connectOrCreate?: AppointmentCreateOrConnectWithoutPatientInput | AppointmentCreateOrConnectWithoutPatientInput[]
@@ -10816,6 +12424,13 @@ export namespace Prisma {
     connectOrCreate?: MedicalVaultCreateOrConnectWithoutPatientInput | MedicalVaultCreateOrConnectWithoutPatientInput[]
     createMany?: MedicalVaultCreateManyPatientInputEnvelope
     connect?: MedicalVaultWhereUniqueInput | MedicalVaultWhereUniqueInput[]
+  }
+
+  export type MedicineReminderUncheckedCreateNestedManyWithoutPatientInput = {
+    create?: XOR<MedicineReminderCreateWithoutPatientInput, MedicineReminderUncheckedCreateWithoutPatientInput> | MedicineReminderCreateWithoutPatientInput[] | MedicineReminderUncheckedCreateWithoutPatientInput[]
+    connectOrCreate?: MedicineReminderCreateOrConnectWithoutPatientInput | MedicineReminderCreateOrConnectWithoutPatientInput[]
+    createMany?: MedicineReminderCreateManyPatientInputEnvelope
+    connect?: MedicineReminderWhereUniqueInput | MedicineReminderWhereUniqueInput[]
   }
 
   export type UserUpdateOneRequiredWithoutPatientProfileNestedInput = {
@@ -10868,6 +12483,20 @@ export namespace Prisma {
     deleteMany?: MedicalVaultScalarWhereInput | MedicalVaultScalarWhereInput[]
   }
 
+  export type MedicineReminderUpdateManyWithoutPatientNestedInput = {
+    create?: XOR<MedicineReminderCreateWithoutPatientInput, MedicineReminderUncheckedCreateWithoutPatientInput> | MedicineReminderCreateWithoutPatientInput[] | MedicineReminderUncheckedCreateWithoutPatientInput[]
+    connectOrCreate?: MedicineReminderCreateOrConnectWithoutPatientInput | MedicineReminderCreateOrConnectWithoutPatientInput[]
+    upsert?: MedicineReminderUpsertWithWhereUniqueWithoutPatientInput | MedicineReminderUpsertWithWhereUniqueWithoutPatientInput[]
+    createMany?: MedicineReminderCreateManyPatientInputEnvelope
+    set?: MedicineReminderWhereUniqueInput | MedicineReminderWhereUniqueInput[]
+    disconnect?: MedicineReminderWhereUniqueInput | MedicineReminderWhereUniqueInput[]
+    delete?: MedicineReminderWhereUniqueInput | MedicineReminderWhereUniqueInput[]
+    connect?: MedicineReminderWhereUniqueInput | MedicineReminderWhereUniqueInput[]
+    update?: MedicineReminderUpdateWithWhereUniqueWithoutPatientInput | MedicineReminderUpdateWithWhereUniqueWithoutPatientInput[]
+    updateMany?: MedicineReminderUpdateManyWithWhereWithoutPatientInput | MedicineReminderUpdateManyWithWhereWithoutPatientInput[]
+    deleteMany?: MedicineReminderScalarWhereInput | MedicineReminderScalarWhereInput[]
+  }
+
   export type AppointmentUncheckedUpdateManyWithoutPatientNestedInput = {
     create?: XOR<AppointmentCreateWithoutPatientInput, AppointmentUncheckedCreateWithoutPatientInput> | AppointmentCreateWithoutPatientInput[] | AppointmentUncheckedCreateWithoutPatientInput[]
     connectOrCreate?: AppointmentCreateOrConnectWithoutPatientInput | AppointmentCreateOrConnectWithoutPatientInput[]
@@ -10908,6 +12537,20 @@ export namespace Prisma {
     update?: MedicalVaultUpdateWithWhereUniqueWithoutPatientInput | MedicalVaultUpdateWithWhereUniqueWithoutPatientInput[]
     updateMany?: MedicalVaultUpdateManyWithWhereWithoutPatientInput | MedicalVaultUpdateManyWithWhereWithoutPatientInput[]
     deleteMany?: MedicalVaultScalarWhereInput | MedicalVaultScalarWhereInput[]
+  }
+
+  export type MedicineReminderUncheckedUpdateManyWithoutPatientNestedInput = {
+    create?: XOR<MedicineReminderCreateWithoutPatientInput, MedicineReminderUncheckedCreateWithoutPatientInput> | MedicineReminderCreateWithoutPatientInput[] | MedicineReminderUncheckedCreateWithoutPatientInput[]
+    connectOrCreate?: MedicineReminderCreateOrConnectWithoutPatientInput | MedicineReminderCreateOrConnectWithoutPatientInput[]
+    upsert?: MedicineReminderUpsertWithWhereUniqueWithoutPatientInput | MedicineReminderUpsertWithWhereUniqueWithoutPatientInput[]
+    createMany?: MedicineReminderCreateManyPatientInputEnvelope
+    set?: MedicineReminderWhereUniqueInput | MedicineReminderWhereUniqueInput[]
+    disconnect?: MedicineReminderWhereUniqueInput | MedicineReminderWhereUniqueInput[]
+    delete?: MedicineReminderWhereUniqueInput | MedicineReminderWhereUniqueInput[]
+    connect?: MedicineReminderWhereUniqueInput | MedicineReminderWhereUniqueInput[]
+    update?: MedicineReminderUpdateWithWhereUniqueWithoutPatientInput | MedicineReminderUpdateWithWhereUniqueWithoutPatientInput[]
+    updateMany?: MedicineReminderUpdateManyWithWhereWithoutPatientInput | MedicineReminderUpdateManyWithWhereWithoutPatientInput[]
+    deleteMany?: MedicineReminderScalarWhereInput | MedicineReminderScalarWhereInput[]
   }
 
   export type DoctorProfileCreateNestedOneWithoutAppointmentsInput = {
@@ -10978,6 +12621,28 @@ export namespace Prisma {
     upsert?: PatientProfileUpsertWithoutMedicalVaultInput
     connect?: PatientProfileWhereUniqueInput
     update?: XOR<XOR<PatientProfileUpdateToOneWithWhereWithoutMedicalVaultInput, PatientProfileUpdateWithoutMedicalVaultInput>, PatientProfileUncheckedUpdateWithoutMedicalVaultInput>
+  }
+
+  export type PatientProfileCreateNestedOneWithoutMedicineRemindersInput = {
+    create?: XOR<PatientProfileCreateWithoutMedicineRemindersInput, PatientProfileUncheckedCreateWithoutMedicineRemindersInput>
+    connectOrCreate?: PatientProfileCreateOrConnectWithoutMedicineRemindersInput
+    connect?: PatientProfileWhereUniqueInput
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type PatientProfileUpdateOneRequiredWithoutMedicineRemindersNestedInput = {
+    create?: XOR<PatientProfileCreateWithoutMedicineRemindersInput, PatientProfileUncheckedCreateWithoutMedicineRemindersInput>
+    connectOrCreate?: PatientProfileCreateOrConnectWithoutMedicineRemindersInput
+    upsert?: PatientProfileUpsertWithoutMedicineRemindersInput
+    connect?: PatientProfileWhereUniqueInput
+    update?: XOR<XOR<PatientProfileUpdateToOneWithWhereWithoutMedicineRemindersInput, PatientProfileUpdateWithoutMedicineRemindersInput>, PatientProfileUncheckedUpdateWithoutMedicineRemindersInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -11106,6 +12771,44 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type DoctorProfileCreateWithoutUserInput = {
     id?: string
     specialization?: string
@@ -11134,6 +12837,7 @@ export namespace Prisma {
     appointments?: AppointmentCreateNestedManyWithoutPatientInput
     prescriptions?: PrescriptionCreateNestedManyWithoutPatientInput
     medicalVault?: MedicalVaultCreateNestedManyWithoutPatientInput
+    medicineReminders?: MedicineReminderCreateNestedManyWithoutPatientInput
   }
 
   export type PatientProfileUncheckedCreateWithoutUserInput = {
@@ -11143,6 +12847,7 @@ export namespace Prisma {
     appointments?: AppointmentUncheckedCreateNestedManyWithoutPatientInput
     prescriptions?: PrescriptionUncheckedCreateNestedManyWithoutPatientInput
     medicalVault?: MedicalVaultUncheckedCreateNestedManyWithoutPatientInput
+    medicineReminders?: MedicineReminderUncheckedCreateNestedManyWithoutPatientInput
   }
 
   export type PatientProfileCreateOrConnectWithoutUserInput = {
@@ -11195,6 +12900,7 @@ export namespace Prisma {
     appointments?: AppointmentUpdateManyWithoutPatientNestedInput
     prescriptions?: PrescriptionUpdateManyWithoutPatientNestedInput
     medicalVault?: MedicalVaultUpdateManyWithoutPatientNestedInput
+    medicineReminders?: MedicineReminderUpdateManyWithoutPatientNestedInput
   }
 
   export type PatientProfileUncheckedUpdateWithoutUserInput = {
@@ -11204,6 +12910,7 @@ export namespace Prisma {
     appointments?: AppointmentUncheckedUpdateManyWithoutPatientNestedInput
     prescriptions?: PrescriptionUncheckedUpdateManyWithoutPatientNestedInput
     medicalVault?: MedicalVaultUncheckedUpdateManyWithoutPatientNestedInput
+    medicineReminders?: MedicineReminderUncheckedUpdateManyWithoutPatientNestedInput
   }
 
   export type UserCreateWithoutDoctorProfileInput = {
@@ -11492,6 +13199,44 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type MedicineReminderCreateWithoutPatientInput = {
+    id?: string
+    medicineName: string
+    dosage: string
+    frequency: string
+    time: string
+    startDate: Date | string
+    endDate: Date | string
+    taken?: boolean
+    takenAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MedicineReminderUncheckedCreateWithoutPatientInput = {
+    id?: string
+    medicineName: string
+    dosage: string
+    frequency: string
+    time: string
+    startDate: Date | string
+    endDate: Date | string
+    taken?: boolean
+    takenAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type MedicineReminderCreateOrConnectWithoutPatientInput = {
+    where: MedicineReminderWhereUniqueInput
+    create: XOR<MedicineReminderCreateWithoutPatientInput, MedicineReminderUncheckedCreateWithoutPatientInput>
+  }
+
+  export type MedicineReminderCreateManyPatientInputEnvelope = {
+    data: MedicineReminderCreateManyPatientInput | MedicineReminderCreateManyPatientInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithoutPatientProfileInput = {
     update: XOR<UserUpdateWithoutPatientProfileInput, UserUncheckedUpdateWithoutPatientProfileInput>
     create: XOR<UserCreateWithoutPatientProfileInput, UserUncheckedCreateWithoutPatientProfileInput>
@@ -11584,6 +13329,40 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"MedicalVault"> | Date | string
   }
 
+  export type MedicineReminderUpsertWithWhereUniqueWithoutPatientInput = {
+    where: MedicineReminderWhereUniqueInput
+    update: XOR<MedicineReminderUpdateWithoutPatientInput, MedicineReminderUncheckedUpdateWithoutPatientInput>
+    create: XOR<MedicineReminderCreateWithoutPatientInput, MedicineReminderUncheckedCreateWithoutPatientInput>
+  }
+
+  export type MedicineReminderUpdateWithWhereUniqueWithoutPatientInput = {
+    where: MedicineReminderWhereUniqueInput
+    data: XOR<MedicineReminderUpdateWithoutPatientInput, MedicineReminderUncheckedUpdateWithoutPatientInput>
+  }
+
+  export type MedicineReminderUpdateManyWithWhereWithoutPatientInput = {
+    where: MedicineReminderScalarWhereInput
+    data: XOR<MedicineReminderUpdateManyMutationInput, MedicineReminderUncheckedUpdateManyWithoutPatientInput>
+  }
+
+  export type MedicineReminderScalarWhereInput = {
+    AND?: MedicineReminderScalarWhereInput | MedicineReminderScalarWhereInput[]
+    OR?: MedicineReminderScalarWhereInput[]
+    NOT?: MedicineReminderScalarWhereInput | MedicineReminderScalarWhereInput[]
+    id?: StringFilter<"MedicineReminder"> | string
+    medicineName?: StringFilter<"MedicineReminder"> | string
+    dosage?: StringFilter<"MedicineReminder"> | string
+    frequency?: StringFilter<"MedicineReminder"> | string
+    time?: StringFilter<"MedicineReminder"> | string
+    startDate?: DateTimeFilter<"MedicineReminder"> | Date | string
+    endDate?: DateTimeFilter<"MedicineReminder"> | Date | string
+    taken?: BoolFilter<"MedicineReminder"> | boolean
+    takenAt?: DateTimeNullableFilter<"MedicineReminder"> | Date | string | null
+    patientId?: StringFilter<"MedicineReminder"> | string
+    createdAt?: DateTimeFilter<"MedicineReminder"> | Date | string
+    updatedAt?: DateTimeFilter<"MedicineReminder"> | Date | string
+  }
+
   export type DoctorProfileCreateWithoutAppointmentsInput = {
     id?: string
     specialization?: string
@@ -11612,6 +13391,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutPatientProfileInput
     prescriptions?: PrescriptionCreateNestedManyWithoutPatientInput
     medicalVault?: MedicalVaultCreateNestedManyWithoutPatientInput
+    medicineReminders?: MedicineReminderCreateNestedManyWithoutPatientInput
   }
 
   export type PatientProfileUncheckedCreateWithoutAppointmentsInput = {
@@ -11621,6 +13401,7 @@ export namespace Prisma {
     userId: string
     prescriptions?: PrescriptionUncheckedCreateNestedManyWithoutPatientInput
     medicalVault?: MedicalVaultUncheckedCreateNestedManyWithoutPatientInput
+    medicineReminders?: MedicineReminderUncheckedCreateNestedManyWithoutPatientInput
   }
 
   export type PatientProfileCreateOrConnectWithoutAppointmentsInput = {
@@ -11673,6 +13454,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutPatientProfileNestedInput
     prescriptions?: PrescriptionUpdateManyWithoutPatientNestedInput
     medicalVault?: MedicalVaultUpdateManyWithoutPatientNestedInput
+    medicineReminders?: MedicineReminderUpdateManyWithoutPatientNestedInput
   }
 
   export type PatientProfileUncheckedUpdateWithoutAppointmentsInput = {
@@ -11682,6 +13464,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     prescriptions?: PrescriptionUncheckedUpdateManyWithoutPatientNestedInput
     medicalVault?: MedicalVaultUncheckedUpdateManyWithoutPatientNestedInput
+    medicineReminders?: MedicineReminderUncheckedUpdateManyWithoutPatientNestedInput
   }
 
   export type DoctorProfileCreateWithoutPrescriptionsInput = {
@@ -11712,6 +13495,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutPatientProfileInput
     appointments?: AppointmentCreateNestedManyWithoutPatientInput
     medicalVault?: MedicalVaultCreateNestedManyWithoutPatientInput
+    medicineReminders?: MedicineReminderCreateNestedManyWithoutPatientInput
   }
 
   export type PatientProfileUncheckedCreateWithoutPrescriptionsInput = {
@@ -11721,6 +13505,7 @@ export namespace Prisma {
     userId: string
     appointments?: AppointmentUncheckedCreateNestedManyWithoutPatientInput
     medicalVault?: MedicalVaultUncheckedCreateNestedManyWithoutPatientInput
+    medicineReminders?: MedicineReminderUncheckedCreateNestedManyWithoutPatientInput
   }
 
   export type PatientProfileCreateOrConnectWithoutPrescriptionsInput = {
@@ -11773,6 +13558,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutPatientProfileNestedInput
     appointments?: AppointmentUpdateManyWithoutPatientNestedInput
     medicalVault?: MedicalVaultUpdateManyWithoutPatientNestedInput
+    medicineReminders?: MedicineReminderUpdateManyWithoutPatientNestedInput
   }
 
   export type PatientProfileUncheckedUpdateWithoutPrescriptionsInput = {
@@ -11782,6 +13568,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     appointments?: AppointmentUncheckedUpdateManyWithoutPatientNestedInput
     medicalVault?: MedicalVaultUncheckedUpdateManyWithoutPatientNestedInput
+    medicineReminders?: MedicineReminderUncheckedUpdateManyWithoutPatientNestedInput
   }
 
   export type PatientProfileCreateWithoutMedicalVaultInput = {
@@ -11791,6 +13578,7 @@ export namespace Prisma {
     user: UserCreateNestedOneWithoutPatientProfileInput
     appointments?: AppointmentCreateNestedManyWithoutPatientInput
     prescriptions?: PrescriptionCreateNestedManyWithoutPatientInput
+    medicineReminders?: MedicineReminderCreateNestedManyWithoutPatientInput
   }
 
   export type PatientProfileUncheckedCreateWithoutMedicalVaultInput = {
@@ -11800,6 +13588,7 @@ export namespace Prisma {
     userId: string
     appointments?: AppointmentUncheckedCreateNestedManyWithoutPatientInput
     prescriptions?: PrescriptionUncheckedCreateNestedManyWithoutPatientInput
+    medicineReminders?: MedicineReminderUncheckedCreateNestedManyWithoutPatientInput
   }
 
   export type PatientProfileCreateOrConnectWithoutMedicalVaultInput = {
@@ -11825,6 +13614,7 @@ export namespace Prisma {
     user?: UserUpdateOneRequiredWithoutPatientProfileNestedInput
     appointments?: AppointmentUpdateManyWithoutPatientNestedInput
     prescriptions?: PrescriptionUpdateManyWithoutPatientNestedInput
+    medicineReminders?: MedicineReminderUpdateManyWithoutPatientNestedInput
   }
 
   export type PatientProfileUncheckedUpdateWithoutMedicalVaultInput = {
@@ -11834,6 +13624,63 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     appointments?: AppointmentUncheckedUpdateManyWithoutPatientNestedInput
     prescriptions?: PrescriptionUncheckedUpdateManyWithoutPatientNestedInput
+    medicineReminders?: MedicineReminderUncheckedUpdateManyWithoutPatientNestedInput
+  }
+
+  export type PatientProfileCreateWithoutMedicineRemindersInput = {
+    id?: string
+    dob?: Date | string
+    bloodGroup?: string
+    user: UserCreateNestedOneWithoutPatientProfileInput
+    appointments?: AppointmentCreateNestedManyWithoutPatientInput
+    prescriptions?: PrescriptionCreateNestedManyWithoutPatientInput
+    medicalVault?: MedicalVaultCreateNestedManyWithoutPatientInput
+  }
+
+  export type PatientProfileUncheckedCreateWithoutMedicineRemindersInput = {
+    id?: string
+    dob?: Date | string
+    bloodGroup?: string
+    userId: string
+    appointments?: AppointmentUncheckedCreateNestedManyWithoutPatientInput
+    prescriptions?: PrescriptionUncheckedCreateNestedManyWithoutPatientInput
+    medicalVault?: MedicalVaultUncheckedCreateNestedManyWithoutPatientInput
+  }
+
+  export type PatientProfileCreateOrConnectWithoutMedicineRemindersInput = {
+    where: PatientProfileWhereUniqueInput
+    create: XOR<PatientProfileCreateWithoutMedicineRemindersInput, PatientProfileUncheckedCreateWithoutMedicineRemindersInput>
+  }
+
+  export type PatientProfileUpsertWithoutMedicineRemindersInput = {
+    update: XOR<PatientProfileUpdateWithoutMedicineRemindersInput, PatientProfileUncheckedUpdateWithoutMedicineRemindersInput>
+    create: XOR<PatientProfileCreateWithoutMedicineRemindersInput, PatientProfileUncheckedCreateWithoutMedicineRemindersInput>
+    where?: PatientProfileWhereInput
+  }
+
+  export type PatientProfileUpdateToOneWithWhereWithoutMedicineRemindersInput = {
+    where?: PatientProfileWhereInput
+    data: XOR<PatientProfileUpdateWithoutMedicineRemindersInput, PatientProfileUncheckedUpdateWithoutMedicineRemindersInput>
+  }
+
+  export type PatientProfileUpdateWithoutMedicineRemindersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dob?: DateTimeFieldUpdateOperationsInput | Date | string
+    bloodGroup?: StringFieldUpdateOperationsInput | string
+    user?: UserUpdateOneRequiredWithoutPatientProfileNestedInput
+    appointments?: AppointmentUpdateManyWithoutPatientNestedInput
+    prescriptions?: PrescriptionUpdateManyWithoutPatientNestedInput
+    medicalVault?: MedicalVaultUpdateManyWithoutPatientNestedInput
+  }
+
+  export type PatientProfileUncheckedUpdateWithoutMedicineRemindersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    dob?: DateTimeFieldUpdateOperationsInput | Date | string
+    bloodGroup?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    appointments?: AppointmentUncheckedUpdateManyWithoutPatientNestedInput
+    prescriptions?: PrescriptionUncheckedUpdateManyWithoutPatientNestedInput
+    medicalVault?: MedicalVaultUncheckedUpdateManyWithoutPatientNestedInput
   }
 
   export type AppointmentCreateManyDoctorInput = {
@@ -11938,6 +13785,20 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type MedicineReminderCreateManyPatientInput = {
+    id?: string
+    medicineName: string
+    dosage: string
+    frequency: string
+    time: string
+    startDate: Date | string
+    endDate: Date | string
+    taken?: boolean
+    takenAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type AppointmentUpdateWithoutPatientInput = {
     id?: StringFieldUpdateOperationsInput | string
     date?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12014,6 +13875,48 @@ export namespace Prisma {
     fileName?: StringFieldUpdateOperationsInput | string
     fileUrl?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MedicineReminderUpdateWithoutPatientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    medicineName?: StringFieldUpdateOperationsInput | string
+    dosage?: StringFieldUpdateOperationsInput | string
+    frequency?: StringFieldUpdateOperationsInput | string
+    time?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    taken?: BoolFieldUpdateOperationsInput | boolean
+    takenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MedicineReminderUncheckedUpdateWithoutPatientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    medicineName?: StringFieldUpdateOperationsInput | string
+    dosage?: StringFieldUpdateOperationsInput | string
+    frequency?: StringFieldUpdateOperationsInput | string
+    time?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    taken?: BoolFieldUpdateOperationsInput | boolean
+    takenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MedicineReminderUncheckedUpdateManyWithoutPatientInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    medicineName?: StringFieldUpdateOperationsInput | string
+    dosage?: StringFieldUpdateOperationsInput | string
+    frequency?: StringFieldUpdateOperationsInput | string
+    time?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    taken?: BoolFieldUpdateOperationsInput | boolean
+    takenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

@@ -18,6 +18,7 @@ A modern, secure digital healthcare platform built with Next.js 16, enabling sea
 
 ### 👤 For Patients
 - **Appointment Booking**: Book appointments with available doctors
+- **Medicine Reminders**: Set medication schedules with automated email alerts
 - **Medical Vault**: Securely upload and store medical reports (Supabase Storage)
 - **E-Prescriptions**: View and download prescriptions as PDF
 - **Appointment Tracking**: Monitor appointment status (Pending/Confirmed/Completed)
@@ -96,9 +97,12 @@ NEXTAUTH_SECRET="your-secret-key-here"
 NEXT_PUBLIC_SUPABASE_URL="your-supabase-url"
 NEXT_PUBLIC_SUPABASE_ANON_KEY="your-supabase-anon-key"
 
-# Email (Optional - for contact form)
+# Email (for contact form and medicine reminders)
 EMAIL_USER="your-email@gmail.com"
 EMAIL_PASS="your-app-password"
+
+# Cron API Key (for automated medicine reminders)
+CRON_API_KEY="your-secret-key"
 ```
 
 4. **Database Setup**
@@ -192,6 +196,7 @@ mediscript-e/
 - **PatientProfile**: Patient-specific information
 - **Appointment**: Booking system with status tracking
 - **Prescription**: Digital prescriptions
+- **MedicineReminder**: Medication schedules with email alerts
 - **MedicalVault**: Uploaded medical documents
 - **ContactMessage**: Landing page contact form submissions
 
@@ -223,9 +228,10 @@ Ensure all `.env` variables are set in your deployment platform.
 1. **Register** as a PATIENT
 2. **Login** to dashboard
 3. **Book Appointment**: Select doctor, date, and time
-4. **Upload Medical Records**: Use Medical Vault
-5. **View Prescriptions**: Download as PDF
-6. **Manage Profile**: Update name and password in Settings
+4. **Set Medicine Reminders**: Add medications with schedules (automated email alerts)
+5. **Upload Medical Records**: Use Medical Vault
+6. **View Prescriptions**: Download as PDF
+7. **Manage Profile**: Update name and password in Settings
 
 ### For Doctors
 
@@ -252,6 +258,13 @@ Ensure all `.env` variables are set in your deployment platform.
 
 ### Prescriptions
 - `POST /api/prescription` - Create prescription
+
+### Medicine Reminders
+- `GET /api/medicine-reminder` - Get patient reminders
+- `POST /api/medicine-reminder` - Create reminder
+- `PATCH /api/medicine-reminder/[id]` - Mark as taken/undo
+- `DELETE /api/medicine-reminder/[id]` - Delete reminder
+- `POST /api/medicine-reminder/send-notifications` - Send email alerts (cron)
 
 ### Medical Vault
 - `POST /api/vault` - Upload medical record

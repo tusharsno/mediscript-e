@@ -355,30 +355,35 @@ export default function Navbar() {
                 className="flex items-center gap-2"
               >
                 <div className="flex items-center gap-3 mr-2 text-slate-500">
-                  <motion.button
+                  <motion.a
+                    href="tel:+8801234567890"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                     className="p-2 rounded-full hover:bg-slate-100 transition-colors"
-                    title="Contact"
+                    title="Call Us: +880 1234-567890"
                   >
                     <Phone className="h-4 w-4" />
-                  </motion.button>
-                  <motion.button
+                  </motion.a>
+                  <motion.a
+                    href="mailto:support@mediscript.com"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                     className="p-2 rounded-full hover:bg-slate-100 transition-colors"
-                    title="Mail"
+                    title="Email: support@mediscript.com"
                   >
                     <Mail className="h-4 w-4" />
-                  </motion.button>
-                  <motion.button
+                  </motion.a>
+                  <motion.a
+                    href="https://maps.google.com/?q=Dhaka,Bangladesh"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                     className="p-2 rounded-full hover:bg-slate-100 transition-colors"
-                    title="Location"
+                    title="Location: Dhaka, Bangladesh"
                   >
                     <MapPin className="h-4 w-4" />
-                  </motion.button>
+                  </motion.a>
                 </div>
                 <Link
                   href="/login"

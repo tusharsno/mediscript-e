@@ -232,6 +232,10 @@ import MyAppointments from "@/components/MyAppointments";
 import DoctorAppointments from "@/components/DoctorAppointments";
 import AddMedicineReminder from "@/components/AddMedicineReminder";
 import MedicineReminders from "@/components/MedicineReminders";
+import AdminDashboard from "@/components/AdminDashboard";
+import UserManagement from "@/components/UserManagement";
+import AppointmentOverview from "@/components/AppointmentOverview";
+import ContactMessages from "@/components/ContactMessages";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -397,6 +401,27 @@ export default async function DashboardPage() {
                   </h3>
                   <PrescriptionForm />
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* ADMIN INTERFACE */}
+          {user?.role === "ADMIN" && (
+            <div className="space-y-6">
+              <div id="overview" className="scroll-mt-20">
+                <AdminDashboard />
+              </div>
+              
+              <div id="users" className="scroll-mt-20">
+                <UserManagement />
+              </div>
+              
+              <div id="appointments" className="scroll-mt-20">
+                <AppointmentOverview />
+              </div>
+              
+              <div id="contacts" className="scroll-mt-20">
+                <ContactMessages />
               </div>
             </div>
           )}

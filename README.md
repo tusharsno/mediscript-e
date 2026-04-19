@@ -23,6 +23,13 @@ A modern, secure digital healthcare platform built with Next.js 16, enabling sea
 - **E-Prescriptions**: View and download prescriptions as PDF
 - **Appointment Tracking**: Monitor appointment status (Pending/Confirmed/Completed)
 - **Medical Records**: Access all uploaded documents in one place
+- **Blood Group Management**: Select blood group during registration (A+, A-, B+, B-, AB+, AB-, O+, O-)
+
+### 🛡️ For Administrators
+- **Dashboard Overview**: Real-time statistics with live updates (users, patients, doctors, appointments, prescriptions, contacts)
+- **User Management**: View all users with profiles, delete users (except self)
+- **Appointment Overview**: Monitor all appointments with status filters
+- **Contact Messages**: View and manage contact form submissions
 
 ### 🔐 Security & Authentication
 - **NextAuth Integration**: Secure credential-based authentication
@@ -145,6 +152,11 @@ mediscript-e/
 ├── src/
 │   ├── app/
 │   │   ├── api/              # API routes
+│   │   │   ├── admin/        # Admin APIs
+│   │   │   │   ├── stats/    # Dashboard statistics
+│   │   │   │   ├── users/    # User management
+│   │   │   │   ├── appointments/ # Appointment overview
+│   │   │   │   └── contacts/ # Contact messages
 │   │   │   ├── appointment/  # Appointment CRUD
 │   │   │   ├── auth/         # NextAuth
 │   │   │   ├── contact/      # Contact form
@@ -160,7 +172,10 @@ mediscript-e/
 │   │   ├── layout.tsx        # Root layout
 │   │   └── page.tsx          # Landing page
 │   ├── components/
+│   │   ├── AdminDashboard.tsx
+│   │   ├── AppointmentOverview.tsx
 │   │   ├── BookAppointment.tsx
+│   │   ├── ContactMessages.tsx
 │   │   ├── ContactSection.tsx
 │   │   ├── DashboardLayout.tsx
 │   │   ├── DashboardSidebar.tsx
@@ -175,7 +190,8 @@ mediscript-e/
 │   │   ├── PowerFeatures.tsx
 │   │   ├── PrescriptionForm.tsx
 │   │   ├── SecuritySection.tsx
-│   │   └── SettingsForm.tsx
+│   │   ├── SettingsForm.tsx
+│   │   └── UserManagement.tsx
 │   ├── hooks/
 │   │   └── useScrollHash.ts  # Scroll-based hash navigation
 │   └── lib/
@@ -227,7 +243,7 @@ Ensure all `.env` variables are set in your deployment platform.
 
 ### For Patients
 
-1. **Register** as a PATIENT
+1. **Register** as a PATIENT (select blood group: A+, A-, B+, B-, AB+, AB-, O+, O-)
 2. **Login** to dashboard
 3. **Book Appointment**: Select doctor, date, and time
 4. **Set Medicine Reminders**: Add medications with schedules (automated email alerts)
@@ -237,11 +253,19 @@ Ensure all `.env` variables are set in your deployment platform.
 
 ### For Doctors
 
-1. **Register** as a DOCTOR (with license number)
+1. **Register** as a DOCTOR (provide license number and specialization)
 2. **Login** to dashboard
 3. **Manage Appointments**: Confirm/Cancel/Complete
 4. **Issue Prescriptions**: Enter patient ID, diagnosis, medications
 5. **View Patient Details**: Access appointment history
+
+### For Administrators
+
+1. **Login** with admin credentials (admin@mediscript.com / admin123)
+2. **View Dashboard**: Monitor real-time statistics with live updates
+3. **Manage Users**: View all users, delete users (cannot delete self)
+4. **Monitor Appointments**: Filter by status (ALL/PENDING/CONFIRMED/COMPLETED/CANCELLED)
+5. **Review Contact Messages**: Access all contact form submissions
 
 ## 🔧 API Endpoints
 
@@ -278,6 +302,13 @@ Ensure all `.env` variables are set in your deployment platform.
 
 ### Contact
 - `POST /api/contact` - Submit contact form
+
+### Admin (Admin-only)
+- `GET /api/admin/stats` - Get dashboard statistics
+- `GET /api/admin/users` - Get all users with profiles
+- `DELETE /api/admin/users/[id]` - Delete user
+- `GET /api/admin/appointments` - Get all appointments
+- `GET /api/admin/contacts` - Get all contact messages
 
 ## 🎨 Design System
 

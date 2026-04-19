@@ -10,11 +10,15 @@ interface RegisterFormData {
   email: string;
   password: string;
   role: string;
+  bloodGroup?: string;
+  licenseNo?: string;
+  specialization?: string;
 }
 
 export default function RegisterPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [selectedRole, setSelectedRole] = useState("PATIENT");
   const { register, handleSubmit } = useForm<RegisterFormData>();
 
   const onSubmit: SubmitHandler<RegisterFormData> = async (data) => {
@@ -73,12 +77,53 @@ export default function RegisterPage() {
           <div>
             <select
               {...register("role", { required: "Please select a role" })}
+              onChange={(e) => setSelectedRole(e.target.value)}
               className="w-full p-3 border rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none text-black"
             >
               <option value="PATIENT">I am a Patient</option>
               <option value="DOCTOR">I am a Doctor</option>
             </select>
           </div>
+
+          {/* Blood Group - Only for Patients */}
+          {selectedRole === "PATIENT" && (
+            <div>
+              <select
+                {...register("bloodGroup")}
+                className="w-full p-3 border rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none text-black"
+              >
+                <option value="">Select Blood Group (Optional)</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
+            </div>
+          )}
+
+          {/* License & Specialization - Only for Doctors */}
+          {selectedRole === "DOCTOR" && (
+            <>
+              <div>
+                <input
+                  {...register("licenseNo", { required: selectedRole === "DOCTOR" })}
+                  placeholder="Medical License Number"
+                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black"
+                />
+              </div>
+              <div>
+                <input
+                  {...register("specialization")}
+                  placeholder="Specialization (e.g., Cardiologist)"
+                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-black"
+                />
+              </div>
+            </>
+          )}
 
           <button
             type="submit"

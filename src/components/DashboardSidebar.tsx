@@ -15,6 +15,9 @@ import {
   Menu,
   X,
   Stethoscope,
+  UserCog,
+  MessageSquare,
+  BarChart3,
 } from "lucide-react";
 
 const SIDEBAR_LINKS = {
@@ -31,8 +34,10 @@ const SIDEBAR_LINKS = {
     { href: "/dashboard#prescriptions", label: "Prescriptions", icon: FileText },
   ],
   ADMIN: [
-    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/admin/users", label: "Users", icon: Users },
+    { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
+    { href: "/dashboard#users", label: "User Management", icon: UserCog },
+    { href: "/dashboard#appointments", label: "Appointments", icon: Calendar },
+    { href: "/dashboard#contacts", label: "Contact Messages", icon: MessageSquare },
   ],
 };
 

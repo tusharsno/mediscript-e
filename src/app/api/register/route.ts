@@ -5,11 +5,16 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { email, name, password, role } = body;
+    const { email, name, password, role, bloodGroup, licenseNo, specialization } = body;
 
     // ১. সব ইনপুট আছে কি না চেক
     if (!email || !password || !role) {
       return NextResponse.json({ message: "Missing fields" }, { status: 400 });
+    }
+
+    // Doctor role এর জন্য license number required
+    if (role === "DOCTOR" && !licenseNo) {
+      return NextResponse.json({ message: "License number is required for doctors" }, { status: 400 });
     }
 
     // ২. ইউজার আগে থেকেই আছে কি না চেক
@@ -21,7 +26,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "User already exists" }, { status: 400 });
     }
 
-    // ৩. পাসওয়ার্ড হাশ করা
+    // ৩. পাসওয়ার্ড হাশ করা
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // ৪. ইউজার এবং তার প্রোফাইল একসাথে তৈরি (Transaction logic)
@@ -35,15 +40,15 @@ export async function POST(req: Request) {
         ...(role === "DOCTOR" ? {
           doctorProfile: {
             create: {
-              specialization: "General",
-              licenseNo: `LIC-${Date.now()}` // Temporary random license
+              specialization: specialization || "General",
+              licenseNo: licenseNo
             }
           }
         } : {
           patientProfile: {
             create: {
               dob: new Date(),
-              bloodGroup: "O+"
+              bloodGroup: bloodGroup || "O+"
             }
           }
         })

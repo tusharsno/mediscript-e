@@ -29,7 +29,7 @@ model DoctorProfile {
   specialization String         @default("General")
   licenseNo      String         @unique
   userId         String         @unique
-  user           User           @relation(fields: [userId], references: [id])
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   appointments   Appointment[]
   prescriptions  Prescription[]
 }
@@ -39,7 +39,7 @@ model PatientProfile {
   dob          DateTime       @default(now())
   bloodGroup   String         @default("O+")
   userId       String         @unique
-  user           User           @relation(fields: [userId], references: [id])
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   appointments   Appointment[]
   prescriptions  Prescription[]
   medicalVault   MedicalVault[]
@@ -54,8 +54,8 @@ model Appointment {
   status    String   @default("PENDING")
   doctorId  String
   patientId String
-  doctor    DoctorProfile  @relation(fields: [doctorId], references: [id])
-  patient   PatientProfile @relation(fields: [patientId], references: [id])
+  doctor    DoctorProfile  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  patient   PatientProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -67,8 +67,8 @@ model Prescription {
   createdAt   DateTime @default(now())
   doctorId    String
   patientId   String
-  doctor      DoctorProfile  @relation(fields: [doctorId], references: [id])
-  patient     PatientProfile @relation(fields: [patientId], references: [id])
+  doctor      DoctorProfile  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  patient     PatientProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
 }
 
 model MedicalVault {
@@ -76,7 +76,7 @@ model MedicalVault {
   fileName  String
   fileUrl   String
   patientId String
-  patient   PatientProfile @relation(fields: [patientId], references: [id])
+  patient   PatientProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 }
 
@@ -100,7 +100,7 @@ model MedicineReminder {
   taken        Boolean  @default(false)
   takenAt      DateTime?
   patientId    String
-  patient      PatientProfile @relation(fields: [patientId], references: [id])
+  patient      PatientProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }

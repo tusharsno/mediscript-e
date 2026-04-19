@@ -52,7 +52,7 @@ const NAV_LINKS = {
   ],
   ADMIN: [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/admin/users", label: "Users", icon: Users },
+    { href: "/dashboard#users", label: "Users", icon: Users },
   ],
 };
 

@@ -27,7 +27,55 @@ export async function DELETE(
       );
     }
 
-    // Delete user and related data (cascade)
+    // Delete related data first, then user
+    const user = await prisma.user.findUnique({
+      where: { id },
+      include: {
+        doctorProfile: true,
+        patientProfile: true,
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "User not found" },
+        { status: 404 }
+      );
+    }
+
+    // Delete doctor-related data
+    if (user.doctorProfile) {
+      await prisma.prescription.deleteMany({
+        where: { doctorId: user.doctorProfile.id },
+      });
+      await prisma.appointment.deleteMany({
+        where: { doctorId: user.doctorProfile.id },
+      });
+      await prisma.doctorProfile.delete({
+        where: { id: user.doctorProfile.id },
+      });
+    }
+
+    // Delete patient-related data
+    if (user.patientProfile) {
+      await prisma.medicineReminder.deleteMany({
+        where: { patientId: user.patientProfile.id },
+      });
+      await prisma.medicalVault.deleteMany({
+        where: { patientId: user.patientProfile.id },
+      });
+      await prisma.prescription.deleteMany({
+        where: { patientId: user.patientProfile.id },
+      });
+      await prisma.appointment.deleteMany({
+        where: { patientId: user.patientProfile.id },
+      });
+      await prisma.patientProfile.delete({
+        where: { id: user.patientProfile.id },
+      });
+    }
+
+    // Finally delete user
     await prisma.user.delete({
       where: { id },
     });

@@ -170,7 +170,14 @@ User (id, email, password, name, role, createdAt)
 - Appointment overview with filters
 - Contact message management
 
-### Phase 5: Polish & Optimization (Week 8)
+### Phase 5: OAuth Integration (Week 8)
+- Google OAuth implementation
+- GitHub OAuth implementation
+- Login page enhancement with OAuth buttons
+- Automatic user creation for OAuth providers
+- Testing OAuth flows
+
+### Phase 6: Polish & Optimization (Week 9)
 - UI/UX refinements with consistent medical teal theme
 - Performance optimization
 - Security hardening
@@ -188,11 +195,12 @@ src/
 ### Key Technologies Implemented
 - **Next.js 16.2.3**: App Router, API Routes, Server Components
 - **React 19.2.4**: Client components, hooks, state management
-- **Prisma 7.7.0**: Type-safe database ORM
-- **NextAuth 4.24.13**: Authentication and session management
+- **Prisma 7.7.0**: Type-safe database ORM with cascade delete
+- **NextAuth 4.24.13**: Credentials, Google, and GitHub authentication
 - **Tailwind CSS 4**: Utility-first styling
 - **Framer Motion 12.38.0**: Animation library
 - **Nodemailer 6.9.16**: Email notifications
+- **OAuth 2.0**: Google and GitHub provider integration
 
 ---
 
@@ -342,11 +350,12 @@ src/
 | Planning | 1 week | Requirements document, tech stack selection |
 | Design | 1 week | Database schema, UI mockups, API design |
 | Implementation | 8 weeks | Fully functional application |
+| OAuth Integration | 1 week | Google & GitHub OAuth, enhanced login |
 | Testing | 2 weeks | Test reports, bug fixes |
 | Deployment | 1 week | Production deployment |
 | Maintenance | Ongoing | Updates, support, enhancements |
 
-**Total Development Time**: 13 weeks
+**Total Development Time**: 14 weeks
 
 ---
 
@@ -392,16 +401,22 @@ src/
 
 ### What Went Well
 - Next.js App Router provided excellent developer experience
-- Prisma ORM simplified database operations
+- Prisma ORM simplified database operations with cascade delete
 - Tailwind CSS enabled rapid UI development
 - Supabase offered reliable database and storage
 - TypeScript caught errors early in development
+- OAuth integration seamless with NextAuth
+- Admin dashboard with real-time statistics
+- Role-based access control working perfectly
 
 ### Challenges Faced
 - bcrypt password hashing in Node.js environment
 - Dynamic form fields based on user role
 - Real-time statistics calculation
 - Consistent design theme across all sections
+- PrismaAdapter compatibility with OAuth providers
+- API response format handling for different data types
+- Cascade delete implementation for user deletion
 
 ### Future Improvements
 - Real-time notifications with WebSockets

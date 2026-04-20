@@ -27,11 +27,13 @@ export default function MedicineReminders() {
     fetch("/api/medicine-reminder")
       .then((res) => res.json())
       .then((data) => {
-        setReminders(data);
+        const remindersList = Array.isArray(data) ? data : data.reminders || [];
+        setReminders(remindersList);
         setLoading(false);
       })
       .catch((err) => {
         console.error(err);
+        setReminders([]);
         setLoading(false);
       });
   };

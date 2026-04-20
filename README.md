@@ -33,6 +33,7 @@ A modern, secure digital healthcare platform built with Next.js 16, enabling sea
 
 ### 🔐 Security & Authentication
 - **NextAuth Integration**: Secure credential-based authentication
+- **OAuth Support**: Google and GitHub login integration
 - **Role-Based Access Control**: PATIENT, DOCTOR, ADMIN roles
 - **Password Encryption**: bcryptjs hashing
 - **Session Management**: JWT-based sessions
@@ -96,6 +97,7 @@ Create a `.env` file in the root directory:
 ```env
 # Database
 DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
+DIRECT_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
 
 # NextAuth
 NEXTAUTH_URL="http://localhost:3000"
@@ -111,6 +113,14 @@ EMAIL_PASS="your-app-password"
 
 # Cron API Key (for automated medicine reminders)
 CRON_API_KEY="your-secret-key"
+
+# Google OAuth (Get from Google Cloud Console)
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+
+# GitHub OAuth (Get from GitHub Developer Settings)
+GITHUB_CLIENT_ID="your-github-client-id"
+GITHUB_CLIENT_SECRET="your-github-client-secret"
 ```
 
 4. **Database Setup**
@@ -240,6 +250,19 @@ CANCELLED
 Ensure all `.env` variables are set in your deployment platform.
 
 ## 📝 Usage Guide
+
+### Authentication Methods
+
+**Email/Password Login**
+- Register with email and password
+- Login with credentials
+- Secure bcrypt password hashing
+
+**OAuth Login (Google & GitHub)**
+- Click "Google" or "GitHub" button on login page
+- Automatically creates PATIENT account on first login
+- No password required for OAuth users
+- Seamless authentication experience
 
 ### For Patients
 

@@ -30,11 +30,13 @@ export default function MyAppointments() {
     fetch("/api/appointment")
       .then((res) => res.json())
       .then((data) => {
-        setAppointments(data);
+        const appointmentsList = Array.isArray(data) ? data : data.appointments || [];
+        setAppointments(appointmentsList);
         setLoading(false);
       })
       .catch((err) => {
         console.error(err);
+        setAppointments([]);
         setLoading(false);
       });
   };

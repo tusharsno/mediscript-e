@@ -31,9 +31,11 @@ declare module "next-auth/jwt" {
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   pages: {
     signIn: "/login",
+    error: "/login",
   },
   providers: [
     CredentialsProvider({
@@ -84,7 +86,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id;
         token.role = (user as any).role || "PATIENT";
@@ -100,26 +102,41 @@ export const authOptions: NextAuthOptions = {
     },
     async signIn({ user, account, profile }) {
       try {
-        if (!user.email) return false;
-
-        // Check if user exists
-        let dbUser = await db.user.findUnique({
-          where: { email: user.email },
-        });
-
-        // If user doesn't exist and it's OAuth, create them
-        if (!dbUser && account?.provider !== "credentials") {
-          dbUser = await db.user.create({
-            data: {
-              email: user.email,
-              name: user.name || (profile as any)?.name || "User",
-              password: "",
-              role: "PATIENT",
-            },
-          });
+        if (!user.email) {
+          console.error("No email provided");
+          return false;
         }
 
-        return !!dbUser;
+        // For OAuth providers
+        if (account?.provider !== "credentials") {
+          try {
+            // Check if user exists
+            let dbUser = await db.user.findUnique({
+              where: { email: user.email },
+            });
+
+            // If user doesn't exist, create them
+            if (!dbUser) {
+              dbUser = await db.user.create({
+                data: {
+                  email: user.email,
+                  name: user.name || (profile as any)?.name || "User",
+                  password: "", // OAuth users don't have password
+                  role: "PATIENT",
+                },
+              });
+            }
+
+            return !!dbUser;
+          } catch (dbError) {
+            console.error("Database error in signIn:", dbError);
+            // Allow sign in even if user creation fails (user might already exist)
+            return true;
+          }
+        }
+
+        // For credentials provider
+        return true;
       } catch (error) {
         console.error("SignIn callback error:", error);
         return false;

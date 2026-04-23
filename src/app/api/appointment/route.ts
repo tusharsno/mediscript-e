@@ -18,12 +18,24 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
     }
 
-    const patient = await db.patientProfile.findUnique({
+    let patient = await db.patientProfile.findUnique({
       where: { userId: session.user.id },
     });
 
+    // If patient profile doesn't exist, create it
     if (!patient) {
-      return NextResponse.json({ message: "Patient profile not found" }, { status: 404 });
+      try {
+        patient = await db.patientProfile.create({
+          data: {
+            userId: session.user.id,
+            dob: new Date(),
+            bloodGroup: "O+",
+          },
+        });
+      } catch (profileError) {
+        console.error("Error creating patient profile:", profileError);
+        return NextResponse.json({ message: "Failed to create patient profile" }, { status: 500 });
+      }
     }
 
     const appointment = await db.appointment.create({
@@ -54,12 +66,24 @@ export async function GET() {
     let appointments;
 
     if (session.user.role === "PATIENT") {
-      const patient = await db.patientProfile.findUnique({
+      let patient = await db.patientProfile.findUnique({
         where: { userId: session.user.id },
       });
 
+      // If patient profile doesn't exist, create it
       if (!patient) {
-        return NextResponse.json({ message: "Patient profile not found" }, { status: 404 });
+        try {
+          patient = await db.patientProfile.create({
+            data: {
+              userId: session.user.id,
+              dob: new Date(),
+              bloodGroup: "O+",
+            },
+          });
+        } catch (profileError) {
+          console.error("Error creating patient profile:", profileError);
+          return NextResponse.json({ message: "Failed to create patient profile" }, { status: 500 });
+        }
       }
 
       appointments = await db.appointment.findMany({

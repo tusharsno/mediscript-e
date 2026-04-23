@@ -90,6 +90,15 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.role = (user as any).role || "PATIENT";
+      } else if (account?.provider !== "credentials" && token.email) {
+        // For OAuth, ensure we have the user ID in token
+        const dbUser = await db.user.findUnique({
+          where: { email: token.email },
+        });
+        if (dbUser) {
+          token.id = dbUser.id;
+          token.role = dbUser.role;
+        }
       }
       return token;
     },
@@ -113,9 +122,10 @@ export const authOptions: NextAuthOptions = {
             // Check if user exists
             let dbUser = await db.user.findUnique({
               where: { email: user.email },
+              include: { patientProfile: true },
             });
 
-            // If user doesn't exist, create them
+            // If user doesn't exist, create them with patient profile
             if (!dbUser) {
               dbUser = await db.user.create({
                 data: {
@@ -123,6 +133,22 @@ export const authOptions: NextAuthOptions = {
                   name: user.name || (profile as any)?.name || "User",
                   password: "", // OAuth users don't have password
                   role: "PATIENT",
+                  patientProfile: {
+                    create: {
+                      dob: new Date(),
+                      bloodGroup: "O+",
+                    },
+                  },
+                },
+                include: { patientProfile: true },
+              });
+            } else if (!dbUser.patientProfile) {
+              // If user exists but no patient profile, create it
+              await db.patientProfile.create({
+                data: {
+                  userId: dbUser.id,
+                  dob: new Date(),
+                  bloodGroup: "O+",
                 },
               });
             }
@@ -130,8 +156,7 @@ export const authOptions: NextAuthOptions = {
             return !!dbUser;
           } catch (dbError) {
             console.error("Database error in signIn:", dbError);
-            // Allow sign in even if user creation fails (user might already exist)
-            return true;
+            return false;
           }
         }
 

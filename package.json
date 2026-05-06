@@ -10,7 +10,7 @@
     "audit": "npm audit",
     "audit:fix": "npm audit fix",
     "seed": "node scripts/generate-admin-sql.js",
-    "create-admin": "node scripts/generate-admin-sql.js"
+    "create-admin": "node scripts/create-admin.js"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",

@@ -96,6 +96,12 @@ export async function POST(req: Request) {
   } catch (error: unknown) {
     console.error("REGISTRATION_ERROR", error);
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    return NextResponse.json({ message: "Internal Error", error: errorMessage }, { status: 500 });
+    const errorStack = error instanceof Error ? error.stack : "No stack trace";
+    return NextResponse.json({ 
+      message: "Registration failed", 
+      error: errorMessage,
+      details: errorStack,
+      hint: "Check Vercel logs for details"
+    }, { status: 500 });
   }
 }

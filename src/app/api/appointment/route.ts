@@ -18,6 +18,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
     }
 
+    // Validate date is not in the past
+    const appointmentDate = new Date(date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    if (appointmentDate < today) {
+      return NextResponse.json({ message: "Cannot book appointment in the past" }, { status: 400 });
+    }
+
     let patient = await db.patientProfile.findUnique({
       where: { userId: session.user.id },
     });

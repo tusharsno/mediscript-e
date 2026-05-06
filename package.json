@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "audit": "npm audit",
+    "audit:fix": "npm audit fix",
+    "seed": "node scripts/generate-admin-sql.js",
+    "create-admin": "node scripts/generate-admin-sql.js"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.1",
@@ -41,6 +45,10 @@
     "eslint-config-next": "16.2.3",
     "prisma": "^7.7.0",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   }
 }

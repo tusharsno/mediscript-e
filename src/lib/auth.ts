@@ -57,6 +57,11 @@ export const authOptions: NextAuthOptions = {
           throw new Error("User not found");
         }
 
+        // Email verification চেক করা
+        if (!user.emailVerified) {
+          throw new Error("Please verify your email before logging in");
+        }
+
         const isPasswordMatch = await bcrypt.compare(
           credentials.password,
           user.password
@@ -77,11 +82,13 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+      // Safe to use because signIn callback handles user creation/linking properly
       allowDangerousEmailAccountLinking: true,
     }),
     GitHubProvider({
       clientId: process.env.GITHUB_CLIENT_ID || "",
       clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
+      // Safe to use because signIn callback handles user creation/linking properly
       allowDangerousEmailAccountLinking: true,
     }),
   ],
@@ -133,6 +140,7 @@ export const authOptions: NextAuthOptions = {
                   name: user.name || (profile as any)?.name || "User",
                   password: "", // OAuth users don't have password
                   role: "PATIENT",
+                  emailVerified: true, // OAuth users are auto-verified
                   patientProfile: {
                     create: {
                       dob: new Date(),

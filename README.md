@@ -33,7 +33,8 @@ A modern, secure digital healthcare platform built with Next.js 16, enabling sea
 
 ### 🔐 Security & Authentication
 - **NextAuth Integration**: Secure credential-based authentication
-- **OAuth Support**: Google and GitHub login integration
+- **Email Verification**: Prevents fake/unknown email registrations
+- **OAuth Support**: Google and GitHub login integration (auto-verified)
 - **Role-Based Access Control**: PATIENT, DOCTOR, ADMIN roles
 - **Password Encryption**: bcryptjs hashing
 - **Session Management**: JWT-based sessions
@@ -255,32 +256,36 @@ Ensure all `.env` variables are set in your deployment platform.
 
 **Email/Password Login**
 - Register with email and password
-- Login with credentials
+- Verify email via link sent to inbox
+- Login with credentials after verification
 - Secure bcrypt password hashing
 
 **OAuth Login (Google & GitHub)**
 - Click "Google" or "GitHub" button on login page
 - Automatically creates PATIENT account on first login
+- Email auto-verified for OAuth users
 - No password required for OAuth users
 - Seamless authentication experience
 
 ### For Patients
 
 1. **Register** as a PATIENT (select blood group: A+, A-, B+, B-, AB+, AB-, O+, O-)
-2. **Login** to dashboard
-3. **Book Appointment**: Select doctor, date, and time
-4. **Set Medicine Reminders**: Add medications with schedules (automated email alerts)
-5. **Upload Medical Records**: Use Medical Vault
-6. **View Prescriptions**: Download as PDF
-7. **Manage Profile**: Update name and password in Settings
+2. **Verify Email**: Check inbox and click verification link
+3. **Login** to dashboard
+4. **Book Appointment**: Select doctor, date, and time
+5. **Set Medicine Reminders**: Add medications with schedules (automated email alerts)
+6. **Upload Medical Records**: Use Medical Vault
+7. **View Prescriptions**: Download as PDF
+8. **Manage Profile**: Update name and password in Settings
 
 ### For Doctors
 
 1. **Register** as a DOCTOR (provide license number and specialization)
-2. **Login** to dashboard
-3. **Manage Appointments**: Confirm/Cancel/Complete
-4. **Issue Prescriptions**: Enter patient ID, diagnosis, medications
-5. **View Patient Details**: Access appointment history
+2. **Verify Email**: Check inbox and click verification link
+3. **Login** to dashboard
+4. **Manage Appointments**: Confirm/Cancel/Complete
+5. **Issue Prescriptions**: Enter patient ID, diagnosis, medications
+6. **View Patient Details**: Access appointment history
 
 ### For Administrators
 
@@ -295,6 +300,8 @@ Ensure all `.env` variables are set in your deployment platform.
 ### Authentication
 - `POST /api/auth/[...nextauth]` - NextAuth endpoints
 - `POST /api/register` - User registration
+- `POST /api/verify-email` - Verify email with token
+- `POST /api/resend-verification` - Resend verification email
 
 ### Appointments
 - `GET /api/appointment` - Get user appointments
@@ -346,6 +353,39 @@ Ensure all `.env` variables are set in your deployment platform.
 - **Font**: Geist (Next.js default)
 - **Headings**: font-black (900 weight)
 - **Body**: font-medium (500 weight)
+
+## 🔒 Security
+
+This project implements multiple security measures:
+
+- ✅ **Email Verification**: Prevents fake/unknown email registrations
+- ✅ Input validation on all forms and APIs
+- ✅ Email format validation
+- ✅ Password strength requirements (minimum 6 characters)
+- ✅ Role-based access control (RBAC)
+- ✅ SQL injection prevention via Prisma
+- ✅ XSS protection via security headers
+- ✅ CSRF protection via NextAuth
+- ✅ File upload validation (type and size limits)
+- ✅ Environment variable validation
+- ✅ SSL/TLS for database connections
+- ✅ Password hashing with bcryptjs
+- ✅ JWT-based session management
+- ✅ Verification token expiry (24 hours)
+- ✅ OAuth users auto-verified
+
+For detailed security information, see [SECURITY.md](./SECURITY.md)
+
+For email verification setup, see [EMAIL_VERIFICATION_SETUP.md](./EMAIL_VERIFICATION_SETUP.md)
+
+### Security Audit
+
+Run security audit regularly:
+
+```bash
+npm run audit
+npm run audit:fix
+```
 
 ## 🤝 Contributing
 

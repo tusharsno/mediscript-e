@@ -29,7 +29,7 @@ export async function GET() {
       );
     }
 
-    let notifications = [];
+    const notifications = [];
 
     // Patient notifications
     if (user.patientProfile) {

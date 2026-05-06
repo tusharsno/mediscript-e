@@ -17,6 +17,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "All fields are required" }, { status: 400 });
     }
 
+    // Validate dates
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (start < today) {
+      return NextResponse.json({ message: "Start date cannot be in the past" }, { status: 400 });
+    }
+
+    if (end < start) {
+      return NextResponse.json({ message: "End date must be after start date" }, { status: 400 });
+    }
+
     const patient = await db.patientProfile.findUnique({
       where: { userId: session.user.id },
     });

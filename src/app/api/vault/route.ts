@@ -13,6 +13,21 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { fileName, fileUrl } = body;
 
+    // Validate inputs
+    if (!fileName || !fileUrl) {
+      return NextResponse.json(
+        { message: "File name and URL are required" },
+        { status: 400 },
+      );
+    }
+
+    if (fileName.trim().length === 0) {
+      return NextResponse.json(
+        { message: "File name cannot be empty" },
+        { status: 400 },
+      );
+    }
+
     // ১. ডাটাবেস থেকে পেশেন্টের প্রোফাইল আইডি খুঁজে বের করা
     const patient = await db.patientProfile.findUnique({
       where: { userId: session.user.id },

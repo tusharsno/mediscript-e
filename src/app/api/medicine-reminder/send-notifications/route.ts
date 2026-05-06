@@ -6,7 +6,11 @@ export async function POST(req: NextRequest) {
   try {
     // Security: Check for API key
     const authHeader = req.headers.get("authorization");
-    const apiKey = process.env.CRON_API_KEY || "mediscript-cron-secret";
+    const apiKey = process.env.CRON_API_KEY;
+    
+    if (!apiKey) {
+      return NextResponse.json({ message: "Server configuration error" }, { status: 500 });
+    }
     
     if (authHeader !== `Bearer ${apiKey}`) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });

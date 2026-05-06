@@ -26,8 +26,15 @@ export async function PATCH(req: Request) {
       where: { email: session.user.email as string },
     });
 
-    if (!user || !user.password) {
+    if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
+
+    // Check if user has a password (OAuth users don't have passwords)
+    if (!user.password || user.password === "") {
+      return NextResponse.json({ 
+        message: "Cannot change password for OAuth accounts (Google/GitHub login)" 
+      }, { status: 400 });
     }
 
     const isPasswordValid = await bcrypt.compare(currentPassword, user.password);

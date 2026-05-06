@@ -16,11 +16,16 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [oauthLoading, setOauthLoading] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const [showResend, setShowResend] = useState(false);
+  const [resendEmail, setResendEmail] = useState("");
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendMessage, setResendMessage] = useState("");
   const { register, handleSubmit } = useForm<LoginFormData>();
 
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     setLoading(true);
     setError("");
+    setShowResend(false);
     
     const res = await signIn("credentials", {
       email: data.email,
@@ -29,7 +34,13 @@ export default function LoginPage() {
     });
 
     if (res?.error) {
-      setError("Invalid Email or Password");
+      if (res.error.includes("verify your email")) {
+        setError(res.error);
+        setShowResend(true);
+        setResendEmail(data.email);
+      } else {
+        setError("Invalid Email or Password");
+      }
       setLoading(false);
     } else {
       router.push("/dashboard");
@@ -40,6 +51,26 @@ export default function LoginPage() {
   const handleOAuthSignIn = async (provider: "google" | "github") => {
     setOauthLoading(provider);
     await signIn(provider, { callbackUrl: "/dashboard" });
+  };
+
+  const handleResendVerification = async () => {
+    setResendLoading(true);
+    setResendMessage("");
+
+    try {
+      const res = await fetch("/api/resend-verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: resendEmail }),
+      });
+
+      const data = await res.json();
+      setResendMessage(data.message);
+    } catch (error) {
+      setResendMessage("Failed to send verification email");
+    } finally {
+      setResendLoading(false);
+    }
   };
 
   return (
@@ -59,6 +90,20 @@ export default function LoginPage() {
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-lg text-sm font-medium">
               {error}
+              {showResend && (
+                <div className="mt-3 pt-3 border-t border-red-200">
+                  <button
+                    onClick={handleResendVerification}
+                    disabled={resendLoading}
+                    className="text-red-700 underline hover:text-red-800 font-semibold disabled:opacity-50"
+                  >
+                    {resendLoading ? "Sending..." : "Resend Verification Email"}
+                  </button>
+                  {resendMessage && (
+                    <p className="mt-2 text-sm">{resendMessage}</p>
+                  )}
+                </div>
+              )}
             </div>
           )}
 

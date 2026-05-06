@@ -30,6 +30,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Doctor profile not found" }, { status: 404 });
     }
 
+    // Verify patient exists
+    const patient = await db.patientProfile.findUnique({
+      where: { id: patientId },
+    });
+
+    if (!patient) {
+      return NextResponse.json({ message: "Patient not found" }, { status: 404 });
+    }
+
     const newPrescription = await db.prescription.create({
       data: {
         diagnosis,

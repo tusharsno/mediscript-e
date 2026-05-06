@@ -14,6 +14,23 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { message: "Invalid email format" },
+        { status: 400 }
+      );
+    }
+
+    // Name validation (minimum 2 characters)
+    if (name.trim().length < 2) {
+      return NextResponse.json(
+        { message: "Name must be at least 2 characters" },
+        { status: 400 }
+      );
+    }
+
     // Save to database
     const contactMessage = await db.contactMessage.create({
       data: {

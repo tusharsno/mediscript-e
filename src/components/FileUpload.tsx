@@ -11,6 +11,18 @@ export default function FileUpload() {
   const handleUpload = async () => {
     if (!file) return alert("Please select a file first!");
 
+    // File type validation (only images and PDFs)
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'application/pdf'];
+    if (!allowedTypes.includes(file.type)) {
+      return alert("Only images (JPEG, PNG, WebP) and PDF files are allowed!");
+    }
+
+    // File size validation (max 5MB)
+    const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+    if (file.size > maxSize) {
+      return alert("File size must be less than 5MB!");
+    }
+
     setUploading(true);
     try {
       // ১. সুপাবেজ স্টোরেজে ফাইল আপলোড

@@ -3,10 +3,11 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
 
 const prismaClientSingleton = () => {
-  const connectionString = process.env.DATABASE_URL!;
   const pool = new Pool({
-    connectionString,
-    ssl: { rejectUnauthorized: false },
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.NODE_ENV === "production"
+      ? { rejectUnauthorized: false, checkServerIdentity: () => undefined }
+      : false,
     max: 20,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 5000,

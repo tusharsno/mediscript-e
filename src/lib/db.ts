@@ -3,21 +3,14 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
 
 const prismaClientSingleton = () => {
-  const connectionString = process.env.DATABASE_URL;
-  
-  if (!connectionString) {
-    throw new Error("DATABASE_URL is not defined");
-  }
-
+  const connectionString = process.env.DATABASE_URL!;
   const pool = new Pool({
     connectionString,
     ssl: { rejectUnauthorized: false },
     max: 20,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 5000,
-    statement_timeout: 5000,
   });
-
   const adapter = new PrismaPg(pool);
   return new PrismaClient({ adapter });
 };

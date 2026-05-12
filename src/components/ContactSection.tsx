@@ -246,7 +246,7 @@ export default function ContactSection() {
       </div>
 
       {/* Contact Cards Below Image */}
-      <div className="max-w-6xl mx-auto mt-8 px-6">
+      <div className="max-w-6xl mx-auto mt-12 px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Email Us Card */}
           <motion.div
@@ -254,21 +254,22 @@ export default function ContactSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="bg-white rounded-2xl p-8 shadow-lg border border-slate-200 hover:shadow-xl transition-all"
+            className="group relative bg-gradient-to-br from-slate-50 to-white rounded-2xl p-6 border border-slate-200/50 hover:border-slate-300 transition-all duration-300 overflow-hidden"
           >
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
-                <Mail className="w-7 h-7 text-slate-600" />
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="relative flex items-start gap-4">
+              <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center">
+                <Mail className="w-5 h-5 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Email Us</h3>
-              <p className="text-slate-600 text-sm mb-4">tusharcoder269@gmail.com</p>
-              <a
-                href="mailto:support@mediscript.com"
-                className="px-6 py-2.5 text-white rounded-full font-semibold text-sm hover:opacity-90 transition-opacity shadow-md"
-                style={{ backgroundColor: "#1A6080" }}
-              >
-                Email Now
-              </a>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-lg font-bold text-slate-900 mb-1">Email</h3>
+                <a
+                  href="mailto:tusharcoder269@gmail.com"
+                  className="text-sm text-slate-600 hover:text-[#1A6080] transition-colors font-medium block truncate"
+                >
+                  tusharcoder269@gmail.com
+                </a>
+              </div>
             </div>
           </motion.div>
 
@@ -278,21 +279,22 @@ export default function ContactSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="bg-white rounded-2xl p-8 shadow-lg border border-slate-200 hover:shadow-xl transition-all"
+            className="group relative bg-gradient-to-br from-slate-50 to-white rounded-2xl p-6 border border-slate-200/50 hover:border-slate-300 transition-all duration-300 overflow-hidden"
           >
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
-                <Phone className="w-7 h-7 text-slate-600" />
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="relative flex items-start gap-4">
+              <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center">
+                <Phone className="w-5 h-5 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Call Us</h3>
-              <p className="text-slate-600 text-sm mb-4">+1 (234) 567-890</p>
-              <a
-                href="tel:+8801234567890"
-                className="px-6 py-2.5 text-white rounded-full font-semibold text-sm hover:opacity-90 transition-opacity shadow-md"
-                style={{ backgroundColor: "#1A6080" }}
-              >
-                Call Now
-              </a>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-lg font-bold text-slate-900 mb-1">Phone</h3>
+                <a
+                  href="tel:+8801987414889"
+                  className="text-sm text-slate-600 hover:text-[#1A6080] transition-colors font-medium"
+                >
+                  +880 1987-414889
+                </a>
+              </div>
             </div>
           </motion.div>
 
@@ -302,23 +304,24 @@ export default function ContactSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="bg-white rounded-2xl p-8 shadow-lg border border-slate-200 hover:shadow-xl transition-all"
+            className="group relative bg-gradient-to-br from-slate-50 to-white rounded-2xl p-6 border border-slate-200/50 hover:border-slate-300 transition-all duration-300 overflow-hidden"
           >
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
-                <MapPin className="w-7 h-7 text-slate-600" />
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="relative flex items-start gap-4">
+              <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-slate-900 flex items-center justify-center">
+                <MapPin className="w-5 h-5 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Visit Us</h3>
-              <p className="text-slate-600 text-sm mb-4">123 Healthcare Street</p>
-              <a
-                href="https://maps.google.com/?q=Dhaka,Bangladesh"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-6 py-2.5 text-white rounded-full font-semibold text-sm hover:opacity-90 transition-opacity shadow-md"
-                style={{ backgroundColor: "#1A6080" }}
-              >
-                Get Directions
-              </a>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-lg font-bold text-slate-900 mb-1">Location</h3>
+                <a
+                  href="https://maps.google.com/?q=Chittagong,Bangladesh"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-slate-600 hover:text-[#1A6080] transition-colors font-medium"
+                >
+                  Chittagong, Bangladesh
+                </a>
+              </div>
             </div>
           </motion.div>
         </div>

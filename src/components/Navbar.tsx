@@ -26,6 +26,8 @@ import {
   CheckCircle,
   Clock,
   AlertCircle,
+  Star,
+  MoreHorizontal,
 } from "lucide-react";
 
 const NAV_LINKS = {
@@ -303,15 +305,378 @@ function NotificationBell() {
   );
 }
 
-function SearchButton() {
+function SearchModal() {
+  const { data: session } = useSession();
+  const [isOpen, setIsOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<any>({});
+  const [loading, setLoading] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Keyboard shortcut: Ctrl+K or Cmd+K
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault();
+        setIsOpen(true);
+      }
+      if (e.key === "Escape") {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, []);
+
+  // Focus input when modal opens
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isOpen]);
+
+  // Close on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    if (isOpen) {
+      document.addEventListener("mousedown", handler);
+    }
+    return () => document.removeEventListener("mousedown", handler);
+  }, [isOpen]);
+
+  // Debounced search
+  useEffect(() => {
+    if (!query.trim()) {
+      setResults({});
+      return;
+    }
+
+    setLoading(true);
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+        const data = await res.json();
+        setResults(data.results || {});
+      } catch (error) {
+        console.error("Search failed:", error);
+      } finally {
+        setLoading(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  const handleResultClick = () => {
+    setIsOpen(false);
+    setQuery("");
+    setResults({});
+  };
+
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
+  const hasResults = Object.keys(results).some((key) => results[key]?.length > 0);
+
   return (
-    <motion.button
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.95 }}
-      className="p-2 rounded-xl text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-    >
-      <Search className="h-4 w-4" />
-    </motion.button>
+    <>
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setIsOpen(true)}
+        className="p-2 rounded-xl text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+        title="Search (Ctrl+K)"
+      >
+        <Search className="h-4 w-4" />
+      </motion.button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/30 backdrop-blur-sm z-[100]"
+            />
+
+            {/* Modal */}
+            <div className="fixed inset-0 z-[101] flex items-start justify-center pt-[10vh] px-4">
+              <motion.div
+                ref={searchRef}
+                initial={{ opacity: 0, scale: 0.95, y: -20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                transition={{ duration: 0.2 }}
+                className="w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden"
+              >
+                {/* Search Input */}
+                <div className="flex items-center gap-3 px-4 py-4 border-b border-slate-200">
+                  <Search className="h-5 w-5 text-slate-400" />
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Search doctors, appointments, prescriptions..."
+                    className="flex-1 text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none bg-transparent"
+                  />
+                  {loading && (
+                    <div className="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full" />
+                  )}
+                  <button
+                    onClick={() => setIsOpen(false)}
+                    className="text-xs font-semibold text-slate-400 hover:text-slate-600 px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 transition-colors"
+                  >
+                    ESC
+                  </button>
+                </div>
+
+                {/* Results */}
+                <div className="max-h-[60vh] overflow-y-auto">
+                  {!query.trim() ? (
+                    <div className="p-8 text-center">
+                      <Search className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+                      <p className="text-sm font-semibold text-slate-400">Start typing to search...</p>
+                      <p className="text-xs text-slate-300 mt-1">Try searching for doctors, appointments, or prescriptions</p>
+                    </div>
+                  ) : loading ? (
+                    <div className="p-8 text-center">
+                      <div className="animate-spin h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto" />
+                    </div>
+                  ) : !hasResults ? (
+                    <div className="p-8 text-center">
+                      <AlertCircle className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+                      <p className="text-sm font-semibold text-slate-600">No results found</p>
+                      <p className="text-xs text-slate-400 mt-1">Try a different search term</p>
+                    </div>
+                  ) : (
+                    <div className="p-2">
+                      {/* Doctors */}
+                      {results.doctors?.length > 0 && (
+                        <div className="mb-4">
+                          <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 px-3 py-2 flex items-center gap-2">
+                            <Users className="h-3.5 w-3.5" />
+                            Doctors ({results.doctors.length})
+                          </h3>
+                          <div className="space-y-1">
+                            {results.doctors.map((doctor: any) => (
+                              <a
+                                key={doctor.id}
+                                href="/dashboard#book-appointment"
+                                onClick={handleResultClick}
+                                className="block px-3 py-2.5 rounded-xl hover:bg-blue-50 transition-colors group cursor-pointer"
+                              >
+                                <div className="flex items-start justify-between">
+                                  <div>
+                                    <p className="text-sm font-bold text-slate-900 group-hover:text-blue-600">
+                                      {doctor.name}
+                                    </p>
+                                    <p className="text-xs text-slate-500 mt-0.5">{doctor.specialization}</p>
+                                  </div>
+                                  <span className="text-[10px] font-semibold text-slate-400 bg-slate-100 px-2 py-1 rounded-full">
+                                    {doctor.licenseNo}
+                                  </span>
+                                </div>
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Patients (Doctor only) */}
+                      {results.patients?.length > 0 && (
+                        <div className="mb-4">
+                          <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 px-3 py-2 flex items-center gap-2">
+                            <Users className="h-3.5 w-3.5" />
+                            Patients ({results.patients.length})
+                          </h3>
+                          <div className="space-y-1">
+                            {results.patients.map((patient: any) => (
+                              <div
+                                key={patient.id}
+                                className="px-3 py-2.5 rounded-xl hover:bg-emerald-50 transition-colors cursor-pointer"
+                              >
+                                <div className="flex items-start justify-between">
+                                  <div>
+                                    <p className="text-sm font-bold text-slate-900">{patient.name}</p>
+                                    <p className="text-xs text-slate-500 mt-0.5">{patient.email}</p>
+                                  </div>
+                                  <span className="text-[10px] font-semibold text-red-600 bg-red-50 px-2 py-1 rounded-full">
+                                    {patient.bloodGroup}
+                                  </span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Appointments */}
+                      {results.appointments?.length > 0 && (
+                        <div className="mb-4">
+                          <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 px-3 py-2 flex items-center gap-2">
+                            <Calendar className="h-3.5 w-3.5" />
+                            Appointments ({results.appointments.length})
+                          </h3>
+                          <div className="space-y-1">
+                            {results.appointments.map((apt: any) => (
+                              <a
+                                key={apt.id}
+                                href="/dashboard#appointments"
+                                onClick={handleResultClick}
+                                className="block px-3 py-2.5 rounded-xl hover:bg-blue-50 transition-colors group cursor-pointer"
+                              >
+                                <div className="flex items-start justify-between">
+                                  <div>
+                                    <p className="text-sm font-bold text-slate-900 group-hover:text-blue-600">
+                                      {apt.doctorName || apt.patientName}
+                                    </p>
+                                    <p className="text-xs text-slate-500 mt-0.5">
+                                      {formatDate(apt.date)} at {apt.time}
+                                    </p>
+                                  </div>
+                                  <span
+                                    className={`text-[10px] font-semibold px-2 py-1 rounded-full ${
+                                      apt.status === "CONFIRMED"
+                                        ? "bg-green-100 text-green-700"
+                                        : apt.status === "PENDING"
+                                        ? "bg-yellow-100 text-yellow-700"
+                                        : apt.status === "COMPLETED"
+                                        ? "bg-blue-100 text-blue-700"
+                                        : "bg-red-100 text-red-700"
+                                    }`}
+                                  >
+                                    {apt.status}
+                                  </span>
+                                </div>
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Prescriptions */}
+                      {results.prescriptions?.length > 0 && (
+                        <div className="mb-4">
+                          <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 px-3 py-2 flex items-center gap-2">
+                            <FileText className="h-3.5 w-3.5" />
+                            Prescriptions ({results.prescriptions.length})
+                          </h3>
+                          <div className="space-y-1">
+                            {results.prescriptions.map((presc: any) => (
+                              <a
+                                key={presc.id}
+                                href="/dashboard#prescriptions"
+                                onClick={handleResultClick}
+                                className="block px-3 py-2.5 rounded-xl hover:bg-green-50 transition-colors group cursor-pointer"
+                              >
+                                <div className="flex items-start justify-between">
+                                  <div>
+                                    <p className="text-sm font-bold text-slate-900 group-hover:text-green-600">
+                                      {presc.diagnosis}
+                                    </p>
+                                    <p className="text-xs text-slate-500 mt-0.5">
+                                      {presc.doctorName || presc.patientName} • {formatDate(presc.date)}
+                                    </p>
+                                  </div>
+                                </div>
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Users (Admin only) */}
+                      {results.users?.length > 0 && (
+                        <div className="mb-4">
+                          <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 px-3 py-2 flex items-center gap-2">
+                            <Users className="h-3.5 w-3.5" />
+                            Users ({results.users.length})
+                          </h3>
+                          <div className="space-y-1">
+                            {results.users.map((user: any) => (
+                              <a
+                                key={user.id}
+                                href="/dashboard#users"
+                                onClick={handleResultClick}
+                                className="block px-3 py-2.5 rounded-xl hover:bg-purple-50 transition-colors group cursor-pointer"
+                              >
+                                <div className="flex items-start justify-between">
+                                  <div>
+                                    <p className="text-sm font-bold text-slate-900 group-hover:text-purple-600">
+                                      {user.name}
+                                    </p>
+                                    <p className="text-xs text-slate-500 mt-0.5">{user.email}</p>
+                                  </div>
+                                  <span
+                                    className={`text-[10px] font-semibold px-2 py-1 rounded-full ${
+                                      user.role === "ADMIN"
+                                        ? "bg-purple-100 text-purple-700"
+                                        : user.role === "DOCTOR"
+                                        ? "bg-blue-100 text-blue-700"
+                                        : "bg-emerald-100 text-emerald-700"
+                                    }`}
+                                  >
+                                    {user.role}
+                                  </span>
+                                </div>
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Contact Messages (Admin only) */}
+                      {results.contacts?.length > 0 && (
+                        <div className="mb-4">
+                          <h3 className="text-xs font-black uppercase tracking-wider text-slate-400 px-3 py-2 flex items-center gap-2">
+                            <Mail className="h-3.5 w-3.5" />
+                            Contact Messages ({results.contacts.length})
+                          </h3>
+                          <div className="space-y-1">
+                            {results.contacts.map((contact: any) => (
+                              <a
+                                key={contact.id}
+                                href="/dashboard#contacts"
+                                onClick={handleResultClick}
+                                className="block px-3 py-2.5 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
+                              >
+                                <div>
+                                  <p className="text-sm font-bold text-slate-900">{contact.name}</p>
+                                  <p className="text-xs text-slate-500 mt-0.5 line-clamp-1">{contact.message}</p>
+                                </div>
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Footer */}
+                <div className="px-4 py-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+                  <p className="text-xs text-slate-400 font-medium">Press ESC to close</p>
+                  <p className="text-xs text-slate-400 font-medium">Ctrl+K to open</p>
+                </div>
+              </motion.div>
+            </div>
+          </>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
 
@@ -319,7 +684,9 @@ export default function Navbar() {
   const { data: session } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [moreDropdownOpen, setMoreDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const moreDropdownRef = useRef<HTMLDivElement>(null);
 
   const role = session?.user?.role as keyof typeof NAV_LINKS | undefined;
   const navLinks = role ? (NAV_LINKS[role] ?? NAV_LINKS.PUBLIC) : NAV_LINKS.PUBLIC;
@@ -329,6 +696,9 @@ export default function Navbar() {
     const handler = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setDropdownOpen(false);
+      }
+      if (moreDropdownRef.current && !moreDropdownRef.current.contains(e.target as Node)) {
+        setMoreDropdownOpen(false);
       }
     };
     document.addEventListener("mousedown", handler);
@@ -374,6 +744,63 @@ export default function Navbar() {
                   </motion.div>
                 );
               })}
+              
+              {/* More Dropdown for Public Users */}
+              {!session && (
+                <div className="relative" ref={moreDropdownRef}>
+                  <motion.button
+                    variants={linkVariants}
+                    initial="rest"
+                    whileHover="hover"
+                    onClick={() => setMoreDropdownOpen(!moreDropdownOpen)}
+                    className="flex items-center gap-1.5 px-4 py-2 text-slate-900 hover:text-teal-600 hover:bg-teal-50/80 rounded-full text-sm font-semibold transition-colors cursor-pointer"
+                  >
+                    <MoreHorizontal className="h-3.5 w-3.5" />
+                    More
+                    <ChevronDown
+                      className={`h-3 w-3 transition-transform duration-200 ${
+                        moreDropdownOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </motion.button>
+
+                  <AnimatePresence>
+                    {moreDropdownOpen && (
+                      <motion.div
+                        variants={dropdownVariants}
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        className="absolute left-0 mt-2 w-48 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/60 shadow-xl shadow-slate-200/50 overflow-hidden"
+                      >
+                        <div className="p-1.5">
+                          <a
+                            href="/#how-it-works"
+                            onClick={() => setMoreDropdownOpen(false)}
+                            className="flex items-center gap-2.5 px-3 py-2 text-slate-600 hover:text-teal-600 hover:bg-teal-50 rounded-xl text-xs font-semibold transition-all"
+                          >
+                            <CheckCircle className="h-3.5 w-3.5" /> How It Works
+                          </a>
+                          <a
+                            href="/#pricing"
+                            onClick={() => setMoreDropdownOpen(false)}
+                            className="flex items-center gap-2.5 px-3 py-2 text-slate-600 hover:text-teal-600 hover:bg-teal-50 rounded-xl text-xs font-semibold transition-all"
+                          >
+                            <Layers className="h-3.5 w-3.5" /> Pricing
+                          </a>
+                          <a
+                            href="/#faq"
+                            onClick={() => setMoreDropdownOpen(false)}
+                            className="flex items-center gap-2.5 px-3 py-2 text-slate-600 hover:text-teal-600 hover:bg-teal-50 rounded-xl text-xs font-semibold transition-all"
+                          >
+                            <AlertCircle className="h-3.5 w-3.5" /> FAQ
+                          </a>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
             </motion.div>
           </AnimatePresence>
         </div>
@@ -389,7 +816,7 @@ export default function Navbar() {
                 transition={{ duration: 0.2 }}
                 className="flex items-center gap-1"
               >
-                <SearchButton />
+                <SearchModal />
                 <NotificationBell />
 
                 <div className="relative ml-1" ref={dropdownRef}>
@@ -496,11 +923,11 @@ export default function Navbar() {
               >
                 <div className="flex items-center gap-3 mr-2 text-slate-500">
                   <motion.a
-                    href="tel:+8801234567890"
+                    href="tel:+8801987414889"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                     className="p-2 rounded-full hover:bg-slate-100 transition-colors"
-                    title="Call Us: +880 1234-567890"
+                    title="Call Us: +880 1987-414889"
                   >
                     <Phone className="h-4 w-4" />
                   </motion.a>
@@ -514,13 +941,13 @@ export default function Navbar() {
                     <Mail className="h-4 w-4" />
                   </motion.a>
                   <motion.a
-                    href="https://maps.google.com/?q=Dhaka,Bangladesh"
+                    href="https://maps.google.com/?q=Chittagong,Bangladesh"
                     target="_blank"
                     rel="noopener noreferrer"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                     className="p-2 rounded-full hover:bg-slate-100 transition-colors"
-                    title="Location: Dhaka, Bangladesh"
+                    title="Location: Chittagong, Bangladesh"
                   >
                     <MapPin className="h-4 w-4" />
                   </motion.a>

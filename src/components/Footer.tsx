@@ -66,19 +66,19 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/" className="text-sm hover:text-white transition-colors flex items-center gap-2">
+                <Link href="/#how-it-works" className="text-sm hover:text-white transition-colors flex items-center gap-2">
                   <span className="w-1 h-1 rounded-full bg-blue-500"></span>
-                  About Us
+                  How It Works
                 </Link>
               </li>
               <li>
-                <Link href="/" className="text-sm hover:text-white transition-colors flex items-center gap-2">
+                <Link href="/#pricing" className="text-sm hover:text-white transition-colors flex items-center gap-2">
                   <span className="w-1 h-1 rounded-full bg-blue-500"></span>
                   Pricing
                 </Link>
               </li>
               <li>
-                <Link href="/" className="text-sm hover:text-white transition-colors flex items-center gap-2">
+                <Link href="/#contact" className="text-sm hover:text-white transition-colors flex items-center gap-2">
                   <span className="w-1 h-1 rounded-full bg-blue-500"></span>
                   Contact
                 </Link>
@@ -115,12 +115,12 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start gap-3 text-sm">
                 <MapPin className="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" />
-                <span>123 Healthcare Street, Medical District, City 12345</span>
+                <span>Chittagong, Bangladesh</span>
               </li>
               <li className="flex items-center gap-3 text-sm">
                 <Phone className="h-4 w-4 text-blue-500 flex-shrink-0" />
-                <a href="tel:+1234567890" className="hover:text-white transition-colors">
-                  +1 (234) 567-890
+                <a href="tel:+8801987414889" className="hover:text-white transition-colors">
+                  +880 1987-414889
                 </a>
               </li>
               <li className="flex items-center gap-3 text-sm">

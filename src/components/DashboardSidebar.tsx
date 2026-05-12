@@ -18,6 +18,7 @@ import {
   UserCog,
   MessageSquare,
   BarChart3,
+  Home,
 } from "lucide-react";
 
 const SIDEBAR_LINKS = {
@@ -25,18 +26,21 @@ const SIDEBAR_LINKS = {
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/dashboard#appointments", label: "Appointments", icon: Calendar },
     { href: "/dashboard#reminders", label: "Medicine Reminders", icon: FileText },
+    { href: "/dashboard#testimonial", label: "Share Feedback", icon: MessageSquare },
     { href: "/dashboard#vault", label: "Medical Vault", icon: FolderOpen },
     { href: "/dashboard#prescriptions", label: "Prescriptions", icon: FileText },
   ],
   DOCTOR: [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { href: "/dashboard#appointments", label: "Appointments", icon: Calendar },
+    { href: "/dashboard#testimonial", label: "Share Feedback", icon: MessageSquare },
     { href: "/dashboard#prescriptions", label: "Prescriptions", icon: FileText },
   ],
   ADMIN: [
     { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
     { href: "/dashboard#users", label: "User Management", icon: UserCog },
     { href: "/dashboard#appointments", label: "Appointments", icon: Calendar },
+    { href: "/dashboard#testimonials", label: "Testimonials", icon: MessageSquare },
     { href: "/dashboard#contacts", label: "Contact Messages", icon: MessageSquare },
   ],
 };
@@ -103,6 +107,16 @@ export default function DashboardSidebar() {
 
           {/* Navigation Links */}
           <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+            {/* Home Button - Top */}
+            <Link
+              href="/"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all border-b border-slate-100 mb-2 pb-3"
+            >
+              <Home className="h-5 w-5" />
+              Home
+            </Link>
+
             {links.map((link) => {
               const Icon = link.icon;
               const isActive = pathname === link.href || pathname.startsWith(link.href + "/");

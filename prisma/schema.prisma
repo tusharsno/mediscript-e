@@ -107,3 +107,18 @@ model MedicineReminder {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }
+
+model Testimonial {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String
+  role        String   // "PATIENT" or "DOCTOR"
+  designation String?  // e.g., "Cardiologist", "Patient"
+  rating      Int      // 1-5
+  comment     String
+  avatar      String?  // Optional profile image URL
+  verified    Boolean  @default(false)
+  featured    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

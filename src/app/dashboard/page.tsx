@@ -232,10 +232,12 @@ import MyAppointments from "@/components/MyAppointments";
 import DoctorAppointments from "@/components/DoctorAppointments";
 import AddMedicineReminder from "@/components/AddMedicineReminder";
 import MedicineReminders from "@/components/MedicineReminders";
+import SubmitTestimonial from "@/components/SubmitTestimonial";
 import AdminDashboard from "@/components/AdminDashboard";
 import UserManagement from "@/components/UserManagement";
 import AppointmentOverview from "@/components/AppointmentOverview";
 import ContactMessages from "@/components/ContactMessages";
+import TestimonialsManagement from "@/components/TestimonialsManagement";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -286,6 +288,11 @@ export default async function DashboardPage() {
                 <AddMedicineReminder />
               </div>
               <MedicineReminders />
+
+              {/* Submit Testimonial Section */}
+              <div id="testimonial" className="scroll-mt-20">
+                <SubmitTestimonial />
+              </div>
 
               <div id="vault" className="bg-emerald-50 border border-emerald-100 p-6 rounded-2xl shadow-sm scroll-mt-20">
                 <h2 className="text-xl font-bold text-emerald-900 mb-2">
@@ -369,6 +376,11 @@ export default async function DashboardPage() {
               {/* Appointment Management Section */}
               <DoctorAppointments />
 
+              {/* Submit Testimonial Section */}
+              <div id="testimonial" className="scroll-mt-20">
+                <SubmitTestimonial />
+              </div>
+
               <div className="bg-blue-50 border border-blue-100 p-8 rounded-2xl">
                 <h2 className="text-2xl font-bold text-blue-900 mb-6 flex items-center gap-2">
                   <span className="p-2 bg-blue-600 rounded-lg text-white text-[10px] font-black uppercase tracking-widest">
@@ -418,6 +430,10 @@ export default async function DashboardPage() {
               
               <div id="appointments" className="scroll-mt-20">
                 <AppointmentOverview />
+              </div>
+              
+              <div id="testimonials" className="scroll-mt-20">
+                <TestimonialsManagement />
               </div>
               
               <div id="contacts" className="scroll-mt-20">

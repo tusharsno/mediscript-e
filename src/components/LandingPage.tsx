@@ -398,8 +398,10 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Shield, ArrowRight } from "lucide-react";
 import PowerFeatures from "@/components/PowerFeatures";
-import SecuritySection from "@/components/SecuritySection";
 import ContactSection from "@/components/ContactSection";
+import HowItWorksSection from "@/components/HowItWorksSection";
+import FAQSection from "@/components/FAQSection";
+import PricingSection from "@/components/PricingSection";
 import Footer from "@/components/Footer";
 import useScrollHash from "@/hooks/useScrollHash";
 
@@ -413,73 +415,97 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
   return (
     <>
     <div className="bg-white text-slate-900 font-sans overflow-x-hidden pt-[0.5rem]">
-      {/* ── Hero Section - Updated to match the requested look ── */}
-      <section className="min-h-[97vh] grid grid-cols-1 md:grid-cols-2 gap-2.5 mx-2.5">
+      {/* ── Hero Section ── */}
+      <section className="min-h-[97vh] grid grid-cols-1 md:grid-cols-2 gap-2.5 mx-2.5 relative">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <motion.div
+            animate={{
+              y: [0, -20, 0],
+              opacity: [0.3, 0.5, 0.3],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="absolute top-20 right-20 w-72 h-72 bg-blue-400/20 rounded-full blur-3xl"
+          />
+          <motion.div
+            animate={{
+              y: [0, 20, 0],
+              opacity: [0.2, 0.4, 0.2],
+            }}
+            transition={{
+              duration: 10,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 1,
+            }}
+            className="absolute bottom-20 left-20 w-96 h-96 bg-teal-400/20 rounded-full blur-3xl"
+          />
+        </div>
         {/* Left Column - Image (Refined Roundness) */}
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.7 }}
-          className="relative flex items-center justify-center bg-white overflow-hidden rounded-2xl border border-slate-100 shadow-sm"
+          className="relative flex items-center justify-center bg-white overflow-hidden rounded-2xl border border-slate-100 shadow-xl hover:shadow-2xl transition-all duration-500 group"
         >
           {/* Background subtle glow */}
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-full bg-teal-50/30 rounded-full blur-3xl opacity-60" />
+          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-t from-teal-50/50 to-transparent rounded-full blur-3xl opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
 
-          <Image
-            src="/heroSecImg.png"
-            alt="MediScript Hero"
-            width={560}
-            height={600}
-            className="relative z-10 w-full h-full object-cover"
-            priority
-          />
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.3 }}
+            className="relative z-10 w-full h-full"
+          >
+            <Image
+              src="/heroSecImg.png"
+              alt="MediScript Hero"
+              width={560}
+              height={600}
+              className="w-full h-full object-cover"
+              priority
+            />
+          </motion.div>
         </motion.div>
 
         {/* Right Column - Content (Updated Background & Roundness) */}
-        <div className="relative flex items-center bg-[#f0f4f8] px-8 md:px-16 py-16 rounded-2xl shadow-sm border border-slate-100">
+        <div className="relative flex items-center bg-gradient-to-br from-[#f0f4f8] via-[#f0f4f8] to-blue-50/30 px-8 md:px-16 py-16 rounded-2xl shadow-xl border border-slate-100 backdrop-blur-sm">
+          {/* Glassmorphism overlay */}
+          <div className="absolute inset-0 bg-white/40 backdrop-blur-md rounded-2xl" />
+          
           {/* Simple corner blur element */}
-          <div className="absolute top-0 right-0 w-48 h-48 bg-blue-200/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-200/30 to-purple-200/30 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
 
           <div className="relative z-10 max-w-lg w-full mt-20">
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 mb-8 rounded-full bg-white border border-slate-200 shadow-sm"
-            >
-              <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-              <span className="text-slate-600 text-xs md:text-sm font-semibold">
-                NextAuth • PostgreSQL • TypeScript
-              </span>
-            </motion.div>
-
             {/* Heading */}
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
+              transition={{ duration: 0.6, delay: 0 }}
               className="text-4xl md:text-5xl lg:text-[3.5rem] font-black mb-6 leading-[1.1] tracking-tight text-slate-900"
             >
-              Modern Healthcare <span className="block">Management System</span>
+              Modern Healthcare Management System
             </motion.h1>
 
             {/* Subtitle */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
               className="text-base md:text-lg text-slate-500 mb-10 font-medium leading-relaxed"
             >
               Book appointments, manage prescriptions, set medicine reminders, and
-              securely store medical records — all in one platform built with Next.js and TypeScript.
+              securely store medical records — all in one comprehensive healthcare platform.
             </motion.p>
 
             {/* CTA Buttons */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
               className="flex flex-col sm:flex-row gap-4"
             >
               {isLoggedIn ? (
@@ -503,10 +529,10 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
                   >
                     <Link
                       href="/register"
-                      className="h-[3.5rem] inline-flex items-center gap-3 pr-2 pl-6 text-white rounded-full font-bold text-sm shadow-md hover:shadow-lg transition-all"
+                      className="h-[3.5rem] inline-flex items-center gap-3 pr-2 pl-6 text-white rounded-full font-bold text-sm shadow-xl hover:shadow-2xl transition-all"
                       style={{ backgroundColor: "#1A6080" }}
                     >
-                      Get Started Free
+                      <span>Get Started Free</span>
                       <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
                         <ArrowRight className="h-5 w-5" />
                       </div>
@@ -518,7 +544,7 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
                   >
                     <Link
                       href="/login"
-                      className="h-[3.5rem] inline-flex items-center px-8 py-4 bg-white text-slate-700 rounded-full font-bold text-sm border border-slate-200 shadow-sm hover:border-slate-400 transition-all"
+                      className="h-[3.5rem] inline-flex items-center px-8 py-4 bg-white/80 backdrop-blur-md text-slate-700 rounded-full font-bold text-sm border border-slate-200/50 shadow-lg hover:shadow-xl hover:border-slate-300 transition-all"
                     >
                       Log In
                     </Link>
@@ -531,12 +557,12 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
               className="mt-10 flex items-center gap-2 text-slate-400 text-[13px]"
             >
               <Shield className="h-4 w-4 text-emerald-500 flex-shrink-0" />
               <span>
-                NextAuth Secured • bcrypt Encrypted • Role-Based Access
+                HIPAA Compliant • Bank-Level Encryption • 24/7 Support
               </span>
             </motion.div>
           </div>
@@ -548,8 +574,14 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
         <PowerFeatures isLoggedIn={isLoggedIn} />
       </div>
 
-      {/* ── Security Section ── */}
-      <SecuritySection />
+      {/* ── How It Works Section ── */}
+      <HowItWorksSection isLoggedIn={isLoggedIn} />
+
+      {/* ── Pricing Section ── */}
+      <PricingSection />
+
+      {/* ── FAQ Section ── */}
+      <FAQSection />
 
       {/* ── Contact Section ── */}
       <ContactSection />

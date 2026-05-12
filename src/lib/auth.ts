@@ -124,60 +124,34 @@ export const authOptions: NextAuthOptions = {
     },
     async signIn({ user, account, profile }) {
       try {
-        if (!user.email) {
-          console.error("No email provided");
-          return false;
-        }
+        if (!user.email) return false;
 
-        // For OAuth providers
         if (account?.provider !== "credentials") {
-          try {
-            // Check if user exists
-            let dbUser = await db.user.findUnique({
-              where: { email: user.email },
-              include: { patientProfile: true },
+          const dbUser = await db.user.findUnique({
+            where: { email: user.email },
+            select: { id: true, patientProfile: { select: { id: true } } },
+          });
+
+          if (!dbUser) {
+            await db.user.create({
+              data: {
+                email: user.email,
+                name: user.name || "User",
+                password: "",
+                role: "PATIENT",
+                emailVerified: true,
+                patientProfile: { create: { dob: new Date(), bloodGroup: "O+" } },
+              },
             });
-
-            // If user doesn't exist, create them with patient profile
-            if (!dbUser) {
-              dbUser = await db.user.create({
-                data: {
-                  email: user.email,
-                  name: user.name || (profile as any)?.name || "User",
-                  password: "", // OAuth users don't have password
-                  role: "PATIENT",
-                  emailVerified: true, // OAuth users are auto-verified
-                  patientProfile: {
-                    create: {
-                      dob: new Date(),
-                      bloodGroup: "O+",
-                    },
-                  },
-                },
-                include: { patientProfile: true },
-              });
-            } else if (!dbUser.patientProfile) {
-              // If user exists but no patient profile, create it
-              await db.patientProfile.create({
-                data: {
-                  userId: dbUser.id,
-                  dob: new Date(),
-                  bloodGroup: "O+",
-                },
-              });
-            }
-
-            return !!dbUser;
-          } catch (dbError) {
-            console.error("Database error in signIn:", dbError);
-            return false;
+          } else if (!dbUser.patientProfile) {
+            await db.patientProfile.create({
+              data: { userId: dbUser.id, dob: new Date(), bloodGroup: "O+" },
+            });
           }
         }
-
-        // For credentials provider
         return true;
       } catch (error) {
-        console.error("SignIn callback error:", error);
+        console.error("SignIn error:", error);
         return false;
       }
     },

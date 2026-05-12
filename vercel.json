@@ -1,0 +1,4 @@
+{
+  "installCommand": "pnpm install --config.enable-pre-post-scripts=true",
+  "buildCommand": "pnpm run build"
+}

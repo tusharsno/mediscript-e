@@ -398,6 +398,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Shield, ArrowRight } from "lucide-react";
 import PowerFeatures from "@/components/PowerFeatures";
+import SecuritySection from "@/components/SecuritySection";
 import ContactSection from "@/components/ContactSection";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import FAQSection from "@/components/FAQSection";
@@ -572,6 +573,7 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
       {/* ── Power Features Section ── */}
       <div className="mt-0">
         <PowerFeatures isLoggedIn={isLoggedIn} />
+        <SecuritySection />
       </div>
 
       {/* ── How It Works Section ── */}

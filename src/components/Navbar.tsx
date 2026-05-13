@@ -21,19 +21,16 @@ import {
   Phone,
   Mail,
   MapPin,
-  Shield,
   Layers,
   CheckCircle,
   Clock,
   AlertCircle,
   Star,
-  MoreHorizontal,
 } from "lucide-react";
 
 const NAV_LINKS = {
   PUBLIC: [
     { href: "/#features", label: "Features", icon: Layers },
-    { href: "/#security", label: "Security", icon: Shield },
     { href: "/#contact", label: "Contact", icon: Phone },
   ],
   PATIENT: [
@@ -755,7 +752,6 @@ export default function Navbar() {
                     onClick={() => setMoreDropdownOpen(!moreDropdownOpen)}
                     className="flex items-center gap-1.5 px-4 py-2 text-slate-900 hover:text-teal-600 hover:bg-teal-50/80 rounded-full text-sm font-semibold transition-colors cursor-pointer"
                   >
-                    <MoreHorizontal className="h-3.5 w-3.5" />
                     More
                     <ChevronDown
                       className={`h-3 w-3 transition-transform duration-200 ${
@@ -932,22 +928,22 @@ export default function Navbar() {
                     <Phone className="h-4 w-4" />
                   </motion.a>
                   <motion.a
-                    href="mailto:support@mediscript.com"
+                    href="mailto:tusharcoder269@gmail.com"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                     className="p-2 rounded-full hover:bg-slate-100 transition-colors"
-                    title="Email: support@mediscript.com"
+                    title="Email: tusharcoder269@gmail.com"
                   >
                     <Mail className="h-4 w-4" />
                   </motion.a>
                   <motion.a
-                    href="https://maps.google.com/?q=Chittagong,Bangladesh"
+                    href="https://maps.google.com/?q=USTC+University+Chittagong+Bangladesh"
                     target="_blank"
                     rel="noopener noreferrer"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                     className="p-2 rounded-full hover:bg-slate-100 transition-colors"
-                    title="Location: Chittagong, Bangladesh"
+                    title="Location: USTC University, Chittagong"
                   >
                     <MapPin className="h-4 w-4" />
                   </motion.a>

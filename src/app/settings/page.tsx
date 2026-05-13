@@ -3,10 +3,16 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import DashboardLayout from "@/components/DashboardLayout";
 import SettingsForm from "@/components/SettingsForm";
+import db from "@/lib/db";
 
 export default async function SettingsPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
+
+  const user = await db.user.findUnique({
+    where: { id: session.user.id },
+    select: { twoFactorEnabled: true },
+  });
 
   return (
     <DashboardLayout>
@@ -17,7 +23,7 @@ export default async function SettingsPage() {
             <p className="text-slate-500 font-medium">Manage your account settings and preferences</p>
           </div>
 
-          <SettingsForm user={session.user} />
+          <SettingsForm user={{ ...session.user, twoFactorEnabled: user?.twoFactorEnabled || false }} />
         </div>
       </div>
     </DashboardLayout>

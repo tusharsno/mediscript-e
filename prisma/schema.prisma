@@ -21,6 +21,9 @@ model User {
   emailVerified         Boolean         @default(false)
   verificationToken     String?         @unique
   verificationExpires   DateTime?
+  twoFactorEnabled      Boolean         @default(false)
+  twoFactorCode         String?
+  twoFactorExpires      DateTime?
   doctorProfile         DoctorProfile?
   patientProfile        PatientProfile?
   createdAt             DateTime        @default(now())

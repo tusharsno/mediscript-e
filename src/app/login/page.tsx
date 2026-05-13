@@ -34,7 +34,16 @@ export default function LoginPage() {
     });
 
     if (res?.error) {
-      if (res.error.includes("verify your email")) {
+      if (res.error.includes("2FA_REQUIRED:")) {
+        const email = res.error.split("2FA_REQUIRED:")[1];
+        await fetch("/api/auth/2fa/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+        router.push(`/verify-2fa?email=${encodeURIComponent(email)}`);
+        return;
+      } else if (res.error.includes("verify your email")) {
         setError(res.error);
         setShowResend(true);
         setResendEmail(data.email);

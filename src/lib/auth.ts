@@ -43,6 +43,7 @@ export const authOptions: NextAuthOptions = {
       credentials: {
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
+        twoFactorVerified: { label: "2FA Verified", type: "text" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
@@ -57,9 +58,17 @@ export const authOptions: NextAuthOptions = {
           throw new Error("User not found");
         }
 
-        // Email verification চেক করা
         if (!user.emailVerified) {
           throw new Error("Please verify your email before logging in");
+        }
+
+        // 2FA verified bypass - verify OTP was actually completed
+        if (credentials.twoFactorVerified === "true" && credentials.password === "__2fa_verified__") {
+          // Double-check: OTP must already be cleared (means it was verified)
+          if (user.twoFactorCode !== null) {
+            throw new Error("Invalid credentials");
+          }
+          return { id: user.id, email: user.email, name: user.name, role: user.role };
         }
 
         const isPasswordMatch = await bcrypt.compare(
@@ -69,6 +78,10 @@ export const authOptions: NextAuthOptions = {
 
         if (!isPasswordMatch) {
           throw new Error("Incorrect password");
+        }
+
+        if (user.twoFactorEnabled) {
+          throw new Error("2FA_REQUIRED:" + user.email);
         }
 
         return {

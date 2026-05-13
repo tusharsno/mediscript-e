@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { User, Mail, Lock, Save } from "lucide-react";
+import { User, Mail, Lock, Save, Shield } from "lucide-react";
 
 interface SettingsFormProps {
   user: {
     name?: string | null;
     email?: string;
     role: string;
+    twoFactorEnabled?: boolean;
   };
 }
 
@@ -17,6 +18,29 @@ export default function SettingsForm({ user }: SettingsFormProps) {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(user.twoFactorEnabled || false);
+  const [twoFactorLoading, setTwoFactorLoading] = useState(false);
+
+  const handleToggle2FA = async () => {
+    setTwoFactorLoading(true);
+    try {
+      const res = await fetch("/api/settings/2fa", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ enabled: !twoFactorEnabled }),
+      });
+      if (res.ok) {
+        setTwoFactorEnabled(!twoFactorEnabled);
+      } else {
+        const err = await res.json();
+        alert("Error: " + err.message);
+      }
+    } catch {
+      alert("Failed to update 2FA settings");
+    } finally {
+      setTwoFactorLoading(false);
+    }
+  };
 
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -143,6 +167,42 @@ export default function SettingsForm({ user }: SettingsFormProps) {
             {loading ? "Saving..." : "Save Changes"}
           </button>
         </form>
+      </div>
+
+      {/* 2FA Settings */}
+      <div className="bg-white border border-slate-200 rounded-2xl shadow-sm p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="p-2 bg-teal-50 rounded-lg">
+            <Shield className="h-5 w-5 text-teal-600" />
+          </div>
+          <div>
+            <h2 className="text-xl font-black text-slate-800">Two-Factor Authentication</h2>
+            <p className="text-xs text-slate-400 font-medium">Add an extra layer of security</p>
+          </div>
+        </div>
+        <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
+          <div>
+            <p className="font-bold text-slate-700">Email OTP Verification</p>
+            <p className="text-sm text-slate-500 mt-0.5">
+              {twoFactorEnabled
+                ? "2FA is enabled. You'll receive an OTP on every login."
+                : "Enable to receive a verification code on every login."}
+            </p>
+          </div>
+          <button
+            onClick={handleToggle2FA}
+            disabled={twoFactorLoading}
+            className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors disabled:opacity-50 ${
+              twoFactorEnabled ? "bg-teal-600" : "bg-slate-300"
+            }`}
+          >
+            <span
+              className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform ${
+                twoFactorEnabled ? "translate-x-6" : "translate-x-1"
+              }`}
+            />
+          </button>
+        </div>
       </div>
 
       {/* Password Settings */}

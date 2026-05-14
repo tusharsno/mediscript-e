@@ -1,0 +1,17 @@
+name: Medicine Reminder Notifications
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+jobs:
+  send-notifications:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Medicine Reminder Notifications
+        run: |
+          curl -s -X POST \
+            "${{ secrets.NEXTAUTH_URL }}/api/medicine-reminder/send-notifications" \
+            -H "Authorization: Bearer ${{ secrets.CRON_API_KEY }}" \
+            -H "Content-Type: application/json"

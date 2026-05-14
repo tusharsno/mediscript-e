@@ -1,93 +1,94 @@
-# 🏥 MediScript-E - Digital Healthcare Platform
+# 🏥 MediScript-E — Digital Healthcare Platform
 
-A modern, secure digital healthcare platform built with Next.js 16, enabling seamless interaction between patients and doctors with features like appointment booking, e-prescriptions, and medical record management.
+A modern, secure digital healthcare platform built with Next.js 16, enabling seamless interaction between patients and doctors with features like appointment booking, e-prescriptions, medicine reminders, and secure medical record management.
 
 ![Next.js](https://img.shields.io/badge/Next.js-16.2.3-black)
 ![React](https://img.shields.io/badge/React-19.2.4-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)
-![Prisma](https://img.shields.io/badge/Prisma-7.7.0-2D3748)
+![Prisma](https://img.shields.io/badge/Prisma-7.8.0-2D3748)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Supabase-green)
+![Vercel](https://img.shields.io/badge/Deployed-Vercel-black)
+
+**Live Demo:** https://mediscript-e.vercel.app
+
+---
 
 ## 🌟 Features
 
-### 👨‍⚕️ For Doctors
-- **Appointment Management**: View, confirm, cancel, and complete patient appointments
-- **Digital Prescriptions**: Issue prescriptions with diagnosis and medications
-- **Patient Information**: Access patient details and appointment history
-- **Doctor Profile**: Manage specialization and license information
-
 ### 👤 For Patients
-- **Appointment Booking**: Book appointments with available doctors
-- **Medicine Reminders**: Set medication schedules with automated email alerts
-- **Medical Vault**: Securely upload and store medical reports (Supabase Storage)
-- **E-Prescriptions**: View and download prescriptions as PDF
-- **Appointment Tracking**: Monitor appointment status (Pending/Confirmed/Completed)
-- **Medical Records**: Access all uploaded documents in one place
-- **Blood Group Management**: Select blood group during registration (A+, A-, B+, B-, AB+, AB-, O+, O-)
+- **Appointment Booking:** Book appointments with available doctors
+- **Medicine Reminders:** Set medication schedules with automated email alerts
+- **Medical Vault:** Securely upload and store medical reports (Supabase Storage)
+- **E-Prescriptions:** View and download prescriptions as PDF
+- **Appointment Tracking:** Monitor appointment status (Pending/Confirmed/Completed)
+- **Blood Group Management:** Select blood group during registration (A+, A-, B+, B-, AB+, AB-, O+, O-)
+
+### 👨‍⚕️ For Doctors
+- **Appointment Management:** View, confirm, cancel, and complete patient appointments
+- **Digital Prescriptions:** Issue prescriptions with diagnosis and medications
+- **Patient Information:** Access patient details and appointment history
+- **Doctor Profile:** Manage specialization and license information
 
 ### 🛡️ For Administrators
-- **Dashboard Overview**: Real-time statistics with live updates (users, patients, doctors, appointments, prescriptions, contacts)
-- **User Management**: View all users with profiles, delete users (except self)
-- **Appointment Overview**: Monitor all appointments with status filters
-- **Contact Messages**: View and manage contact form submissions
+- **Dashboard Overview:** Real-time statistics (users, patients, doctors, appointments, prescriptions, contacts)
+- **User Management:** View all users with profiles, delete users (except self)
+- **Appointment Overview:** Monitor all appointments with status filters
+- **Contact Messages:** View and manage contact form submissions
 
 ### 🔐 Security & Authentication
-- **NextAuth Integration**: Secure credential-based authentication
-- **Email Verification**: Prevents fake/unknown email registrations
-- **OAuth Support**: Google and GitHub login integration (auto-verified)
-- **Role-Based Access Control**: PATIENT, DOCTOR, ADMIN roles
-- **Password Encryption**: bcryptjs hashing
-- **Session Management**: JWT-based sessions
+- **NextAuth Integration:** Secure credential-based authentication
+- **Email Verification:** Prevents fake/unknown email registrations
+- **Two-Factor Authentication (2FA):** Email OTP verification with 10-minute expiry
+- **OAuth Support:** Google and GitHub login integration (auto-verified)
+- **Role-Based Access Control:** PATIENT, DOCTOR, ADMIN roles
+- **Password Encryption:** bcryptjs hashing (10 salt rounds)
+- **Session Management:** JWT-based sessions (30-day expiry)
 
-### 🎨 User Interface
-- **Modern Design**: Tailwind CSS with custom styling
-- **Responsive Layout**: Mobile-first design approach
-- **Smooth Animations**: Framer Motion integration
-- **Interactive Modals**: Feature details with professional modal system
-- **Dashboard Sidebar**: Easy navigation with hash-based routing
+---
 
 ## 🛠️ Tech Stack
 
 ### Frontend
-- **Framework**: Next.js 16.2.3 (App Router)
-- **UI Library**: React 19.2.4
-- **Styling**: Tailwind CSS 4
-- **Animations**: Framer Motion 12.38.0
-- **Icons**: Lucide React 1.8.0
-- **Forms**: React Hook Form 7.72.1
+- **Framework:** Next.js 16.2.3 (App Router)
+- **UI Library:** React 19.2.4
+- **Styling:** Tailwind CSS 4
+- **Animations:** Framer Motion 12.38.0
+- **Icons:** Lucide React
+- **Forms:** React Hook Form 7.72.1
 
 ### Backend
-- **API**: Next.js API Routes
-- **Authentication**: NextAuth 4.24.13
-- **Database ORM**: Prisma 7.7.0
-- **Database**: PostgreSQL (Supabase)
-- **Storage**: Supabase Storage
-- **Email**: Nodemailer 6.9.16
+- **API:** Next.js API Routes (Serverless)
+- **Authentication:** NextAuth 4.24.14
+- **Database ORM:** Prisma 7.8.0
+- **Database:** PostgreSQL (Supabase)
+- **Storage:** Supabase Storage
+- **Email:** Nodemailer 6.9.16 (Gmail SMTP)
 
 ### Development
-- **Language**: TypeScript 5.x
-- **Linting**: ESLint 9
-- **Package Manager**: npm/pnpm
+- **Language:** TypeScript 5.x
+- **Linting:** ESLint 9
+- **Package Manager:** pnpm
+
+---
 
 ## 📦 Installation
 
 ### Prerequisites
-- Node.js 18+ installed
+- Node.js 18+
 - PostgreSQL database (Supabase recommended)
 - Supabase account for storage
+- Gmail account with App Password for email
 
 ### Setup Steps
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/YOUR_USERNAME/mediscript-e.git
+git clone https://github.com/tusharsno/mediscript-e.git
 cd mediscript-e
 ```
 
 2. **Install dependencies**
 ```bash
-npm install
-# or
 pnpm install
 ```
 
@@ -97,7 +98,7 @@ Create a `.env` file in the root directory:
 
 ```env
 # Database
-DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?pgbouncer=true&sslmode=no-verify"
 DIRECT_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
 
 # NextAuth
@@ -108,80 +109,99 @@ NEXTAUTH_SECRET="your-secret-key-here"
 NEXT_PUBLIC_SUPABASE_URL="your-supabase-url"
 NEXT_PUBLIC_SUPABASE_ANON_KEY="your-supabase-anon-key"
 
-# Email (for contact form and medicine reminders)
+# Email (Gmail SMTP)
 EMAIL_USER="your-email@gmail.com"
-EMAIL_PASS="your-app-password"
+EMAIL_PASS="your-gmail-app-password"
 
 # Cron API Key (for automated medicine reminders)
-CRON_API_KEY="your-secret-key"
+CRON_API_KEY="your-secret-cron-key"
 
-# Google OAuth (Get from Google Cloud Console)
+# Google OAuth
 GOOGLE_CLIENT_ID="your-google-client-id"
 GOOGLE_CLIENT_SECRET="your-google-client-secret"
 
-# GitHub OAuth (Get from GitHub Developer Settings)
+# GitHub OAuth
 GITHUB_CLIENT_ID="your-github-client-id"
 GITHUB_CLIENT_SECRET="your-github-client-secret"
 ```
 
-4. **Database Setup**
-
+4. **Generate Prisma Client**
 ```bash
-# Generate Prisma Client
 npx prisma generate
+```
 
-# Run migrations (or use Supabase SQL Editor)
+5. **Database Setup**
+
+Run via Supabase SQL Editor or Prisma migrate:
+```bash
 npx prisma migrate dev
 ```
 
-**Alternative: Use Supabase SQL Editor**
-
-Run the migration SQL files in `prisma/migrations/` directory via Supabase SQL Editor.
-
-5. **Create Supabase Storage Bucket**
-
+6. **Create Supabase Storage Bucket**
 - Go to Supabase Dashboard → Storage
-- Create a new bucket named `medical-reports`
+- Create a bucket named `medical-reports`
 - Set it to **Public** access
 
-6. **Run Development Server**
-
+7. **Run Development Server**
 ```bash
-npm run dev
+pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000)
+
+---
 
 ## 📁 Project Structure
 
 ```
 mediscript-e/
 ├── prisma/
-│   ├── schema.prisma          # Database schema
-│   └── migrations/            # Database migrations
-├── public/                    # Static assets
+│   ├── schema.prisma              # Database schema
+│   └── migrations/                # Database migrations
+├── prisma.config.ts               # Prisma 7 configuration
+├── public/                        # Static assets
+├── lab-reports/                   # SDLC lab documentation
+│   ├── lab-session-3.md           # Requirements Engineering
+│   ├── lab-session-4.md           # SRS Document
+│   ├── lab-session-5.md           # Use Case Modeling
+│   ├── lab-session-6.md           # System Design & UML
+│   ├── lab-session-7.md           # Security Engineering
+│   ├── lab-session-8.md           # Software Testing
+│   ├── lab-session-9.md           # Implementation
+│   └── lab-session-10.md          # Maintenance & Ethics
 ├── src/
 │   ├── app/
-│   │   ├── api/              # API routes
-│   │   │   ├── admin/        # Admin APIs
-│   │   │   │   ├── stats/    # Dashboard statistics
-│   │   │   │   ├── users/    # User management
-│   │   │   │   ├── appointments/ # Appointment overview
-│   │   │   │   └── contacts/ # Contact messages
-│   │   │   ├── appointment/  # Appointment CRUD
-│   │   │   ├── auth/         # NextAuth
-│   │   │   ├── contact/      # Contact form
-│   │   │   ├── doctors/      # Doctor list
-│   │   │   ├── prescription/ # Prescription API
-│   │   │   ├── register/     # User registration
-│   │   │   ├── settings/     # Profile/password update
-│   │   │   └── vault/        # Medical vault
-│   │   ├── dashboard/        # Dashboard page
-│   │   ├── login/            # Login page
-│   │   ├── register/         # Register page
-│   │   ├── settings/         # Settings page
-│   │   ├── layout.tsx        # Root layout
-│   │   └── page.tsx          # Landing page
+│   │   ├── api/
+│   │   │   ├── admin/
+│   │   │   │   ├── stats/         # Dashboard statistics
+│   │   │   │   ├── users/         # User management
+│   │   │   │   ├── appointments/  # Appointment overview
+│   │   │   │   └── contacts/      # Contact messages
+│   │   │   ├── appointment/       # Appointment CRUD
+│   │   │   ├── auth/
+│   │   │   │   └── 2fa/
+│   │   │   │       ├── send/      # Send OTP
+│   │   │   │       └── verify/    # Verify OTP
+│   │   │   ├── contact/           # Contact form
+│   │   │   ├── doctors/           # Doctor list
+│   │   │   ├── medicine-reminder/ # Medicine reminders
+│   │   │   ├── prescription/      # Prescription API
+│   │   │   ├── register/          # User registration
+│   │   │   ├── settings/
+│   │   │   │   ├── 2fa/           # Toggle 2FA
+│   │   │   │   ├── password/      # Change password
+│   │   │   │   └── profile/       # Update profile
+│   │   │   ├── vault/             # Medical vault
+│   │   │   ├── verify-email/      # Email verification
+│   │   │   └── resend-verification/
+│   │   ├── dashboard/             # Dashboard page
+│   │   ├── login/                 # Login page
+│   │   ├── register/              # Register page
+│   │   ├── settings/              # Settings page
+│   │   ├── verify-2fa/            # 2FA OTP verification page
+│   │   ├── verify-email/          # Email verification page
+│   │   ├── layout.tsx             # Root layout
+│   │   └── page.tsx               # Landing page
 │   ├── components/
 │   │   ├── AdminDashboard.tsx
 │   │   ├── AppointmentOverview.tsx
@@ -204,38 +224,96 @@ mediscript-e/
 │   │   ├── SettingsForm.tsx
 │   │   └── UserManagement.tsx
 │   ├── hooks/
-│   │   └── useScrollHash.ts  # Scroll-based hash navigation
+│   │   └── useScrollHash.ts       # Scroll-based hash navigation
 │   └── lib/
-│       ├── auth.ts           # NextAuth configuration
-│       ├── db.ts             # Prisma client
-│       └── supabase.ts       # Supabase client
-├── .env                      # Environment variables
-├── .env.example              # Example env file
-├── next.config.ts            # Next.js config
-├── tailwind.config.ts        # Tailwind config
-└── tsconfig.json             # TypeScript config
+│       ├── auth.ts                # NextAuth configuration
+│       ├── db.ts                  # Prisma client with pg adapter
+│       └── supabase.ts            # Supabase client
+├── vercel.json                    # Vercel deployment config
+├── .env.example                   # Example environment variables
+├── next.config.ts                 # Next.js config
+└── tsconfig.json                  # TypeScript config
 ```
+
+---
 
 ## 🗄️ Database Schema
 
-### Core Models
-
-- **User**: Authentication and profile
-- **DoctorProfile**: Doctor-specific information
-- **PatientProfile**: Patient-specific information
-- **Appointment**: Booking system with status tracking
-- **Prescription**: Digital prescriptions
-- **MedicineReminder**: Medication schedules with email alerts
-- **MedicalVault**: Uploaded medical documents
-- **ContactMessage**: Landing page contact form submissions
+### Models
+- **User** — Authentication, profile, 2FA fields
+- **DoctorProfile** — Specialization, license number
+- **PatientProfile** — Date of birth, blood group
+- **Appointment** — Booking with status tracking
+- **Prescription** — Digital prescriptions
+- **MedicineReminder** — Medication schedules with email alerts
+- **MedicalVault** — Uploaded medical documents
+- **ContactMessage** — Contact form submissions
 
 ### Appointment Status Flow
-
 ```
 PENDING → CONFIRMED → COMPLETED
    ↓
 CANCELLED
 ```
+
+---
+
+## 🔧 API Endpoints
+
+### Authentication
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/register` | User registration |
+| POST | `/api/verify-email` | Verify email token |
+| POST | `/api/resend-verification` | Resend verification email |
+| POST | `/api/auth/2fa/send` | Send 2FA OTP |
+| POST | `/api/auth/2fa/verify` | Verify 2FA OTP |
+
+### Appointments
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/appointment` | Get user appointments |
+| POST | `/api/appointment` | Create appointment |
+| PATCH | `/api/appointment/[id]` | Update appointment status |
+| DELETE | `/api/appointment/[id]` | Delete appointment |
+
+### Prescriptions & Doctors
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/doctors` | Get all doctors |
+| GET/POST | `/api/prescription` | Get/Create prescription |
+
+### Medicine Reminders
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET/POST | `/api/medicine-reminder` | Get/Create reminders |
+| PATCH | `/api/medicine-reminder/[id]` | Mark as taken/undo |
+| DELETE | `/api/medicine-reminder/[id]` | Delete reminder |
+| POST | `/api/medicine-reminder/send-notifications` | Send email alerts (cron) |
+
+### Medical Vault
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/vault` | Upload medical record |
+| DELETE | `/api/vault/[id]` | Delete record |
+
+### Settings
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| PATCH | `/api/settings/profile` | Update profile name |
+| PATCH | `/api/settings/password` | Change password |
+| PATCH | `/api/settings/2fa` | Toggle 2FA |
+
+### Admin
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/admin/stats` | Dashboard statistics |
+| GET | `/api/admin/users` | All users |
+| DELETE | `/api/admin/users/[id]` | Delete user |
+| GET | `/api/admin/appointments` | All appointments |
+| GET | `/api/admin/contacts` | Contact messages |
+
+---
 
 ## 🚀 Deployment
 
@@ -243,178 +321,86 @@ CANCELLED
 
 1. Push code to GitHub
 2. Import project in Vercel
-3. Add environment variables
+3. Add all environment variables
 4. Deploy
 
-### Environment Variables for Production
+> **Note:** Use `vercel --prod` CLI for manual deployments if GitHub webhook is not triggering.
 
-Ensure all `.env` variables are set in your deployment platform.
+### Important Production Notes
+- `DATABASE_URL` must include `?sslmode=no-verify` for Supabase pooler
+- `NEXTAUTH_URL` must be set to your production URL
+- Google OAuth: Add `https://your-domain.vercel.app/api/auth/callback/google` to authorized redirect URIs
+- GitHub OAuth: Add `https://your-domain.vercel.app/api/auth/callback/github` to callback URLs
+
+---
 
 ## 📝 Usage Guide
 
-### Authentication Methods
-
-**Email/Password Login**
-- Register with email and password
-- Verify email via link sent to inbox
-- Login with credentials after verification
-- Secure bcrypt password hashing
-
-**OAuth Login (Google & GitHub)**
-- Click "Google" or "GitHub" button on login page
-- Automatically creates PATIENT account on first login
-- Email auto-verified for OAuth users
-- No password required for OAuth users
-- Seamless authentication experience
-
 ### For Patients
-
-1. **Register** as a PATIENT (select blood group: A+, A-, B+, B-, AB+, AB-, O+, O-)
-2. **Verify Email**: Check inbox and click verification link
-3. **Login** to dashboard
-4. **Book Appointment**: Select doctor, date, and time
-5. **Set Medicine Reminders**: Add medications with schedules (automated email alerts)
-6. **Upload Medical Records**: Use Medical Vault
-7. **View Prescriptions**: Download as PDF
-8. **Manage Profile**: Update name and password in Settings
+1. Register as PATIENT → select blood group
+2. Verify email via inbox link
+3. Login → optionally enable 2FA in Settings
+4. Book appointments, set medicine reminders, upload medical records
+5. View and download prescriptions as PDF
 
 ### For Doctors
-
-1. **Register** as a DOCTOR (provide license number and specialization)
-2. **Verify Email**: Check inbox and click verification link
-3. **Login** to dashboard
-4. **Manage Appointments**: Confirm/Cancel/Complete
-5. **Issue Prescriptions**: Enter patient ID, diagnosis, medications
-6. **View Patient Details**: Access appointment history
+1. Register as DOCTOR → provide license number and specialization
+2. Verify email via inbox link
+3. Login → manage appointments (confirm/cancel/complete)
+4. Issue prescriptions with diagnosis and medications
 
 ### For Administrators
+1. Login with admin credentials
+2. Monitor real-time dashboard statistics
+3. Manage users, appointments, and contact messages
 
-1. **Login** with admin credentials (admin@mediscript.com / admin123)
-2. **View Dashboard**: Monitor real-time statistics with live updates
-3. **Manage Users**: View all users, delete users (cannot delete self)
-4. **Monitor Appointments**: Filter by status (ALL/PENDING/CONFIRMED/COMPLETED/CANCELLED)
-5. **Review Contact Messages**: Access all contact form submissions
-
-## 🔧 API Endpoints
-
-### Authentication
-- `POST /api/auth/[...nextauth]` - NextAuth endpoints
-- `POST /api/register` - User registration
-- `POST /api/verify-email` - Verify email with token
-- `POST /api/resend-verification` - Resend verification email
-
-### Appointments
-- `GET /api/appointment` - Get user appointments
-- `POST /api/appointment` - Create appointment
-- `PATCH /api/appointment/[id]` - Update appointment status
-- `DELETE /api/appointment/[id]` - Delete appointment
-
-### Doctors
-- `GET /api/doctors` - Get all doctors
-
-### Prescriptions
-- `POST /api/prescription` - Create prescription
-
-### Medicine Reminders
-- `GET /api/medicine-reminder` - Get patient reminders
-- `POST /api/medicine-reminder` - Create reminder
-- `PATCH /api/medicine-reminder/[id]` - Mark as taken/undo
-- `DELETE /api/medicine-reminder/[id]` - Delete reminder
-- `POST /api/medicine-reminder/send-notifications` - Send email alerts (cron)
-
-### Medical Vault
-- `POST /api/vault` - Upload medical record
-- `DELETE /api/vault/[id]` - Delete record
-
-### Settings
-- `PATCH /api/settings/profile` - Update profile
-- `PATCH /api/settings/password` - Change password
-
-### Contact
-- `POST /api/contact` - Submit contact form
-
-### Admin (Admin-only)
-- `GET /api/admin/stats` - Get dashboard statistics
-- `GET /api/admin/users` - Get all users with profiles
-- `DELETE /api/admin/users/[id]` - Delete user
-- `GET /api/admin/appointments` - Get all appointments
-- `GET /api/admin/contacts` - Get all contact messages
-
-## 🎨 Design System
-
-### Colors
-- **Primary**: `#1A6080` (Teal Blue)
-- **Success**: Emerald shades
-- **Warning**: Yellow shades
-- **Danger**: Red shades
-- **Neutral**: Slate shades
-
-### Typography
-- **Font**: Geist (Next.js default)
-- **Headings**: font-black (900 weight)
-- **Body**: font-medium (500 weight)
+---
 
 ## 🔒 Security
 
-This project implements multiple security measures:
-
-- ✅ **Email Verification**: Prevents fake/unknown email registrations
-- ✅ Input validation on all forms and APIs
-- ✅ Email format validation
-- ✅ Password strength requirements (minimum 6 characters)
-- ✅ Role-based access control (RBAC)
-- ✅ SQL injection prevention via Prisma
-- ✅ XSS protection via security headers
+- ✅ Email verification (24-hour token expiry)
+- ✅ Two-Factor Authentication via email OTP (10-minute expiry)
+- ✅ bcryptjs password hashing (10 salt rounds)
+- ✅ JWT session management (30-day expiry)
+- ✅ Role-Based Access Control (RBAC)
+- ✅ SQL injection prevention via Prisma ORM
 - ✅ CSRF protection via NextAuth
-- ✅ File upload validation (type and size limits)
-- ✅ Environment variable validation
-- ✅ SSL/TLS for database connections
-- ✅ Password hashing with bcryptjs
-- ✅ JWT-based session management
-- ✅ Verification token expiry (24 hours)
-- ✅ OAuth users auto-verified
+- ✅ SSL/TLS database connections
+- ✅ Input validation on all API routes
+- ✅ File upload validation (type and size)
+- ✅ Environment variables for all secrets
+- ✅ OAuth auto-verification (Google, GitHub)
 
-For detailed security information, see [SECURITY.md](./SECURITY.md)
+---
 
-For email verification setup, see [EMAIL_VERIFICATION_SETUP.md](./EMAIL_VERIFICATION_SETUP.md)
+## 🎨 Design System
 
-### Security Audit
+| Token | Value |
+|-------|-------|
+| Primary | `#1A6080` (Teal Blue) |
+| Font | Geist (Next.js default) |
+| Headings | font-black (900) |
+| Body | font-medium (500) |
 
-Run security audit regularly:
-
-```bash
-npm run audit
-npm run audit:fix
-```
-
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License.
+---
 
 ## 👨‍💻 Author
 
 **Tushar**
-- GitHub: [@YOUR_USERNAME](https://github.com/YOUR_USERNAME)
+- GitHub: [@tusharsno](https://github.com/tusharsno)
+- University: USTC, Chittagong, Bangladesh
+
+---
 
 ## 🙏 Acknowledgments
 
-- Next.js team for the amazing framework
-- Vercel for hosting and deployment
-- Supabase for database and storage
-- Tailwind CSS for styling utilities
+- [Next.js](https://nextjs.org) — Framework
+- [Vercel](https://vercel.com) — Hosting & deployment
+- [Supabase](https://supabase.com) — Database & storage
+- [Prisma](https://prisma.io) — ORM
+- [NextAuth.js](https://next-auth.js.org) — Authentication
+- [Tailwind CSS](https://tailwindcss.com) — Styling
 
 ---
 
 **Built with ❤️ using Next.js and TypeScript**
-# Vercel deployment fix
-# Vercel deployment fix

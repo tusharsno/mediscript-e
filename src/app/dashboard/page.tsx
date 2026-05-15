@@ -367,11 +367,6 @@ export default async function DashboardPage() {
               </div>
               <MedicineReminders />
 
-              {/* Submit Testimonial Section */}
-              <div id="testimonial" className="scroll-mt-20">
-                <SubmitTestimonial />
-              </div>
-
               <div id="vault" className="scroll-mt-20">
                 <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
                   <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
@@ -478,6 +473,11 @@ export default async function DashboardPage() {
                   )}
                 </div>
               </div>
+
+              {/* Submit Testimonial - last */}
+              <div id="testimonial" className="scroll-mt-20">
+                <SubmitTestimonial />
+              </div>
             </div>
           )}
 
@@ -485,10 +485,6 @@ export default async function DashboardPage() {
           {user?.role === "DOCTOR" && (
             <div className="space-y-6">
               <DoctorAppointments />
-
-              <div id="testimonial" className="scroll-mt-20">
-                <SubmitTestimonial />
-              </div>
 
               <div id="prescriptions" className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden scroll-mt-20">
                 <div className="px-6 py-5 border-b border-slate-100 flex items-center gap-3">
@@ -516,6 +512,11 @@ export default async function DashboardPage() {
               </div>
 
               <DoctorPrescriptionList />
+
+              {/* Submit Testimonial - last */}
+              <div id="testimonial" className="scroll-mt-20">
+                <SubmitTestimonial />
+              </div>
             </div>
           )}
 

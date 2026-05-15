@@ -32,7 +32,17 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       return NextResponse.json({ message: "Unauthorized" }, { status: 403 });
     }
 
-    const { diagnosis, medications } = await req.json();
+    const { diagnosis, medications, archivedByDoctor } = await req.json();
+
+    // Archive toggle
+    if (typeof archivedByDoctor === "boolean") {
+      const updated = await db.prescription.update({
+        where: { id },
+        data: { archivedByDoctor },
+      });
+      return NextResponse.json({ message: "Prescription updated", prescription: updated }, { status: 200 });
+    }
+
     if (!diagnosis || !medications) {
       return NextResponse.json({ message: "All fields are required" }, { status: 400 });
     }

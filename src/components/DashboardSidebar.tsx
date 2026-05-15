@@ -27,15 +27,15 @@ const SIDEBAR_LINKS = {
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
     { href: "/dashboard#appointments", label: "Appointments", icon: Calendar },
     { href: "/dashboard#reminders", label: "Medicine Reminders", icon: Bell },
-    { href: "/dashboard#testimonial", label: "Share Feedback", icon: MessageSquare },
     { href: "/dashboard#vault", label: "Medical Vault", icon: FolderOpen },
     { href: "/dashboard#prescriptions", label: "Prescriptions", icon: FileText },
+    { href: "/dashboard#testimonial", label: "Share Feedback", icon: MessageSquare },
   ],
   DOCTOR: [
     { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
     { href: "/dashboard#appointments", label: "Appointments", icon: Calendar },
-    { href: "/dashboard#testimonial", label: "Share Feedback", icon: MessageSquare },
     { href: "/dashboard#prescriptions", label: "Prescriptions", icon: FileText },
+    { href: "/dashboard#testimonial", label: "Share Feedback", icon: MessageSquare },
   ],
   ADMIN: [
     { href: "/dashboard", label: "Dashboard", icon: BarChart3, exact: true },

@@ -67,14 +67,15 @@ model Appointment {
 }
 
 model Prescription {
-  id          String   @id @default(cuid())
-  diagnosis   String
-  medications String
-  createdAt   DateTime @default(now())
-  doctorId    String
-  patientId   String
-  doctor      DoctorProfile  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
-  patient     PatientProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  id                String   @id @default(cuid())
+  diagnosis         String
+  medications       String
+  archivedByDoctor  Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  doctorId          String
+  patientId         String
+  doctor            DoctorProfile  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  patient           PatientProfile @relation(fields: [patientId], references: [id], onDelete: Cascade)
 }
 
 model MedicalVault {

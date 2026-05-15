@@ -17,13 +17,21 @@ export async function POST(req: NextRequest) {
     }
 
     const now = new Date();
-    const currentTime = now.toTimeString().slice(0, 5); // HH:MM format
+    const utcHours = String(now.getUTCHours()).padStart(2, "0");
+    const utcMinutes = String(now.getUTCMinutes()).padStart(2, "0");
+    const currentTime = `${utcHours}:${utcMinutes}`;
 
-    // Find active reminders for today
+    const startOfToday = new Date();
+    startOfToday.setUTCHours(0, 0, 0, 0);
+    const endOfTomorrow = new Date();
+    endOfTomorrow.setUTCHours(23, 59, 59, 999);
+    endOfTomorrow.setUTCDate(endOfTomorrow.getUTCDate() + 1);
+
+    // Find active reminders
     const reminders = await db.medicineReminder.findMany({
       where: {
-        startDate: { lte: now },
-        endDate: { gte: now },
+        startDate: { lte: endOfTomorrow },
+        endDate: { gte: startOfToday },
         taken: false,
       },
       include: {

@@ -77,8 +77,11 @@ export default function MedicineReminders() {
 
   const isActive = (reminder: Reminder) => {
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
     const start = new Date(reminder.startDate);
+    start.setHours(0, 0, 0, 0);
     const end = new Date(reminder.endDate);
+    end.setHours(23, 59, 59, 999);
     return today >= start && today <= end;
   };
 

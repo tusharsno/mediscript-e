@@ -12,36 +12,41 @@ export default function PricingSection() {
     {
       name: "Free",
       price: "0",
-      description: "Perfect for getting started with digital healthcare",
+      description: "Everything you need to manage your healthcare digitally.",
       features: [
         "Book appointments with doctors",
-        "View digital prescriptions",
-        "Medical vault (up to 100MB)",
-        "Medicine reminders",
-        "Basic appointment management",
-        "Email notifications",
+        "View & download digital prescriptions (PDF)",
+        "Secure medical vault (unlimited uploads)",
+        "Medicine reminders with email alerts",
+        "Appointment status tracking",
+        "Two-Factor Authentication (2FA)",
+        "Google & GitHub OAuth login",
+        "Role-based access (Patient / Doctor / Admin)",
       ],
       notIncluded: [
         "Video consultations",
         "Priority booking",
-        "Unlimited storage",
-        "24/7 priority support",
+        "Advanced health analytics",
       ],
       popular: false,
     },
     {
       name: "Premium",
       price: "9.99",
-      description: "Advanced features for comprehensive healthcare management",
+      description: "Advanced features for comprehensive healthcare management.",
       features: [
-        "Everything in Free plan",
+        "Book appointments with doctors",
+        "View & download digital prescriptions (PDF)",
+        "Secure medical vault (unlimited uploads)",
+        "Medicine reminders with email alerts",
+        "Appointment status tracking",
+        "Two-Factor Authentication (2FA)",
+        "Google & GitHub OAuth login",
+        "Role-based access (Patient / Doctor / Admin)",
         "Video consultations with doctors",
         "Priority appointment booking",
-        "Unlimited medical vault storage",
         "Advanced health analytics",
-        "Medicine home delivery",
-        "Health insurance integration",
-        "24/7 priority support",
+        "Dedicated support",
       ],
       notIncluded: [],
       popular: true,
@@ -120,16 +125,18 @@ export default function PricingSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className={`relative bg-white rounded-3xl p-8 border-2 transition-all duration-300 ${
+                className={`relative bg-white rounded-3xl p-8 border-2 transition-all duration-300 overflow-hidden ${
                   plan.popular
                     ? "border-blue-500 shadow-2xl shadow-blue-100/50 scale-105"
                     : "border-slate-200 shadow-xl hover:shadow-2xl hover:border-slate-300"
                 }`}
               >
-                {/* Popular Badge */}
+                {/* Coming Soon Corner Ribbon */}
                 {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-1.5 rounded-full text-sm font-bold shadow-lg">
+                  <div className="absolute top-0 right-0 w-32 h-32 overflow-hidden rounded-tr-3xl">
+                    <div className="absolute top-5 -right-7 w-36 bg-gradient-to-r from-blue-600 via-indigo-500 to-blue-600 text-white text-[10px] font-black tracking-[0.15em] uppercase py-1.5 text-center shadow-lg"
+                      style={{ transform: "rotate(45deg)" }}
+                    >
                       Coming Soon
                     </div>
                   </div>
@@ -195,7 +202,7 @@ export default function PricingSection() {
           className="text-center mt-12"
         >
           <p className="text-slate-600 font-medium mb-2">
-            All plans include end-to-end encryption and HIPAA compliance
+            All plans include SSL encryption and secure authentication.
           </p>
           <p className="text-sm text-slate-500">
             Need a custom plan for your organization?{" "}

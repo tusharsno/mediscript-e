@@ -46,8 +46,8 @@ const securityFeatures = [
   },
   {
     icon: Key,
-    title: "API Security",
-    description: "Protected API routes with Bearer token authentication and session validation.",
+    title: "Two-Factor Authentication",
+    description: "Optional email OTP-based 2FA with 10-minute expiry adds an extra layer of login security.",
     color: "bg-indigo-50",
     iconColor: "text-indigo-600",
     border: "border-indigo-100",

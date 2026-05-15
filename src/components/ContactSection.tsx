@@ -114,6 +114,7 @@ import { useState } from "react";
 export default function ContactSection() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -134,8 +135,9 @@ export default function ContactSection() {
       .then((res) => res.json())
       .then((data) => {
         if (data.message) {
-          alert("Message sent successfully!");
+          setSuccess(true);
           setFormData({ name: "", email: "", phone: "", company: "" });
+          setTimeout(() => setSuccess(false), 4000);
         }
       })
       .catch(() => {
@@ -223,6 +225,14 @@ export default function ContactSection() {
                   className="w-full px-5 py-3.5 rounded-xl bg-slate-50 text-slate-800 placeholder:text-slate-400 font-medium text-sm focus:outline-none focus:ring-2 focus:ring-[#287C9E] focus:bg-white border border-slate-200 hover:border-[#287C9E]/30 transition-all"
                 />
               </div>
+
+              {/* Success Message */}
+              {success && (
+                <div className="flex items-center gap-2 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700 font-semibold text-sm">
+                  <svg className="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                  Message sent successfully! We&apos;ll get back to you soon.
+                </div>
+              )}
 
               {/* Button Section */}
               <div className="flex justify-end mt-4">

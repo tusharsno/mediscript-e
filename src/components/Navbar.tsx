@@ -25,7 +25,6 @@ import {
   CheckCircle,
   Clock,
   AlertCircle,
-  Star,
 } from "lucide-react";
 
 const NAV_LINKS = {
@@ -716,7 +715,7 @@ export default function Navbar() {
             <span className="text-[1.65rem] font-black tracking-tight text-slate-900">MediScript</span>
           </Link>
 
-          {!session && <div className="hidden md:block w-px h-6 bg-slate-300 mx-5" />}
+          <div className="hidden md:block w-px h-6 bg-slate-300 mx-5" />
 
           <AnimatePresence mode="wait">
             <motion.div

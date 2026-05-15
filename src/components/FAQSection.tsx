@@ -10,23 +10,31 @@ export default function FAQSection() {
   const faqs = [
     {
       question: "How do I book an appointment?",
-      answer: "Simply sign up as a patient, browse our list of verified doctors, select your preferred doctor and time slot, and confirm your booking. You'll receive instant confirmation.",
+      answer: "Sign up as a patient, go to your dashboard, and use the Book Appointment section. Select a doctor, pick a date and time slot, add a reason if needed, and confirm. Your appointment will be in Pending status until the doctor confirms it.",
     },
     {
       question: "Is my medical data secure?",
-      answer: "Absolutely! We use end-to-end encryption, secure HTTPS connections, and follow HIPAA compliance standards. Your data is stored securely and never shared without your consent.",
+      answer: "Yes. MediScript-E uses bcryptjs password hashing, JWT session management, SSL database connections, and optional Two-Factor Authentication (2FA). Medical files are stored securely on Supabase Storage with access control.",
     },
     {
       question: "Can I download my prescriptions?",
-      answer: "Yes! All digital prescriptions can be downloaded as PDF files. You can access them anytime from your dashboard and share them with pharmacies or other healthcare providers.",
+      answer: "Yes. All digital prescriptions issued by your doctor are available in your dashboard under Prescriptions. You can download them as a PDF anytime.",
     },
     {
       question: "How do medicine reminders work?",
-      answer: "Set up medication schedules with dosage and frequency. You'll receive email notifications at the specified times. Mark medications as taken to track your adherence.",
+      answer: "Go to Medicine Reminders in your dashboard, add your medicine name, dosage, frequency, and time. You will receive automated email alerts daily at the scheduled time. You can mark medicines as taken or undo them anytime.",
     },
     {
-      question: "Is MediScript free to use?",
-      answer: "Yes! MediScript is completely free for both patients and doctors. Book appointments, manage prescriptions, and store medical records at no cost.",
+      question: "Is MediScript-E free to use?",
+      answer: "Yes, the current version is completely free for both patients and doctors. A Premium plan with advanced features like video consultations and priority booking is planned for the future.",
+    },
+    {
+      question: "How does Two-Factor Authentication work?",
+      answer: "You can enable 2FA from your Settings page. Once enabled, every login will require a 6-digit OTP sent to your email. The code expires in 10 minutes for security.",
+    },
+    {
+      question: "What is the Medical Vault?",
+      answer: "The Medical Vault is a secure cloud storage section in your patient dashboard where you can upload and manage lab reports, old prescriptions, and other medical documents. Files are stored on Supabase Storage.",
     },
   ];
 

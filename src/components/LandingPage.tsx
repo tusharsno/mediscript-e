@@ -488,7 +488,8 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
               transition={{ duration: 0.6, delay: 0 }}
               className="text-4xl md:text-5xl lg:text-[3.5rem] font-black mb-6 leading-[1.1] tracking-tight text-slate-900"
             >
-              Modern Healthcare Management System
+              Your Health,{" "}
+              <span className="text-[#1A6080]">Digitally Managed.</span>
             </motion.h1>
 
             {/* Subtitle */}
@@ -563,7 +564,7 @@ export default function LandingPage({ isLoggedIn }: LandingPageProps) {
             >
               <Shield className="h-4 w-4 text-emerald-500 flex-shrink-0" />
               <span>
-                HIPAA Compliant • Bank-Level Encryption • 24/7 Support
+                Email Verified • 2FA Protected • Role-Based Access
               </span>
             </motion.div>
           </div>

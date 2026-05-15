@@ -17,7 +17,10 @@ export async function POST(req: NextRequest) {
     }
 
     const now = new Date();
-    const currentTime = `${String(now.getUTCHours()).padStart(2, "0")}:${String(now.getUTCMinutes()).padStart(2, "0")}`;
+    // Use Bangladesh time (UTC+6) for time matching
+    const bdOffset = 6 * 60; // 360 minutes
+    const bdTime = new Date(now.getTime() + bdOffset * 60 * 1000);
+    const currentTime = `${String(bdTime.getUTCHours()).padStart(2, "0")}:${String(bdTime.getUTCMinutes()).padStart(2, "0")}`;
 
     const startOfToday = new Date();
     startOfToday.setUTCHours(0, 0, 0, 0);

@@ -449,7 +449,7 @@ export default async function DashboardPage() {
                         <div key={px.id} className="rounded-xl border border-slate-200 overflow-hidden">
                           <div className="flex items-start gap-3 p-4 bg-slate-50">
                             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-white font-black text-sm flex-shrink-0">
-                              {px.doctor.user.name.charAt(0).toUpperCase()}
+                              {px.doctor.user.name?.charAt(0).toUpperCase() ?? "D"}
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="font-black text-slate-900 text-sm">Dr. {px.doctor.user.name}</p>

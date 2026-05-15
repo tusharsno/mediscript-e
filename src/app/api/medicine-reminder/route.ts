@@ -11,19 +11,11 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { medicineName, dosage, frequency, time, startDate, endDate, timezoneOffset } = body;
+    const { medicineName, dosage, frequency, time, startDate, endDate } = body;
 
     if (!medicineName || !dosage || !frequency || !time || !startDate || !endDate) {
       return NextResponse.json({ message: "All fields are required" }, { status: 400 });
     }
-
-    // Convert local time to UTC
-    const [hours, minutes] = time.split(":").map(Number);
-    const offset = timezoneOffset || 0; // minutes offset from UTC
-    const totalMinutes = hours * 60 + minutes + offset;
-    const utcHours = Math.floor(((totalMinutes % 1440) + 1440) % 1440 / 60);
-    const utcMinutes = ((totalMinutes % 1440) + 1440) % 1440 % 60;
-    const utcTime = `${String(utcHours).padStart(2, "0")}:${String(utcMinutes).padStart(2, "0")}`;
 
     // Validate dates
     const start = new Date(startDate);
@@ -52,7 +44,7 @@ export async function POST(req: Request) {
         medicineName,
         dosage,
         frequency,
-        time: utcTime,
+        time,
         startDate: new Date(startDate + "T00:00:00.000Z"),
         endDate: new Date(endDate + "T23:59:59.999Z"),
         patientId: patient.id,

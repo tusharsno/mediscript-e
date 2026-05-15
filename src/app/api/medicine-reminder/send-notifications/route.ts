@@ -17,9 +17,7 @@ export async function POST(req: NextRequest) {
     }
 
     const now = new Date();
-    const utcHours = String(now.getUTCHours()).padStart(2, "0");
-    const utcMinutes = String(now.getUTCMinutes()).padStart(2, "0");
-    const currentTime = `${utcHours}:${utcMinutes}`;
+    const currentTime = `${String(now.getUTCHours()).padStart(2, "0")}:${String(now.getUTCMinutes()).padStart(2, "0")}`;
 
     const startOfToday = new Date();
     startOfToday.setUTCHours(0, 0, 0, 0);

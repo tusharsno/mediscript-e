@@ -27,7 +27,6 @@ export default function AddMedicineReminder() {
           time,
           startDate,
           endDate,
-          timezoneOffset: new Date().getTimezoneOffset(),
         }),
       });
 

@@ -38,6 +38,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ConditionalNavbar from "@/components/ConditionalNavbar";
 import Providers from "@/components/Providers";
+import Chatbot from "@/components/Chatbot";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -73,6 +74,7 @@ export default function RootLayout({
         <Providers>
           <ConditionalNavbar />
           <main className="flex-grow">{children}</main>
+          <Chatbot />
         </Providers>
       </body>
     </html>

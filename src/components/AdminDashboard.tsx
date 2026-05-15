@@ -55,49 +55,55 @@ export default function AdminDashboard() {
       title: "Total Users",
       value: stats?.totalUsers || 0,
       icon: Users,
-      color: "bg-blue-50",
+      gradient: "from-blue-500 to-blue-700",
+      bg: "bg-blue-50",
       iconColor: "text-blue-600",
-      border: "border-blue-100",
+      change: "All registered users",
     },
     {
       title: "Patients",
       value: stats?.totalPatients || 0,
       icon: UserCheck,
-      color: "bg-emerald-50",
+      gradient: "from-emerald-500 to-teal-600",
+      bg: "bg-emerald-50",
       iconColor: "text-emerald-600",
-      border: "border-emerald-100",
+      change: "Registered patients",
     },
     {
       title: "Doctors",
       value: stats?.totalDoctors || 0,
       icon: UserX,
-      color: "bg-purple-50",
+      gradient: "from-purple-500 to-purple-700",
+      bg: "bg-purple-50",
       iconColor: "text-purple-600",
-      border: "border-purple-100",
+      change: "Medical professionals",
     },
     {
       title: "Appointments",
       value: stats?.totalAppointments || 0,
       icon: Calendar,
-      color: "bg-orange-50",
+      gradient: "from-orange-500 to-orange-700",
+      bg: "bg-orange-50",
       iconColor: "text-orange-600",
-      border: "border-orange-100",
+      change: "Total bookings",
     },
     {
       title: "Prescriptions",
       value: stats?.totalPrescriptions || 0,
       icon: FileText,
-      color: "bg-cyan-50",
+      gradient: "from-cyan-500 to-cyan-700",
+      bg: "bg-cyan-50",
       iconColor: "text-cyan-600",
-      border: "border-cyan-100",
+      change: "Issued prescriptions",
     },
     {
       title: "Contact Messages",
       value: stats?.totalContactMessages || 0,
       icon: MessageSquare,
-      color: "bg-pink-50",
+      gradient: "from-pink-500 to-rose-600",
+      bg: "bg-pink-50",
       iconColor: "text-pink-600",
-      border: "border-pink-100",
+      change: "Received messages",
     },
   ];
 
@@ -115,33 +121,25 @@ export default function AdminDashboard() {
       </div>
 
       {/* Statistics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {statCards.map((card) => {
           const Icon = card.icon;
           return (
             <div
               key={card.title}
-              className="group relative bg-white rounded-2xl p-6 border border-slate-200 hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-300 hover:-translate-y-2 overflow-hidden"
+              className="bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
             >
-              {/* Gradient overlay on hover */}
-              <div className={`absolute inset-0 ${card.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-              
-              {/* Content */}
-              <div className="relative z-10">
-                <div className="flex items-center justify-between mb-4">
-                  <div className={`w-14 h-14 rounded-xl ${card.color} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300`}>
-                    <Icon className={`h-7 w-7 ${card.iconColor}`} />
-                  </div>
-                  <div className={`px-3 py-1 rounded-full ${card.color} border ${card.border}`}>
-                    <span className={`text-xs font-bold ${card.iconColor}`}>LIVE</span>
-                  </div>
+              <div className="flex items-start justify-between mb-4">
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${card.gradient} flex items-center justify-center shadow-sm`}>
+                  <Icon className="h-6 w-6 text-white" />
                 </div>
-                <h3 className="text-slate-600 text-sm font-bold mb-2 uppercase tracking-wide">{card.title}</h3>
-                <p className="text-4xl font-black text-slate-900 group-hover:text-slate-800 transition-colors">{card.value}</p>
+                <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${card.bg} ${card.iconColor}`}>
+                  LIVE
+                </span>
               </div>
-              
-              {/* Bottom accent line */}
-              <div className={`absolute bottom-0 left-0 right-0 h-1 ${card.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+              <p className="text-3xl font-black text-slate-900 mb-1">{card.value}</p>
+              <p className="text-sm font-bold text-slate-700">{card.title}</p>
+              <p className="text-xs text-slate-400 mt-0.5">{card.change}</p>
             </div>
           );
         })}

@@ -22,6 +22,7 @@ export default function UserManagement() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [filter, setFilter] = useState("ALL");
 
   useEffect(() => {
     fetchUsers();
@@ -87,29 +88,35 @@ export default function UserManagement() {
       </div>
 
       <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+        {/* Filter Tabs */}
+        <div className="px-6 py-4 border-b border-slate-200 flex items-center gap-2 flex-wrap">
+          {["ALL", "PATIENT", "DOCTOR", "ADMIN"].map((f) => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                filter === f
+                  ? "bg-slate-900 text-white"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              }`}
+            >
+              {f} ({f === "ALL" ? users.length : users.filter((u) => u.role === f).length})
+            </button>
+          ))}
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-slate-50 border-b border-slate-200">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  User
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  Role
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  Details
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  Joined
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  Actions
-                </th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">User</th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Role</th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Details</th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Joined</th>
+                <th className="px-6 py-4 text-left text-xs font-bold text-slate-700 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200">
-              {users.map((user) => (
+              {(filter === "ALL" ? users : users.filter((u) => u.role === filter)).map((user) => (
                 <tr key={user.id} className="hover:bg-slate-50 transition-colors">
                   <td className="px-6 py-4">
                     <div>

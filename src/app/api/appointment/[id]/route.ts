@@ -10,28 +10,32 @@ export async function PATCH(
   try {
     const { id } = await params;
     const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
+    if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
     const body = await req.json();
     const { status } = body;
 
-    if (!status) {
-      return NextResponse.json({ message: "Status is required" }, { status: 400 });
-    }
-
     const validStatuses = ["PENDING", "CONFIRMED", "CANCELLED", "COMPLETED"];
-    if (!validStatuses.includes(status)) {
+    if (!status || !validStatuses.includes(status)) {
       return NextResponse.json({ message: "Invalid status" }, { status: 400 });
     }
 
-    const appointment = await db.appointment.update({
-      where: { id },
-      data: { status },
-    });
+    // Ownership check
+    const appointment = await db.appointment.findUnique({ where: { id } });
+    if (!appointment) return NextResponse.json({ message: "Not found" }, { status: 404 });
 
-    return NextResponse.json(appointment, { status: 200 });
+    if (session.user.role === "DOCTOR") {
+      const doctor = await db.doctorProfile.findUnique({ where: { userId: session.user.id } });
+      if (!doctor || appointment.doctorId !== doctor.id)
+        return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    } else if (session.user.role === "PATIENT") {
+      const patient = await db.patientProfile.findUnique({ where: { userId: session.user.id } });
+      if (!patient || appointment.patientId !== patient.id)
+        return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
+
+    const updated = await db.appointment.update({ where: { id }, data: { status } });
+    return NextResponse.json(updated, { status: 200 });
   } catch (error) {
     console.error("UPDATE_APPOINTMENT_ERROR:", error);
     return NextResponse.json({ message: "Failed to update appointment" }, { status: 500 });
@@ -45,14 +49,18 @@ export async function DELETE(
   try {
     const { id } = await params;
     const session = await getServerSession(authOptions);
-    if (!session) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+    const appointment = await db.appointment.findUnique({ where: { id } });
+    if (!appointment) return NextResponse.json({ message: "Not found" }, { status: 404 });
+
+    if (session.user.role === "PATIENT") {
+      const patient = await db.patientProfile.findUnique({ where: { userId: session.user.id } });
+      if (!patient || appointment.patientId !== patient.id)
+        return NextResponse.json({ message: "Forbidden" }, { status: 403 });
     }
 
-    await db.appointment.delete({
-      where: { id },
-    });
-
+    await db.appointment.delete({ where: { id } });
     return NextResponse.json({ message: "Appointment deleted" }, { status: 200 });
   } catch (error) {
     console.error("DELETE_APPOINTMENT_ERROR:", error);

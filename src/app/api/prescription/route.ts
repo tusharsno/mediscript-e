@@ -3,6 +3,35 @@ import { authOptions } from "@/lib/auth";
 import db from "@/lib/db";
 import { NextResponse } from "next/server";
 
+export async function GET() {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || session.user.role !== "DOCTOR") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const doctor = await db.user.findUnique({
+      where: { email: session.user.email as string },
+      include: { doctorProfile: true },
+    });
+
+    if (!doctor?.doctorProfile) {
+      return NextResponse.json({ message: "Doctor profile not found" }, { status: 404 });
+    }
+
+    const prescriptions = await db.prescription.findMany({
+      where: { doctorId: doctor.doctorProfile.id },
+      include: { patient: { include: { user: true } } },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return NextResponse.json({ prescriptions }, { status: 200 });
+  } catch (error) {
+    console.error("GET Prescription Error:", error);
+    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+  }
+}
+
 export async function POST(req: Request) {
   try {
     const session = await getServerSession(authOptions);
@@ -14,7 +43,7 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    const { patientId, diagnosis, medications } = body;
+    const { patientId, appointmentId, diagnosis, medications } = body;
 
     if (!patientId || !diagnosis || !medications) {
       console.log("Missing fields check:", { patientId, diagnosis, medications });
@@ -47,6 +76,24 @@ export async function POST(req: Request) {
         patientId: patientId,
       },
     });
+
+    // Mark the specific appointment as COMPLETED
+    if (appointmentId) {
+      await db.appointment.update({
+        where: { id: appointmentId },
+        data: { status: "COMPLETED" },
+      });
+    } else {
+      // Fallback: complete the latest CONFIRMED/PENDING appointment
+      await db.appointment.updateMany({
+        where: {
+          doctorId: doctor.doctorProfile.id,
+          patientId: patientId,
+          status: { in: ["CONFIRMED", "PENDING"] },
+        },
+        data: { status: "COMPLETED" },
+      });
+    }
 
     return NextResponse.json(
       {

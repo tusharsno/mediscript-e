@@ -19,25 +19,26 @@ import {
   MessageSquare,
   BarChart3,
   Home,
+  Bell,
 } from "lucide-react";
 
 const SIDEBAR_LINKS = {
   PATIENT: [
-    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
     { href: "/dashboard#appointments", label: "Appointments", icon: Calendar },
-    { href: "/dashboard#reminders", label: "Medicine Reminders", icon: FileText },
+    { href: "/dashboard#reminders", label: "Medicine Reminders", icon: Bell },
     { href: "/dashboard#testimonial", label: "Share Feedback", icon: MessageSquare },
     { href: "/dashboard#vault", label: "Medical Vault", icon: FolderOpen },
     { href: "/dashboard#prescriptions", label: "Prescriptions", icon: FileText },
   ],
   DOCTOR: [
-    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
     { href: "/dashboard#appointments", label: "Appointments", icon: Calendar },
     { href: "/dashboard#testimonial", label: "Share Feedback", icon: MessageSquare },
     { href: "/dashboard#prescriptions", label: "Prescriptions", icon: FileText },
   ],
   ADMIN: [
-    { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
+    { href: "/dashboard", label: "Dashboard", icon: BarChart3, exact: true },
     { href: "/dashboard#users", label: "User Management", icon: UserCog },
     { href: "/dashboard#appointments", label: "Appointments", icon: Calendar },
     { href: "/dashboard#testimonials", label: "Testimonials", icon: MessageSquare },
@@ -59,6 +60,11 @@ export default function DashboardSidebar() {
   const role = session?.user?.role as keyof typeof SIDEBAR_LINKS | undefined;
   const links = role ? SIDEBAR_LINKS[role] : [];
   const roleStyle = role ? ROLE_STYLES[role] : null;
+
+  const isActive = (href: string, exact?: boolean) => {
+    if (exact) return pathname === "/dashboard";
+    return pathname === href || pathname.startsWith(href + "/");
+  };
 
   return (
     <>
@@ -95,7 +101,7 @@ export default function DashboardSidebar() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold text-slate-900 truncate">{session?.user?.name}</p>
-                <p className="text-xs text-slate-500 truncate">{session?.user?.email}</p>
+                <p className="text-[11px] text-slate-500 truncate" title={session?.user?.email ?? ""}>{session?.user?.email}</p>
               </div>
             </div>
             {roleStyle && (
@@ -107,7 +113,7 @@ export default function DashboardSidebar() {
 
           {/* Navigation Links */}
           <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-            {/* Home Button - Top */}
+            {/* Home */}
             <Link
               href="/"
               onClick={() => setMobileOpen(false)}
@@ -119,19 +125,21 @@ export default function DashboardSidebar() {
 
             {links.map((link) => {
               const Icon = link.icon;
-              const isActive = pathname === link.href || pathname.startsWith(link.href + "/");
-              
+              const active = isActive(link.href, link.exact);
               return (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all ${
-                    isActive
-                      ? `${roleStyle?.text ?? "text-blue-600"} bg-slate-50`
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all relative ${
+                    active
+                      ? `${roleStyle?.text ?? "text-blue-600"} bg-slate-50 font-bold`
                       : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                   }`}
                 >
+                  {active && (
+                    <span className={`absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 rounded-r-full ${roleStyle?.bg ? `bg-gradient-to-b ${roleStyle.bg}` : "bg-blue-500"}`} />
+                  )}
                   <Icon className="h-5 w-5" />
                   {link.label}
                 </Link>
@@ -144,7 +152,11 @@ export default function DashboardSidebar() {
             <Link
               href="/settings"
               onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all"
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all ${
+                pathname === "/settings"
+                  ? `${roleStyle?.text ?? "text-blue-600"} bg-slate-50 font-bold`
+                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+              }`}
             >
               <Settings className="h-5 w-5" />
               Settings

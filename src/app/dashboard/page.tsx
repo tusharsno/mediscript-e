@@ -230,6 +230,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import BookAppointment from "@/components/BookAppointment";
 import MyAppointments from "@/components/MyAppointments";
 import DoctorAppointments from "@/components/DoctorAppointments";
+import DoctorPrescriptionList from "@/components/DoctorPrescriptionList";
 import AddMedicineReminder from "@/components/AddMedicineReminder";
 import MedicineReminders from "@/components/MedicineReminders";
 import SubmitTestimonial from "@/components/SubmitTestimonial";
@@ -238,6 +239,7 @@ import UserManagement from "@/components/UserManagement";
 import AppointmentOverview from "@/components/AppointmentOverview";
 import ContactMessages from "@/components/ContactMessages";
 import TestimonialsManagement from "@/components/TestimonialsManagement";
+import { Calendar, Bell, FileText, FolderOpen, Stethoscope, Users, BarChart3 } from "lucide-react";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -250,10 +252,12 @@ export default async function DashboardPage() {
       patientProfile: {
         include: {
           medicalVault: true,
+          medicineReminders: true,
           prescriptions: {
             include: { doctor: { include: { user: true } } },
             orderBy: { createdAt: "desc" },
           },
+          appointments: true,
         },
       },
     },
@@ -264,16 +268,90 @@ export default async function DashboardPage() {
       <div className="p-6 md:p-12">
         <div className="max-w-5xl mx-auto">
           {/* Header Card */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 mb-8">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-black text-slate-900 mb-2">
-                  Welcome back, {user?.name}
-                </h1>
-                <p className="text-slate-500 font-medium">{user?.email}</p>
+          {user?.role === "PATIENT" && (
+            <div className="relative overflow-hidden bg-gradient-to-br from-[#1A6080] to-[#0d4a63] rounded-2xl p-8 mb-8 text-white">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-32" />
+              <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-24 -translate-x-24" />
+              <div className="relative">
+                <div className="flex items-start justify-between mb-6">
+                  <div>
+                    <p className="text-white/70 text-sm font-medium mb-1">Welcome back</p>
+                    <h1 className="text-3xl font-black">{user?.name}</h1>
+                    <p className="text-white/60 text-sm mt-1">{user?.email}</p>
+                  </div>
+                  <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-black px-3 py-1.5 rounded-full border border-white/30 uppercase tracking-wider">
+                    Patient
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Calendar className="h-4 w-4 text-white/70" />
+                      <span className="text-white/70 text-xs font-medium">Appointments</span>
+                    </div>
+                    <p className="text-2xl font-black">{user.patientProfile?.appointments?.length ?? 0}</p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Bell className="h-4 w-4 text-white/70" />
+                      <span className="text-white/70 text-xs font-medium">Reminders</span>
+                    </div>
+                    <p className="text-2xl font-black">{user.patientProfile?.medicineReminders?.length ?? 0}</p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                    <div className="flex items-center gap-2 mb-2">
+                      <FileText className="h-4 w-4 text-white/70" />
+                      <span className="text-white/70 text-xs font-medium">Prescriptions</span>
+                    </div>
+                    <p className="text-2xl font-black">{user.patientProfile?.prescriptions?.length ?? 0}</p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                    <div className="flex items-center gap-2 mb-2">
+                      <FolderOpen className="h-4 w-4 text-white/70" />
+                      <span className="text-white/70 text-xs font-medium">Records</span>
+                    </div>
+                    <p className="text-2xl font-black">{user.patientProfile?.medicalVault?.length ?? 0}</p>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          )}
+
+          {user?.role === "DOCTOR" && (
+            <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-8 mb-8 text-white">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-32" />
+              <div className="relative">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-white/70 text-sm font-medium mb-1">Welcome back</p>
+                    <h1 className="text-3xl font-black">Dr. {user?.name}</h1>
+                    <p className="text-white/60 text-sm mt-1">{user.doctorProfile?.specialization}</p>
+                  </div>
+                  <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-black px-3 py-1.5 rounded-full border border-white/30 uppercase tracking-wider">
+                    Doctor
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {user?.role === "ADMIN" && (
+            <div className="relative overflow-hidden bg-gradient-to-br from-purple-600 to-purple-800 rounded-2xl p-8 mb-8 text-white">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-32" />
+              <div className="relative">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-white/70 text-sm font-medium mb-1">Welcome back</p>
+                    <h1 className="text-3xl font-black">{user?.name}</h1>
+                    <p className="text-white/60 text-sm mt-1">System Administrator</p>
+                  </div>
+                  <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-black px-3 py-1.5 rounded-full border border-white/30 uppercase tracking-wider">
+                    Admin
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
           {/* PATIENT INTERFACE */}
           {user?.role === "PATIENT" && (
             <div className="space-y-6">
@@ -294,40 +372,48 @@ export default async function DashboardPage() {
                 <SubmitTestimonial />
               </div>
 
-              <div id="vault" className="bg-emerald-50 border border-emerald-100 p-6 rounded-2xl shadow-sm scroll-mt-20">
-                <h2 className="text-xl font-bold text-emerald-900 mb-2">
-                  Medical Vault
-                </h2>
-                <FileUpload />
+              <div id="vault" className="scroll-mt-20">
+                <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                  <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-emerald-50 rounded-lg">
+                        <FolderOpen className="h-5 w-5 text-emerald-600" />
+                      </div>
+                      <div>
+                        <h2 className="text-base font-black text-slate-800">Medical Vault</h2>
+                        <p className="text-xs text-slate-400 font-medium">Securely store your medical documents</p>
+                      </div>
+                    </div>
+                    <span className="text-xs font-black bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full">
+                      {user.patientProfile?.medicalVault.length ?? 0} Files
+                    </span>
+                  </div>
+                  <div className="p-6">
+                    <FileUpload />
+                  </div>
+                </div>
               </div>
 
               <div id="records" className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden scroll-mt-20">
-                <div className="flex items-center justify-between px-6 py-5 border-b border-slate-100">
+                <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-blue-50 rounded-lg">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
+                    <div className="p-2 bg-emerald-50 rounded-lg">
+                      <FolderOpen className="h-5 w-5 text-emerald-600" />
                     </div>
                     <div>
-                      <h2 className="text-base font-black text-slate-800 tracking-tight">Your Records</h2>
-                      <p className="text-[11px] text-slate-400 font-medium">All uploaded medical documents</p>
+                      <h2 className="text-base font-black text-slate-800">Uploaded Records</h2>
+                      <p className="text-xs text-slate-400 font-medium">All your medical documents</p>
                     </div>
                   </div>
-                  <span className="text-[10px] font-black bg-blue-50 text-blue-600 px-3 py-1 rounded-full uppercase tracking-widest">
-                    {user.patientProfile?.medicalVault.length ?? 0} files
+                  <span className="text-xs font-black bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full">
+                    {user.patientProfile?.medicalVault.length ?? 0} Files
                   </span>
                 </div>
-
                 <div className="p-6">
                   {!user.patientProfile?.medicalVault || user.patientProfile.medicalVault.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-10 text-center">
-                      <div className="p-4 bg-slate-50 rounded-full mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                      </div>
-                      <p className="text-slate-400 font-semibold text-sm">No records uploaded yet</p>
+                    <div className="text-center py-10">
+                      <FolderOpen className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+                      <p className="text-slate-400 font-semibold">No records uploaded yet</p>
                       <p className="text-slate-300 text-xs mt-1">Upload your first medical document above</p>
                     </div>
                   ) : (
@@ -341,30 +427,55 @@ export default async function DashboardPage() {
               </div>
 
               <div id="prescriptions" className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden scroll-mt-20">
-                <h2 className="text-xl font-bold p-6 border-b text-slate-800">
-                  Issued Prescriptions
-                </h2>
-                <div className="p-6">
-                  {user.patientProfile?.prescriptions.map((px) => (
-                    <div
-                      key={px.id}
-                      className="p-5 bg-blue-50/50 rounded-xl border border-blue-100 mb-4"
-                    >
-                      <p className="font-extrabold text-slate-900">
-                        {px.diagnosis}
-                      </p>
-                      <div className="mt-2 bg-white p-3 rounded-lg text-sm border border-blue-50 font-medium">
-                        <span className="text-blue-500 font-bold text-[10px] block uppercase mb-1">
-                          Medicines:
-                        </span>
-                        {px.medications}
-                      </div>
-                      <DownloadPDF
-                        prescription={px}
-                        doctorName={px.doctor.user.name}
-                      />
+                <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-green-50 rounded-lg">
+                      <FileText className="h-5 w-5 text-green-600" />
                     </div>
-                  ))}
+                    <div>
+                      <h2 className="text-base font-black text-slate-800">Prescriptions</h2>
+                      <p className="text-xs text-slate-400 font-medium">Issued by your doctors</p>
+                    </div>
+                  </div>
+                  <span className="text-xs font-black bg-green-50 text-green-600 px-3 py-1 rounded-full">
+                    {user.patientProfile?.prescriptions.length ?? 0} Total
+                  </span>
+                </div>
+                <div className="p-6">
+                  {!user.patientProfile?.prescriptions || user.patientProfile.prescriptions.length === 0 ? (
+                    <div className="text-center py-10">
+                      <FileText className="h-12 w-12 text-slate-300 mx-auto mb-3" />
+                      <p className="text-slate-400 font-semibold">No prescriptions yet</p>
+                      <p className="text-slate-300 text-xs mt-1">Prescriptions from your doctor will appear here</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {user.patientProfile.prescriptions.map((px) => (
+                        <div key={px.id} className="rounded-xl border border-slate-200 overflow-hidden">
+                          <div className="flex items-start gap-3 p-4 bg-slate-50">
+                            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-white font-black text-sm flex-shrink-0">
+                              {px.doctor.user.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-black text-slate-900 text-sm">Dr. {px.doctor.user.name}</p>
+                              <p className="text-xs text-slate-500 mt-0.5">{new Date(px.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</p>
+                            </div>
+                          </div>
+                          <div className="p-4 space-y-3">
+                            <div>
+                              <p className="text-xs font-black text-slate-400 uppercase tracking-wider mb-1">Diagnosis</p>
+                              <p className="text-sm font-semibold text-slate-800">{px.diagnosis}</p>
+                            </div>
+                            <div>
+                              <p className="text-xs font-black text-slate-400 uppercase tracking-wider mb-1">Medications</p>
+                              <p className="text-sm font-semibold text-slate-800">{px.medications}</p>
+                            </div>
+                            <DownloadPDF prescription={px} doctorName={px.doctor.user.name} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -373,47 +484,38 @@ export default async function DashboardPage() {
           {/* DOCTOR INTERFACE */}
           {user?.role === "DOCTOR" && (
             <div className="space-y-6">
-              {/* Appointment Management Section */}
               <DoctorAppointments />
 
-              {/* Submit Testimonial Section */}
               <div id="testimonial" className="scroll-mt-20">
                 <SubmitTestimonial />
               </div>
 
-              <div className="bg-blue-50 border border-blue-100 p-8 rounded-2xl">
-                <h2 className="text-2xl font-bold text-blue-900 mb-6 flex items-center gap-2">
-                  <span className="p-2 bg-blue-600 rounded-lg text-white text-[10px] font-black uppercase tracking-widest">
-                    Doctor Panel
-                  </span>
-                </h2>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                  <div className="bg-white p-5 rounded-xl border border-blue-200 shadow-sm font-black italic">
-                    <p className="text-[10px] text-blue-500 uppercase tracking-[0.2em] mb-1">
-                      Specialization
-                    </p>
-                    <p className="text-slate-900 text-xl">
-                      {user.doctorProfile?.specialization || "General"}
-                    </p>
+              <div id="prescriptions" className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden scroll-mt-20">
+                <div className="px-6 py-5 border-b border-slate-100 flex items-center gap-3">
+                  <div className="p-2 bg-blue-50 rounded-lg">
+                    <FileText className="h-5 w-5 text-blue-600" />
                   </div>
-                  <div className="bg-white p-5 rounded-xl border border-blue-200 shadow-sm font-black italic">
-                    <p className="text-[10px] text-blue-500 uppercase tracking-[0.2em] mb-1">
-                      License No
-                    </p>
-                    <p className="text-slate-900 text-xl">
-                      {user.doctorProfile?.licenseNo || "N/A"}
-                    </p>
+                  <div>
+                    <h2 className="text-base font-black text-slate-800">Issue Prescription</h2>
+                    <p className="text-xs text-slate-400 font-medium">Write a new prescription for a patient</p>
                   </div>
                 </div>
-
-              <div id="prescriptions" className="bg-white p-6 rounded-2xl border border-slate-200 shadow-inner scroll-mt-20">
-                  <h3 className="font-bold text-slate-800 mb-4 tracking-tighter italic">
-                    Write New Prescription
-                  </h3>
+                <div className="p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                      <p className="text-xs font-black text-slate-400 uppercase tracking-wider mb-1">Specialization</p>
+                      <p className="font-black text-slate-900">{user.doctorProfile?.specialization || "General"}</p>
+                    </div>
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                      <p className="text-xs font-black text-slate-400 uppercase tracking-wider mb-1">License No</p>
+                      <p className="font-black text-slate-900">{user.doctorProfile?.licenseNo || "N/A"}</p>
+                    </div>
+                  </div>
                   <PrescriptionForm />
                 </div>
               </div>
+
+              <DoctorPrescriptionList />
             </div>
           )}
 

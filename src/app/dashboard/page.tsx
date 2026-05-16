@@ -1,245 +1,86 @@
-// import { getServerSession } from "next-auth";
-// import { authOptions } from "@/lib/auth";
-// import { redirect } from "next/navigation";
-// import db from "@/lib/db";
-// import FileUpload from "@/components/FileUpload";
-// import PrescriptionForm from "@/components/PrescriptionForm";
-// import DownloadPDF from "@/components/DownloadPDF"; // নতুন ইমপোর্ট
-
-// export default async function DashboardPage() {
-//   // 1. Authenticate Session
-//   const session = await getServerSession(authOptions);
-//   if (!session) redirect("/login");
-
-//   // 2. Fetch User Profile with all relations
-//   const user = await db.user.findUnique({
-//     where: { email: session.user.email as string },
-//     include: {
-//       doctorProfile: true,
-//       patientProfile: {
-//         include: {
-//           medicalVault: true,
-//           prescriptions: {
-//             include: {
-//               doctor: {
-//                 include: {
-//                   user: true,
-//                 },
-//               },
-//             },
-//             orderBy: {
-//               createdAt: "desc",
-//             },
-//           },
-//         },
-//       },
-//     },
-//   });
-
-//   return (
-//     <div className="min-h-screen bg-slate-50 p-6 md:p-12">
-//       <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200">
-//         {/* Header Section */}
-//         <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-8 text-white">
-//           <div className="flex justify-between items-center">
-//             <div>
-//               <h1 className="text-3xl font-extrabold tracking-tight">
-//                 Welcome, {user?.name}
-//               </h1>
-//               <p className="opacity-90 mt-1 font-medium text-blue-50">
-//                 {user?.email}
-//               </p>
-//             </div>
-//             <span className="bg-white/20 backdrop-blur-md px-4 py-2 rounded-xl text-sm font-bold border border-white/30 uppercase">
-//               {user?.role}
-//             </span>
-//           </div>
-//         </div>
-
-//         <div className="p-8">
-//           {/* PATIENT INTERFACE */}
-//           {user?.role === "PATIENT" && (
-//             <div className="space-y-8">
-//               {/* Medical Vault Section */}
-//               <div className="bg-emerald-50 border border-emerald-100 p-6 rounded-2xl shadow-sm">
-//                 <h2 className="text-xl font-bold text-emerald-900 mb-2">
-//                   Medical Vault
-//                 </h2>
-//                 <p className="text-emerald-700 mb-6 font-medium text-sm">
-//                   Safely upload and manage your prescriptions or test reports.
-//                 </p>
-//                 <FileUpload />
-//               </div>
-
-//               {/* Digital Prescriptions Section */}
-//               <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-//                 <h2 className="text-xl font-bold p-6 border-b text-slate-800 flex items-center gap-2">
-//                   <span className="text-blue-600">📄</span> Issued Prescriptions
-//                 </h2>
-//                 <div className="p-6">
-//                   {!user.patientProfile?.prescriptions ||
-//                   user.patientProfile.prescriptions.length === 0 ? (
-//                     <p className="text-slate-400 italic text-center py-4">
-//                       No digital prescriptions issued yet.
-//                     </p>
-//                   ) : (
-//                     <div className="grid gap-4">
-//                       {user.patientProfile.prescriptions.map((px) => (
-//                         <div
-//                           key={px.id}
-//                           className="p-5 bg-blue-50/50 rounded-xl border border-blue-100 hover:shadow-md transition-all"
-//                         >
-//                           <div className="flex justify-between items-start mb-3">
-//                             <div>
-//                               <p className="font-extrabold text-slate-900 text-lg">
-//                                 {px.diagnosis}
-//                               </p>
-//                               <p className="text-sm text-slate-500 font-medium tracking-tight">
-//                                 By{" "}
-//                                 <span className="text-blue-700 font-bold">
-//                                   Dr. {px.doctor.user.name}
-//                                 </span>
-//                               </p>
-//                             </div>
-//                             <span className="text-[10px] font-black bg-white px-2 py-1 rounded-md border border-blue-200 text-blue-600 uppercase">
-//                               {new Date(px.createdAt).toLocaleDateString()}
-//                             </span>
-//                           </div>
-//                           <div className="bg-white p-4 rounded-lg border border-blue-50 text-slate-700 text-sm mb-4 leading-relaxed font-medium">
-//                             <span className="text-blue-500 font-bold block mb-1 text-[10px] uppercase">
-//                               Medicines:
-//                             </span>
-//                             {/* সেশন ডাটা অনুযায়ী medicines বা medications ফিল্ড ব্যবহার করুন */}
-//                             {px.medications}
-//                           </div>
-
-//                           {/* PDF Download Component */}
-//                           <DownloadPDF
-//                             prescription={px}
-//                             doctorName={px.doctor.user.name}
-//                           />
-//                         </div>
-//                       ))}
-//                     </div>
-//                   )}
-//                 </div>
-//               </div>
-
-//               {/* Uploaded Records Section */}
-//               <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-//                 <h2 className="text-xl font-bold p-6 border-b text-slate-800">
-//                   Your Records
-//                 </h2>
-//                 <div className="p-6">
-//                   {!user.patientProfile?.medicalVault ||
-//                   user.patientProfile.medicalVault.length === 0 ? (
-//                     <p className="text-slate-400 italic text-center py-4">
-//                       No records uploaded yet.
-//                     </p>
-//                   ) : (
-//                     <div className="grid gap-3">
-//                       {user.patientProfile.medicalVault.map((record) => (
-//                         <div
-//                           key={record.id}
-//                           className="flex justify-between items-center p-4 bg-slate-50 rounded-xl border border-slate-100 hover:border-blue-200 transition-all"
-//                         >
-//                           <span className="font-bold text-slate-700 text-sm truncate max-w-[200px] md:max-w-xs">
-//                             {record.fileName}
-//                           </span>
-//                           <a
-//                             href={record.fileUrl}
-//                             target="_blank"
-//                             className="bg-white px-4 py-2 rounded-lg border border-slate-200 text-blue-600 font-bold text-xs hover:bg-blue-50 transition-colors"
-//                           >
-//                             View Report
-//                           </a>
-//                         </div>
-//                       ))}
-//                     </div>
-//                   )}
-//                 </div>
-//               </div>
-//             </div>
-//           )}
-
-//           {/* DOCTOR INTERFACE */}
-//           {user?.role === "DOCTOR" && (
-//             <div className="space-y-8">
-//               <div className="bg-blue-50 border border-blue-100 p-8 rounded-2xl shadow-sm">
-//                 <h2 className="text-2xl font-bold text-blue-900 mb-6 flex items-center gap-2">
-//                   <span className="p-2 bg-blue-600 rounded-lg text-white text-xs">
-//                     Dr.
-//                   </span>{" "}
-//                   Doctor Panel
-//                 </h2>
-
-//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-//                   <div className="bg-white p-5 rounded-xl border border-blue-200 shadow-sm">
-//                     <p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.2em] mb-1">
-//                       Specialization
-//                     </p>
-//                     <p className="text-slate-900 font-black text-xl">
-//                       {user.doctorProfile?.specialization ||
-//                         "General Physician"}
-//                     </p>
-//                   </div>
-//                   <div className="bg-white p-5 rounded-xl border border-blue-200 shadow-sm">
-//                     <p className="text-[10px] font-black text-blue-500 uppercase tracking-[0.2em] mb-1">
-//                       License No
-//                     </p>
-//                     <p className="text-slate-900 font-black text-xl">
-//                       {user.doctorProfile?.licenseNo || "N/A"}
-//                     </p>
-//                   </div>
-//                 </div>
-
-//                 <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-inner">
-//                   <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-//                     Write New Prescription
-//                   </h3>
-//                   <PrescriptionForm />
-//                 </div>
-//               </div>
-//             </div>
-//           )}
-
-//           {/* Logout Action */}
-//           <div className="mt-12 pt-8 border-t border-slate-100 text-center">
-//             <a
-//               href="/api/auth/signout"
-//               className="text-slate-400 font-black hover:text-red-500 transition-colors duration-200 uppercase text-[10px] tracking-[0.3em]"
-//             >
-//               Sign Out from Account
-//             </a>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import db from "@/lib/db";
-import FileUpload from "@/components/FileUpload";
-import PrescriptionForm from "@/components/PrescriptionForm";
-import DownloadPDF from "@/components/DownloadPDF";
-import RecordItem from "@/components/RecordItem";
 import DashboardLayout from "@/components/DashboardLayout";
-import BookAppointment from "@/components/BookAppointment";
-import MyAppointments from "@/components/MyAppointments";
-import DoctorAppointments from "@/components/DoctorAppointments";
-import DoctorPrescriptionList from "@/components/DoctorPrescriptionList";
-import AddMedicineReminder from "@/components/AddMedicineReminder";
-import MedicineReminders from "@/components/MedicineReminders";
-import SubmitTestimonial from "@/components/SubmitTestimonial";
-import AdminDashboard from "@/components/AdminDashboard";
-import UserManagement from "@/components/UserManagement";
-import AppointmentOverview from "@/components/AppointmentOverview";
-import ContactMessages from "@/components/ContactMessages";
-import TestimonialsManagement from "@/components/TestimonialsManagement";
-import { Calendar, Bell, FileText, FolderOpen, Stethoscope, Users, BarChart3 } from "lucide-react";
+import Link from "next/link";
+import {
+  Calendar, Bell, FileText, FolderOpen,
+  Users, MessageSquare, ArrowRight,
+  CheckCircle, Clock, Stethoscope,
+} from "lucide-react";
+
+function StatCard({ label, value, icon: Icon, color, bar, href, subtitle }: {
+  label: string; value: number; icon: React.ElementType;
+  color: string; bar: string; href: string; subtitle?: string;
+}) {
+  return (
+    <Link href={href} className="bg-white rounded-2xl p-5 border border-slate-200 hover:border-[#1A6080]/40 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 group overflow-hidden relative">
+      <div className={`absolute top-0 left-0 right-0 h-1 ${bar}`} />
+      <div className="absolute bottom-0 right-0 w-20 h-20 rounded-full bg-[#1A6080]/5 translate-x-6 translate-y-6" />
+      <div className="flex items-start justify-between mt-2 mb-4">
+        <div className={`w-11 h-11 rounded-xl ${color} flex items-center justify-center shadow-sm`}>
+          <Icon className="h-5 w-5" />
+        </div>
+        <ArrowRight className="h-4 w-4 text-slate-300 group-hover:text-[#1A6080] group-hover:translate-x-0.5 transition-all" />
+      </div>
+      <p className="text-3xl font-black text-slate-900 leading-none">{value}</p>
+      <p className="text-xs text-slate-600 font-semibold mt-1.5">{label}</p>
+      {subtitle && <p className="text-[10px] text-slate-400 mt-0.5">{subtitle}</p>}
+    </Link>
+  );
+}
+
+function QuickActionCard({ label, desc, icon: Icon, href, color }: {
+  label: string; desc: string; icon: React.ElementType; href: string; color: string;
+}) {
+  return (
+    <Link href={href} className="relative overflow-hidden flex items-center gap-4 p-5 bg-white rounded-2xl border border-slate-200 hover:border-[#1A6080]/40 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 group">
+      <div className="absolute inset-0 group-hover:bg-[#1A6080]/5 transition-all duration-200 rounded-2xl" />
+      <div className={`relative w-12 h-12 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center flex-shrink-0 shadow-md`}>
+        <Icon className="h-6 w-6 text-white" />
+      </div>
+      <div className="relative flex-1 min-w-0">
+        <p className="font-black text-slate-900 text-sm">{label}</p>
+        <p className="text-xs text-slate-400 mt-0.5">{desc}</p>
+      </div>
+      <ArrowRight className="relative h-4 w-4 text-slate-300 group-hover:text-[#1A6080] group-hover:translate-x-1 transition-all flex-shrink-0" />
+    </Link>
+  );
+}
+
+function RecentAppointments({ appointments, href }: {
+  appointments: { id: string; date: Date; time: string; status: string }[];
+  href: string;
+}) {
+  if (!appointments || appointments.length === 0) return null;
+  return (
+    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <h2 className="text-base font-black text-slate-800">Recent Appointments</h2>
+        <Link href={href} className="text-xs font-bold text-[#1A6080] hover:underline">View all →</Link>
+      </div>
+      <div className="divide-y divide-slate-100">
+        {appointments.slice(0, 3).map((apt) => (
+          <div key={apt.id} className="px-6 py-4 flex items-center justify-between">
+            <div>
+              <p className="text-sm font-bold text-slate-800">
+                {new Date(apt.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+              </p>
+              <p className="text-xs text-slate-400 mt-0.5">{apt.time}</p>
+            </div>
+            <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
+              apt.status === "CONFIRMED" ? "bg-green-50 text-green-600" :
+              apt.status === "PENDING" ? "bg-yellow-50 text-yellow-600" :
+              apt.status === "COMPLETED" ? "bg-blue-50 text-blue-600" :
+              "bg-red-50 text-red-600"
+            }`}>{apt.status}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -252,298 +93,173 @@ export default async function DashboardPage() {
       patientProfile: {
         include: {
           medicalVault: true,
-          medicineReminders: true,
-          prescriptions: {
-            include: { doctor: { include: { user: true } } },
-            orderBy: { createdAt: "desc" },
-          },
-          appointments: true,
+          medicineReminders: { where: { taken: false } },
+          prescriptions: true,
+          appointments: { orderBy: { date: "desc" } },
         },
       },
     },
   });
 
+  if (!user) redirect("/login");
+
+  // ── PATIENT ───────────────────────────────────────────────────
+  if (user.role === "PATIENT") {
+    const p = user.patientProfile;
+    const pending = p?.appointments.filter((a) => a.status === "PENDING").length ?? 0;
+    const confirmed = p?.appointments.filter((a) => a.status === "CONFIRMED").length ?? 0;
+    const totalAppts = p?.appointments.length ?? 0;
+
+    return (
+      <DashboardLayout>
+        <div className="p-6 md:p-8 max-w-5xl mx-auto space-y-8">
+          <div className="relative overflow-hidden bg-gradient-to-br from-[#1A6080] to-[#0d4a63] rounded-2xl p-8 text-white">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-32" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-24 -translate-x-24" />
+            <div className="relative flex items-start justify-between">
+              <div>
+                <p className="text-white/70 text-sm font-medium mb-1">Welcome back</p>
+                <h1 className="text-3xl font-black">{user.name}</h1>
+                <p className="text-white/60 text-sm mt-1">{user.email}</p>
+                {(pending > 0 || confirmed > 0) && (
+                  <div className="mt-4 flex gap-3">
+                    {pending > 0 && (
+                      <span className="flex items-center gap-1.5 bg-yellow-400/20 text-yellow-200 text-xs font-bold px-3 py-1.5 rounded-full border border-yellow-400/30">
+                        <Clock className="h-3.5 w-3.5" /> {pending} Pending
+                      </span>
+                    )}
+                    {confirmed > 0 && (
+                      <span className="flex items-center gap-1.5 bg-green-400/20 text-green-200 text-xs font-bold px-3 py-1.5 rounded-full border border-green-400/30">
+                        <CheckCircle className="h-3.5 w-3.5" /> {confirmed} Confirmed
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+              <div className="hidden sm:flex flex-col items-end gap-3">
+                <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-black px-3 py-1.5 rounded-full border border-white/30 uppercase tracking-wider">Patient</span>
+                {user.patientProfile?.bloodGroup && (
+                  <span className="bg-red-400/20 text-red-200 text-sm font-black px-4 py-2 rounded-xl border border-red-400/30">
+                    {user.patientProfile.bloodGroup}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <StatCard label="Total Appointments" value={totalAppts} icon={Calendar} color="bg-[#1A6080]/10 text-[#1A6080]" bar="bg-[#1A6080]" href="/appointments" subtitle="View all appointments" />
+            <StatCard label="Active Reminders" value={p?.medicineReminders.length ?? 0} icon={Bell} color="bg-[#1A6080]/10 text-[#1A6080]" bar="bg-[#1A6080]" href="/reminders" subtitle="Medicine schedule" />
+            <StatCard label="Prescriptions" value={p?.prescriptions.length ?? 0} icon={FileText} color="bg-[#1A6080]/10 text-[#1A6080]" bar="bg-[#1A6080]" href="/prescriptions" subtitle="From your doctors" />
+            <StatCard label="Medical Records" value={p?.medicalVault.length ?? 0} icon={FolderOpen} color="bg-[#1A6080]/10 text-[#1A6080]" bar="bg-[#1A6080]" href="/vault" subtitle="Uploaded documents" />
+          </div>
+
+          <div>
+            <h2 className="text-base font-black text-slate-800 mb-4">Quick Actions</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <QuickActionCard label="Book Appointment" desc="Schedule a visit with a doctor" icon={Calendar} href="/appointments" color="from-[#1A6080] to-[#0d4a63]" />
+              <QuickActionCard label="Set Reminder" desc="Add a new medicine reminder" icon={Bell} href="/reminders" color="from-orange-500 to-orange-600" />
+              <QuickActionCard label="Upload Record" desc="Store a medical document" icon={FolderOpen} href="/vault" color="from-purple-500 to-purple-600" />
+              <QuickActionCard label="View Prescriptions" desc="Download your prescriptions" icon={FileText} href="/prescriptions" color="from-green-500 to-green-600" />
+            </div>
+          </div>
+
+          <RecentAppointments appointments={p?.appointments ?? []} href="/appointments" />
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // ── DOCTOR ────────────────────────────────────────────────────
+  if (user.role === "DOCTOR") {
+    const doctorProfile = await db.doctorProfile.findUnique({
+      where: { userId: user.id },
+      include: {
+        appointments: { orderBy: { date: "desc" } },
+        prescriptions: true,
+      },
+    });
+
+    const pending = doctorProfile?.appointments.filter((a) => a.status === "PENDING").length ?? 0;
+    const confirmed = doctorProfile?.appointments.filter((a) => a.status === "CONFIRMED").length ?? 0;
+    const completed = doctorProfile?.appointments.filter((a) => a.status === "COMPLETED").length ?? 0;
+    const totalRx = doctorProfile?.prescriptions.length ?? 0;
+
+    return (
+      <DashboardLayout>
+        <div className="p-6 md:p-8 max-w-5xl mx-auto space-y-8">
+          <div className="relative overflow-hidden bg-gradient-to-br from-[#1A6080] to-[#0d4a63] rounded-2xl p-8 text-white">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-32" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-24 -translate-x-24" />
+            <div className="relative flex items-start justify-between">
+              <div>
+                <p className="text-white/70 text-sm font-medium mb-1">Welcome back</p>
+                <h1 className="text-3xl font-black">Dr. {user.name}</h1>
+                <p className="text-white/60 text-sm mt-1">{user.doctorProfile?.specialization} · {user.doctorProfile?.licenseNo}</p>
+                {pending > 0 && (
+                  <span className="mt-4 inline-flex items-center gap-1.5 bg-yellow-400/20 text-yellow-200 text-xs font-bold px-3 py-1.5 rounded-full border border-yellow-400/30">
+                    <Clock className="h-3.5 w-3.5" /> {pending} Pending
+                  </span>
+                )}
+              </div>
+              <span className="hidden sm:block bg-white/20 backdrop-blur-sm text-white text-xs font-black px-3 py-1.5 rounded-full border border-white/30 uppercase tracking-wider flex-shrink-0">Doctor</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <StatCard label="Pending" value={pending} icon={Clock} color="bg-[#1A6080]/10 text-[#1A6080]" bar="bg-[#1A6080]" href="/appointments" subtitle="Awaiting confirmation" />
+            <StatCard label="Confirmed" value={confirmed} icon={CheckCircle} color="bg-[#1A6080]/10 text-[#1A6080]" bar="bg-[#1A6080]" href="/appointments" subtitle="Upcoming visits" />
+            <StatCard label="Completed" value={completed} icon={CheckCircle} color="bg-[#1A6080]/10 text-[#1A6080]" bar="bg-[#1A6080]" href="/appointments" subtitle="Past appointments" />
+            <StatCard label="Prescriptions" value={totalRx} icon={FileText} color="bg-[#1A6080]/10 text-[#1A6080]" bar="bg-[#1A6080]" href="/prescriptions" subtitle="Issued total" />
+          </div>
+
+          <div>
+            <h2 className="text-base font-black text-slate-800 mb-4">Quick Actions</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <QuickActionCard label="Manage Appointments" desc="View and update patient appointments" icon={Calendar} href="/appointments" color="from-[#1A6080] to-[#0d4a63]" />
+              <QuickActionCard label="Issue Prescription" desc="Write a new prescription" icon={FileText} href="/prescriptions" color="from-green-500 to-green-600" />
+            </div>
+          </div>
+
+          <RecentAppointments appointments={doctorProfile?.appointments ?? []} href="/appointments" />
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // ── ADMIN ─────────────────────────────────────────────────────
+  const [totalUsers, totalDoctors, totalPatients, totalAppts, totalRx, totalContacts] = await Promise.all([
+    db.user.count(),
+    db.user.count({ where: { role: "DOCTOR" } }),
+    db.user.count({ where: { role: "PATIENT" } }),
+    db.appointment.count(),
+    db.prescription.count(),
+    db.contactMessage.count(),
+  ]);
+
   return (
     <DashboardLayout>
-      <div className="p-6 md:p-12">
-        <div className="max-w-5xl mx-auto">
-          {/* Header Card */}
-          {user?.role === "PATIENT" && (
-            <div className="relative overflow-hidden bg-gradient-to-br from-[#1A6080] to-[#0d4a63] rounded-2xl p-8 mb-8 text-white">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-32" />
-              <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-24 -translate-x-24" />
-              <div className="relative">
-                <div className="flex items-start justify-between mb-6">
-                  <div>
-                    <p className="text-white/70 text-sm font-medium mb-1">Welcome back</p>
-                    <h1 className="text-3xl font-black">{user?.name}</h1>
-                    <p className="text-white/60 text-sm mt-1">{user?.email}</p>
-                  </div>
-                  <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-black px-3 py-1.5 rounded-full border border-white/30 uppercase tracking-wider">
-                    Patient
-                  </span>
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Calendar className="h-4 w-4 text-white/70" />
-                      <span className="text-white/70 text-xs font-medium">Appointments</span>
-                    </div>
-                    <p className="text-2xl font-black">{user.patientProfile?.appointments?.length ?? 0}</p>
-                  </div>
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Bell className="h-4 w-4 text-white/70" />
-                      <span className="text-white/70 text-xs font-medium">Reminders</span>
-                    </div>
-                    <p className="text-2xl font-black">{user.patientProfile?.medicineReminders?.length ?? 0}</p>
-                  </div>
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                    <div className="flex items-center gap-2 mb-2">
-                      <FileText className="h-4 w-4 text-white/70" />
-                      <span className="text-white/70 text-xs font-medium">Prescriptions</span>
-                    </div>
-                    <p className="text-2xl font-black">{user.patientProfile?.prescriptions?.length ?? 0}</p>
-                  </div>
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                    <div className="flex items-center gap-2 mb-2">
-                      <FolderOpen className="h-4 w-4 text-white/70" />
-                      <span className="text-white/70 text-xs font-medium">Records</span>
-                    </div>
-                    <p className="text-2xl font-black">{user.patientProfile?.medicalVault?.length ?? 0}</p>
-                  </div>
-                </div>
-              </div>
+      <div className="p-6 md:p-8 max-w-5xl mx-auto space-y-8">
+        <div className="relative overflow-hidden bg-gradient-to-br from-[#1A6080] to-[#0d4a63] rounded-2xl p-8 text-white">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-32" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-24 -translate-x-24" />
+          <div className="relative flex items-start justify-between">
+            <div>
+              <p className="text-white/70 text-sm font-medium mb-1">Welcome back</p>
+              <h1 className="text-3xl font-black">{user.name}</h1>
+              <p className="text-white/60 text-sm mt-1">System Administrator</p>
             </div>
-          )}
+            <span className="hidden sm:block bg-white/20 backdrop-blur-sm text-white text-xs font-black px-3 py-1.5 rounded-full border border-white/30 uppercase tracking-wider flex-shrink-0">Admin</span>
+          </div>
+        </div>
 
-          {user?.role === "DOCTOR" && (
-            <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-8 mb-8 text-white">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-32" />
-              <div className="relative">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-white/70 text-sm font-medium mb-1">Welcome back</p>
-                    <h1 className="text-3xl font-black">Dr. {user?.name}</h1>
-                    <p className="text-white/60 text-sm mt-1">{user.doctorProfile?.specialization}</p>
-                  </div>
-                  <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-black px-3 py-1.5 rounded-full border border-white/30 uppercase tracking-wider">
-                    Doctor
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {user?.role === "ADMIN" && (
-            <div className="relative overflow-hidden bg-gradient-to-br from-purple-600 to-purple-800 rounded-2xl p-8 mb-8 text-white">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-32" />
-              <div className="relative">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-white/70 text-sm font-medium mb-1">Welcome back</p>
-                    <h1 className="text-3xl font-black">{user?.name}</h1>
-                    <p className="text-white/60 text-sm mt-1">System Administrator</p>
-                  </div>
-                  <span className="bg-white/20 backdrop-blur-sm text-white text-xs font-black px-3 py-1.5 rounded-full border border-white/30 uppercase tracking-wider">
-                    Admin
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-          {/* PATIENT INTERFACE */}
-          {user?.role === "PATIENT" && (
-            <div className="space-y-6">
-              {/* Book Appointment Section */}
-              <BookAppointment />
-
-              {/* My Appointments Section */}
-              <MyAppointments />
-
-              {/* Medicine Reminders Section */}
-              <div id="reminders" className="scroll-mt-20">
-                <AddMedicineReminder />
-              </div>
-              <MedicineReminders />
-
-              <div id="vault" className="scroll-mt-20">
-                <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
-                  <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-emerald-50 rounded-lg">
-                        <FolderOpen className="h-5 w-5 text-emerald-600" />
-                      </div>
-                      <div>
-                        <h2 className="text-base font-black text-slate-800">Medical Vault</h2>
-                        <p className="text-xs text-slate-400 font-medium">Securely store your medical documents</p>
-                      </div>
-                    </div>
-                    <span className="text-xs font-black bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full">
-                      {user.patientProfile?.medicalVault.length ?? 0} Files
-                    </span>
-                  </div>
-                  <div className="p-6">
-                    <FileUpload />
-                  </div>
-                </div>
-              </div>
-
-              <div id="records" className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden scroll-mt-20">
-                <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-emerald-50 rounded-lg">
-                      <FolderOpen className="h-5 w-5 text-emerald-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-base font-black text-slate-800">Uploaded Records</h2>
-                      <p className="text-xs text-slate-400 font-medium">All your medical documents</p>
-                    </div>
-                  </div>
-                  <span className="text-xs font-black bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full">
-                    {user.patientProfile?.medicalVault.length ?? 0} Files
-                  </span>
-                </div>
-                <div className="p-6">
-                  {!user.patientProfile?.medicalVault || user.patientProfile.medicalVault.length === 0 ? (
-                    <div className="text-center py-10">
-                      <FolderOpen className="h-12 w-12 text-slate-300 mx-auto mb-3" />
-                      <p className="text-slate-400 font-semibold">No records uploaded yet</p>
-                      <p className="text-slate-300 text-xs mt-1">Upload your first medical document above</p>
-                    </div>
-                  ) : (
-                    <div className="grid gap-3">
-                      {user.patientProfile.medicalVault.map((record, index) => (
-                        <RecordItem key={record.id} record={record} index={index} />
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div id="prescriptions" className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden scroll-mt-20">
-                <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-green-50 rounded-lg">
-                      <FileText className="h-5 w-5 text-green-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-base font-black text-slate-800">Prescriptions</h2>
-                      <p className="text-xs text-slate-400 font-medium">Issued by your doctors</p>
-                    </div>
-                  </div>
-                  <span className="text-xs font-black bg-green-50 text-green-600 px-3 py-1 rounded-full">
-                    {user.patientProfile?.prescriptions.length ?? 0} Total
-                  </span>
-                </div>
-                <div className="p-6">
-                  {!user.patientProfile?.prescriptions || user.patientProfile.prescriptions.length === 0 ? (
-                    <div className="text-center py-10">
-                      <FileText className="h-12 w-12 text-slate-300 mx-auto mb-3" />
-                      <p className="text-slate-400 font-semibold">No prescriptions yet</p>
-                      <p className="text-slate-300 text-xs mt-1">Prescriptions from your doctor will appear here</p>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      {user.patientProfile.prescriptions.map((px) => (
-                        <div key={px.id} className="rounded-xl border border-slate-200 overflow-hidden">
-                          <div className="flex items-start gap-3 p-4 bg-slate-50">
-                            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-green-500 to-green-700 flex items-center justify-center text-white font-black text-sm flex-shrink-0">
-                              {px.doctor.user.name?.charAt(0).toUpperCase() ?? "D"}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="font-black text-slate-900 text-sm">Dr. {px.doctor.user.name}</p>
-                              <p className="text-xs text-slate-500 mt-0.5">{new Date(px.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</p>
-                            </div>
-                          </div>
-                          <div className="p-4 space-y-3">
-                            <div>
-                              <p className="text-xs font-black text-slate-400 uppercase tracking-wider mb-1">Diagnosis</p>
-                              <p className="text-sm font-semibold text-slate-800">{px.diagnosis}</p>
-                            </div>
-                            <div>
-                              <p className="text-xs font-black text-slate-400 uppercase tracking-wider mb-1">Medications</p>
-                              <p className="text-sm font-semibold text-slate-800">{px.medications}</p>
-                            </div>
-                            <DownloadPDF prescription={px} doctorName={px.doctor.user.name} />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Submit Testimonial - last */}
-              <div id="testimonial" className="scroll-mt-20">
-                <SubmitTestimonial />
-              </div>
-            </div>
-          )}
-
-          {/* DOCTOR INTERFACE */}
-          {user?.role === "DOCTOR" && (
-            <div className="space-y-6">
-              <DoctorAppointments />
-
-              <div id="prescriptions" className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden scroll-mt-20">
-                <div className="px-6 py-5 border-b border-slate-100 flex items-center gap-3">
-                  <div className="p-2 bg-blue-50 rounded-lg">
-                    <FileText className="h-5 w-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h2 className="text-base font-black text-slate-800">Issue Prescription</h2>
-                    <p className="text-xs text-slate-400 font-medium">Write a new prescription for a patient</p>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                      <p className="text-xs font-black text-slate-400 uppercase tracking-wider mb-1">Specialization</p>
-                      <p className="font-black text-slate-900">{user.doctorProfile?.specialization || "General"}</p>
-                    </div>
-                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                      <p className="text-xs font-black text-slate-400 uppercase tracking-wider mb-1">License No</p>
-                      <p className="font-black text-slate-900">{user.doctorProfile?.licenseNo || "N/A"}</p>
-                    </div>
-                  </div>
-                  <PrescriptionForm />
-                </div>
-              </div>
-
-              <DoctorPrescriptionList />
-
-              {/* Submit Testimonial - last */}
-              <div id="testimonial" className="scroll-mt-20">
-                <SubmitTestimonial />
-              </div>
-            </div>
-          )}
-
-          {/* ADMIN INTERFACE */}
-          {user?.role === "ADMIN" && (
-            <div className="space-y-6">
-              <div id="overview" className="scroll-mt-20">
-                <AdminDashboard />
-              </div>
-              
-              <div id="users" className="scroll-mt-20">
-                <UserManagement />
-              </div>
-              
-              <div id="appointments" className="scroll-mt-20">
-                <AppointmentOverview />
-              </div>
-              
-              <div id="testimonials" className="scroll-mt-20">
-                <TestimonialsManagement />
-              </div>
-              
-              <div id="contacts" className="scroll-mt-20">
-                <ContactMessages />
-              </div>
-            </div>
-          )}
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <StatCard label="Total Users" value={totalUsers} icon={Users} color="bg-[#1A6080]/10 text-[#1A6080]" bar="bg-[#1A6080]" href="/users" subtitle="All registered users" />
+          <StatCard label="Doctors" value={totalDoctors} icon={Stethoscope} color="bg-[#1A6080]/10 text-[#1A6080]" bar="bg-[#1A6080]" href="/users" subtitle="Registered doctors" />
+          <StatCard label="Patients" value={totalPatients} icon={Users} color="bg-[#1A6080]/10 text-[#1A6080]" bar="bg-[#1A6080]" href="/users" subtitle="Registered patients" />
+          <StatCard label="Appointments" value={totalAppts} icon={Calendar} color="bg-[#1A6080]/10 text-[#1A6080]" bar="bg-[#1A6080]" href="/appointments" subtitle="Total bookings" />
+          <StatCard label="Prescriptions" value={totalRx} icon={FileText} color="bg-[#1A6080]/10 text-[#1A6080]" bar="bg-[#1A6080]" href="/prescriptions" subtitle="Issued total" />
+          <StatCard label="Contact Messages" value={totalContacts} icon={MessageSquare} color="bg-[#1A6080]/10 text-[#1A6080]" bar="bg-[#1A6080]" href="/contacts" subtitle="From contact form" />
         </div>
       </div>
     </DashboardLayout>

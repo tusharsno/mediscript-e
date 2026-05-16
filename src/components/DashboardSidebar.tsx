@@ -21,28 +21,28 @@ import {
   Home,
   Bell,
 } from "lucide-react";
+import UserAvatar from "@/components/UserAvatar";
 
 const SIDEBAR_LINKS = {
   PATIENT: [
-    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
-    { href: "/dashboard#appointments", label: "Appointments", icon: Calendar },
-    { href: "/dashboard#reminders", label: "Medicine Reminders", icon: Bell },
-    { href: "/dashboard#vault", label: "Medical Vault", icon: FolderOpen },
-    { href: "/dashboard#prescriptions", label: "Prescriptions", icon: FileText },
-    { href: "/dashboard#testimonial", label: "Share Feedback", icon: MessageSquare },
+    { href: "/dashboard", label: "Overview", icon: LayoutDashboard, exact: true },
+    { href: "/appointments", label: "Appointments", icon: Calendar },
+    { href: "/reminders", label: "Medicine Reminders", icon: Bell },
+    { href: "/vault", label: "Medical Vault", icon: FolderOpen },
+    { href: "/prescriptions", label: "Prescriptions", icon: FileText },
+    { href: "/feedback", label: "Share Feedback", icon: MessageSquare },
   ],
   DOCTOR: [
-    { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, exact: true },
-    { href: "/dashboard#appointments", label: "Appointments", icon: Calendar },
-    { href: "/dashboard#prescriptions", label: "Prescriptions", icon: FileText },
-    { href: "/dashboard#testimonial", label: "Share Feedback", icon: MessageSquare },
+    { href: "/dashboard", label: "Overview", icon: LayoutDashboard, exact: true },
+    { href: "/appointments", label: "Appointments", icon: Calendar },
+    { href: "/prescriptions", label: "Prescriptions", icon: FileText },
+    { href: "/feedback", label: "Share Feedback", icon: MessageSquare },
   ],
   ADMIN: [
-    { href: "/dashboard", label: "Dashboard", icon: BarChart3, exact: true },
-    { href: "/dashboard#users", label: "User Management", icon: UserCog },
-    { href: "/dashboard#appointments", label: "Appointments", icon: Calendar },
-    { href: "/dashboard#testimonials", label: "Testimonials", icon: MessageSquare },
-    { href: "/dashboard#contacts", label: "Contact Messages", icon: MessageSquare },
+    { href: "/dashboard", label: "Overview", icon: BarChart3, exact: true },
+    { href: "/users", label: "User Management", icon: UserCog },
+    { href: "/appointments", label: "Appointments", icon: Calendar },
+    { href: "/contacts", label: "Contact Messages", icon: MessageSquare },
   ],
 };
 
@@ -94,21 +94,30 @@ export default function DashboardSidebar() {
           </div>
 
           {/* User Profile */}
-          <div className="p-4 border-b border-slate-200">
-            <div className="flex items-center gap-3">
-              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${roleStyle?.bg ?? "from-blue-500 to-blue-700"} flex items-center justify-center text-white font-black text-lg shadow-sm`}>
-                {session?.user?.name?.charAt(0).toUpperCase() ?? "U"}
+          <div className="px-4 py-5 border-b border-slate-200">
+            <div className="flex flex-col items-center text-center gap-2">
+              <div className="relative">
+                <UserAvatar
+                  name={session?.user?.name}
+                  image={session?.user?.image}
+                  size={56}
+                  className="rounded-full ring-2 ring-slate-100"
+                  gradient={roleStyle?.bg ?? "from-blue-500 to-blue-700"}
+                />
+                {roleStyle && (
+                  <span className={`absolute -bottom-1.5 -right-1.5 w-4 h-4 rounded-full border-2 border-white bg-gradient-to-br ${roleStyle.bg}`} />
+                )}
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-slate-900 truncate">{session?.user?.name}</p>
-                <p className="text-[11px] text-slate-500 truncate" title={session?.user?.email ?? ""}>{session?.user?.email}</p>
+              <div className="min-w-0 w-full">
+                <p className="text-sm font-black text-slate-900 truncate">{session?.user?.name}</p>
+                <p className="text-[11px] text-slate-400 truncate mt-0.5" title={session?.user?.email ?? ""}>{session?.user?.email}</p>
               </div>
+              {roleStyle && (
+                <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border ${roleStyle.badge}`}>
+                  {role}
+                </span>
+              )}
             </div>
-            {roleStyle && (
-              <span className={`mt-3 inline-block text-[10px] font-black uppercase tracking-wider px-2 py-1 rounded-full border ${roleStyle.badge}`}>
-                {role}
-              </span>
-            )}
           </div>
 
           {/* Navigation Links */}
@@ -122,6 +131,9 @@ export default function DashboardSidebar() {
               <Home className="h-5 w-5" />
               Home
             </Link>
+
+            {/* Dashboard section label */}
+            <p className="text-xs font-bold text-slate-500 px-4 pt-1 pb-2">Dashboard</p>
 
             {links.map((link) => {
               const Icon = link.icon;

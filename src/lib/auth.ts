@@ -16,6 +16,7 @@ declare module "next-auth" {
       id: string;
       email: string;
       name?: string | null;
+      image?: string | null;
       role: Role;
     };
   }
@@ -25,6 +26,7 @@ declare module "next-auth/jwt" {
   interface JWT {
     id: string;
     role: Role;
+    image?: string | null;
   }
 }
 
@@ -112,12 +114,12 @@ export const authOptions: NextAuthOptions = {
       : []),
   ],
   callbacks: {
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, profile }) {
       if (user) {
         token.id = user.id;
         token.role = (user as any).role || "PATIENT";
+        token.image = user.image ?? null;
       } else if (account?.provider !== "credentials" && token.email) {
-        // For OAuth, ensure we have the user ID in token
         const dbUser = await db.user.findUnique({
           where: { email: token.email },
         });
@@ -125,6 +127,9 @@ export const authOptions: NextAuthOptions = {
           token.id = dbUser.id;
           token.role = dbUser.role;
         }
+        // Keep OAuth profile image in token
+        if (profile?.image) token.image = profile.image as string;
+        else if ((profile as any)?.avatar_url) token.image = (profile as any).avatar_url;
       }
       return token;
     },
@@ -132,6 +137,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as Role;
+        session.user.image = token.image ?? null;
       }
       return session;
     },

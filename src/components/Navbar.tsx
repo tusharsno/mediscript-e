@@ -26,6 +26,7 @@ import {
   Clock,
   AlertCircle,
 } from "lucide-react";
+import UserAvatar from "@/components/UserAvatar";
 
 const NAV_LINKS = {
   PUBLIC: [
@@ -822,13 +823,12 @@ export default function Navbar() {
                     className="flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-full border border-slate-200 hover:border-blue-200 hover:bg-blue-50/50 transition-all"
                   >
                     <div className="relative">
-                      <div
-                        className={`w-7 h-7 rounded-full bg-gradient-to-br ${
-                          roleStyle?.avatar ?? "from-blue-500 to-blue-700"
-                        } flex items-center justify-center text-white font-black text-xs shadow-sm`}
-                      >
-                        {session.user?.name?.charAt(0).toUpperCase() ?? "U"}
-                      </div>
+                      <UserAvatar
+                        name={session.user?.name}
+                        image={session.user?.image}
+                        size={28}
+                        gradient={roleStyle?.avatar ?? "from-blue-500 to-blue-700"}
+                      />
                       {roleStyle && (
                         <span
                           className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${roleStyle.dot}`}
@@ -856,13 +856,12 @@ export default function Navbar() {
                       >
                         <div className="px-4 py-3 bg-slate-50/80 border-b border-slate-100">
                           <div className="flex items-center gap-2.5">
-                            <div
-                              className={`w-8 h-8 rounded-xl bg-gradient-to-br ${
-                                roleStyle?.avatar ?? "from-blue-500 to-blue-700"
-                              } flex items-center justify-center text-white font-black text-sm`}
-                            >
-                              {session.user?.name?.charAt(0).toUpperCase() ?? "U"}
-                            </div>
+                            <UserAvatar
+                              name={session.user?.name}
+                              image={session.user?.image}
+                              size={32}
+                              gradient={roleStyle?.avatar ?? "from-blue-500 to-blue-700"}
+                            />
                             <div className="min-w-0">
                               <p className="text-xs font-black text-slate-800 truncate">{session.user?.name}</p>
                               <p className="text-[10px] text-slate-400 truncate">{session.user?.email}</p>
@@ -989,13 +988,12 @@ export default function Navbar() {
               {session ? (
                 <>
                   <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-100 mb-3">
-                    <div
-                      className={`w-10 h-10 rounded-xl bg-gradient-to-br ${
-                        roleStyle?.avatar ?? "from-blue-500 to-blue-700"
-                      } flex items-center justify-center text-white font-black shadow-sm`}
-                    >
-                      {session.user?.name?.charAt(0).toUpperCase() ?? "U"}
-                    </div>
+                    <UserAvatar
+                      name={session.user?.name}
+                      image={session.user?.image}
+                      size={40}
+                      gradient={roleStyle?.avatar ?? "from-blue-500 to-blue-700"}
+                    />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-black text-slate-700 truncate">{session.user?.name}</p>
                       <p className="text-xs text-slate-400 truncate">{session.user?.email}</p>

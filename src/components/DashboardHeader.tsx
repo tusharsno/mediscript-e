@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Search, Calendar, FileText, User, Users, X } from "lucide-react";
 import { useSession } from "next-auth/react";
+import UserAvatar from "@/components/UserAvatar";
 
 interface SearchResults {
   appointments?: { id: string; doctorName?: string; patientName?: string; date: string; time: string; status: string }[];
@@ -175,9 +176,12 @@ export default function DashboardHeader() {
 
       {/* Right side */}
       <div className="flex items-center gap-3 ml-auto">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1A6080] to-[#0d4a63] flex items-center justify-center text-white font-black text-sm">
-          {session?.user?.name?.charAt(0).toUpperCase() ?? "U"}
-        </div>
+        <UserAvatar
+          name={session?.user?.name}
+          image={session?.user?.image}
+          size={32}
+          gradient="from-[#1A6080] to-[#0d4a63]"
+        />
         <div className="hidden sm:block">
           <p className="text-sm font-bold text-slate-800 leading-none">{session?.user?.name}</p>
           <p className="text-xs text-slate-400 mt-0.5">{session?.user?.role}</p>

@@ -3,6 +3,7 @@
 import { ReactNode } from "react";
 import DashboardSidebar from "./DashboardSidebar";
 import DashboardHeader from "./DashboardHeader";
+import PageTransition from "./PageTransition";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -15,7 +16,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       <div className="flex-1 lg:ml-64 flex flex-col">
         <DashboardHeader />
         <main className="flex-1">
-          {children}
+          <PageTransition>{children}</PageTransition>
         </main>
       </div>
     </div>

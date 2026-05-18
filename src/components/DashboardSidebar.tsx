@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
+const startProgress = () => window.dispatchEvent(new Event("navigation-start"));
 import { signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 import {
@@ -125,7 +127,7 @@ export default function DashboardSidebar() {
             {/* Home */}
             <Link
               href="/"
-              onClick={() => setMobileOpen(false)}
+              onClick={() => { setMobileOpen(false); startProgress(); }}
               className="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all border-b border-slate-100 mb-2 pb-3"
             >
               <Home className="h-5 w-5" />
@@ -142,7 +144,7 @@ export default function DashboardSidebar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  onClick={() => setMobileOpen(false)}
+                  onClick={() => { setMobileOpen(false); startProgress(); }}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all relative ${
                     active
                       ? `${roleStyle?.text ?? "text-blue-600"} bg-slate-50 font-bold`
@@ -163,7 +165,7 @@ export default function DashboardSidebar() {
           <div className="p-4 border-t border-slate-200 space-y-1">
             <Link
               href="/settings"
-              onClick={() => setMobileOpen(false)}
+              onClick={() => { setMobileOpen(false); startProgress(); }}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all ${
                 pathname === "/settings"
                   ? `${roleStyle?.text ?? "text-blue-600"} bg-slate-50 font-bold`

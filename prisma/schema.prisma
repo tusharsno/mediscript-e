@@ -26,6 +26,7 @@ model User {
   twoFactorExpires      DateTime?
   doctorProfile         DoctorProfile?
   patientProfile        PatientProfile?
+  doctorVerified        Boolean         @default(false)
   createdAt             DateTime        @default(now())
   updatedAt             DateTime        @updatedAt
 }

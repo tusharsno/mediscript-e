@@ -64,11 +64,17 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Please verify your email before logging in");
         }
 
+        if (user.role === "DOCTOR" && !user.doctorVerified) {
+          throw new Error("DOCTOR_PENDING_APPROVAL");
+        }
+
         // 2FA verified bypass - verify OTP was actually completed
         if (credentials.twoFactorVerified === "true" && credentials.password === "__2fa_verified__") {
-          // Double-check: OTP must already be cleared (means it was verified)
           if (user.twoFactorCode !== null) {
             throw new Error("Invalid credentials");
+          }
+          if (user.role === "DOCTOR" && !user.doctorVerified) {
+            throw new Error("DOCTOR_PENDING_APPROVAL");
           }
           return { id: user.id, email: user.email, name: user.name, role: user.role };
         }

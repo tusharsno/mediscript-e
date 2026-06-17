@@ -58,7 +58,7 @@ export async function POST(req: Request) {
         name,
         password: hashedPassword,
         role,
-        emailVerified: false,
+        emailVerified: role === "DOCTOR" ? true : false,
         verificationToken,
         verificationExpires,
         // রোলের উপর ভিত্তি করে প্রোফাইল তৈরি
@@ -89,7 +89,9 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ 
-      message: "Registration successful! Please check your email to verify your account.", 
+      message: role === "DOCTOR"
+        ? "Registration successful! Please verify your email. Your account will be activated after admin approval."
+        : "Registration successful! Please check your email to verify your account.",
       user: { id: user.id, email: user.email, role: user.role } 
     }, { status: 201 });
 

@@ -47,6 +47,22 @@ export async function POST(req: Request) {
       }
     }
 
+    const conflict = await db.appointment.findFirst({
+      where: {
+        doctorId,
+        date: new Date(date),
+        time,
+        status: { not: "CANCELLED" },
+      },
+    });
+
+    if (conflict) {
+      return NextResponse.json(
+        { message: "This time slot is already booked. Please choose a different time." },
+        { status: 409 }
+      );
+    }
+
     const appointment = await db.appointment.create({
       data: {
         doctorId,

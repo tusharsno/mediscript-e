@@ -29,7 +29,7 @@ Poor requirements are the leading cause of project failure. In healthcare system
 | FR-01 | System shall allow users to register as PATIENT, DOCTOR, or ADMIN | All Users |
 | FR-02 | System shall send email verification link upon registration | All Users |
 | FR-03 | System shall allow verified users to login with email and password | All Users |
-| FR-04 | System shall support OAuth login via Google and GitHub | All Users |
+| FR-04 | System shall support OAuth login via Google and GitHub with profile picture | All Users |
 | FR-05 | System shall enforce Two-Factor Authentication (2FA) via email OTP when enabled | Patient, Doctor |
 | FR-06 | System shall allow patients to book appointments with available doctors | Patient |
 | FR-07 | System shall allow doctors to confirm, cancel, or complete appointments | Doctor |
@@ -46,6 +46,13 @@ Poor requirements are the leading cause of project failure. In healthcare system
 | FR-18 | System shall allow admin to view all contact form submissions | Admin |
 | FR-19 | System shall allow unauthenticated users to submit contact form | Public |
 | FR-20 | System shall send automated medicine reminder emails via cron job | System |
+| FR-21 | System shall allow doctors to archive and unarchive issued prescriptions | Doctor |
+| FR-22 | System shall allow doctors to edit and delete issued prescriptions | Doctor |
+| FR-23 | System shall provide an AI-powered chatbot (MediBot) for platform-related queries | All Users |
+| FR-24 | System shall provide a global search feature across appointments, prescriptions, and users | All Users |
+| FR-25 | System shall display OAuth profile pictures in navbar and dashboard sidebar | All Users |
+| FR-26 | System shall provide separate dedicated pages for each major feature | All Users |
+| FR-27 | System shall provide smooth page transition animations in dashboard | All Users |
 
 ---
 
@@ -68,6 +75,9 @@ Poor requirements are the leading cause of project failure. In healthcare system
 | NFR-13 | System codebase shall follow TypeScript strict typing standards | Maintainability |
 | NFR-14 | System shall be deployable on Vercel with zero-downtime deployments | Scalability |
 | NFR-15 | All API routes shall validate input before processing | Security |
+| NFR-16 | AI chatbot shall respond in the user's language with plain conversational text (English by default, Bangla if user writes in Bangla) | Usability |
+| NFR-17 | Search results shall be role-based — users only see their own relevant data | Security |
+| NFR-18 | Dashboard navigation shall use dedicated routes for each feature section | Usability |
 
 ---
 
@@ -78,7 +88,7 @@ Poor requirements are the leading cause of project failure. In healthcare system
 | FR-01 | User Registration | High | Core entry point of the system |
 | FR-02 | Email Verification | High | Prevents fake registrations |
 | FR-03 | Credential Login | High | Primary authentication method |
-| FR-04 | OAuth Login | Medium | Convenience feature |
+| FR-04 | OAuth Login with Profile Picture | Medium | Convenience + professional UX |
 | FR-05 | 2FA via Email OTP | High | Critical security layer |
 | FR-06 | Book Appointment | High | Core patient functionality |
 | FR-07 | Manage Appointments | High | Core doctor functionality |
@@ -95,6 +105,13 @@ Poor requirements are the leading cause of project failure. In healthcare system
 | FR-18 | Admin Contact Messages | Low | Supporting admin feature |
 | FR-19 | Contact Form | Low | Public communication feature |
 | FR-20 | Automated Reminders (Cron) | Medium | Automated system feature |
+| FR-21 | Prescription Archive | Medium | Doctor workflow management |
+| FR-22 | Prescription Edit/Delete | Medium | Doctor data management |
+| FR-23 | AI Chatbot (MediBot) | Medium | User assistance feature |
+| FR-24 | Global Search | Medium | Navigation efficiency |
+| FR-25 | OAuth Profile Pictures | Low | Professional UX enhancement |
+| FR-26 | Dedicated Feature Pages | High | Professional app structure |
+| FR-27 | Page Transition Animations | Low | Premium UX feel |
 | NFR-01 | Page Load Performance | High | Directly impacts user experience |
 | NFR-03 | Password Hashing | High | Critical security requirement |
 | NFR-04 | SSL/TLS Database | High | Critical data protection |
@@ -104,8 +121,9 @@ Poor requirements are the leading cause of project failure. In healthcare system
 ---
 
 ## Key Findings / Learning Outcomes
-- Successfully identified **20 Functional Requirements** and **15 Non-Functional Requirements** for MediScript-E
+- Successfully identified **27 Functional Requirements** and **18 Non-Functional Requirements** for MediScript-E as an initial requirements baseline
+- These requirements were further expanded to **59 Functional Requirements** across 7 modules in the full SRS document (Lab Session 4)
 - Learned to categorize requirements by actor (Patient, Doctor, Admin, Public, System)
 - Understood that in healthcare systems, security-related NFRs carry equal or higher priority than functional requirements
 - Priority matrix helps development team focus on critical features first, ensuring MVP delivery
-- Requirement elicitation for MediScript-E involved analyzing user roles, system workflows, and security constraints
+- New features (AI Chatbot, Search, Prescription Archive, Profile Pictures, Dedicated Pages) were added based on professional web app standards

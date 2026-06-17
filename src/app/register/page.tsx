@@ -111,7 +111,9 @@ export default function RegisterPage() {
             We&apos;ve sent a verification email to <strong>{formData.email}</strong>
           </p>
           <p className="text-sm text-gray-500 mb-6">
-            Please check your inbox and click the verification link to activate your account.
+            {selectedRole === "DOCTOR"
+              ? "Please verify your email. Your doctor account will be activated after admin review and approval."
+              : "Please check your inbox and click the verification link to activate your account."}
           </p>
           <button
             onClick={() => router.push("/login")}

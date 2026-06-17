@@ -1,6 +1,6 @@
 # 🏥 MediScript-E — Digital Healthcare Platform
 
-A modern, secure digital healthcare platform built with Next.js 16, enabling seamless interaction between patients and doctors with features like appointment booking, e-prescriptions, medicine reminders, and secure medical record management.
+A modern, secure digital healthcare platform built with Next.js 16, enabling seamless interaction between patients and doctors with features like appointment booking, e-prescriptions, medicine reminders, secure medical record management, and an AI-powered chatbot assistant.
 
 ![Next.js](https://img.shields.io/badge/Next.js-16.2.3-black)
 ![React](https://img.shields.io/badge/React-19.2.4-blue)
@@ -20,26 +20,32 @@ A modern, secure digital healthcare platform built with Next.js 16, enabling sea
 - **Medicine Reminders:** Set medication schedules with automated email alerts
 - **Medical Vault:** Securely upload and store medical reports (Supabase Storage)
 - **E-Prescriptions:** View and download prescriptions as PDF
-- **Appointment Tracking:** Monitor appointment status (Pending/Confirmed/Completed)
-- **Blood Group Management:** Select blood group during registration (A+, A-, B+, B-, AB+, AB-, O+, O-)
+- **Appointment Tracking:** Monitor appointment status (Pending/Confirmed/Completed/Cancelled)
+- **Blood Group Management:** Select blood group during registration
+- **Share Feedback:** Submit testimonials about the platform
 
-### 👨‍⚕️ For Doctors
+### 👨⚕️ For Doctors
 - **Appointment Management:** View, confirm, cancel, and complete patient appointments
 - **Digital Prescriptions:** Issue prescriptions with diagnosis and medications
-- **Patient Information:** Access patient details and appointment history
-- **Doctor Profile:** Manage specialization and license information
+- **Prescription Archive:** Archive/unarchive old prescriptions
+- **Prescription Edit/Delete:** Edit or delete issued prescriptions
+- **Patient Information:** Access patient details including blood group
 
 ### 🛡️ For Administrators
-- **Dashboard Overview:** Real-time statistics (users, patients, doctors, appointments, prescriptions, contacts)
-- **User Management:** View all users with profiles, delete users (except self)
+- **Dashboard Overview:** Real-time statistics
+- **User Management:** View all users, delete users (except self)
 - **Appointment Overview:** Monitor all appointments with status filters
 - **Contact Messages:** View and manage contact form submissions
 
+### 🤖 AI Chatbot
+- **MediBot:** AI-powered assistant built with Groq (Llama 3.1) for platform-related queries
+- Responds in user's language — English by default, Bangla if user writes in Bangla
+
 ### 🔐 Security & Authentication
 - **NextAuth Integration:** Secure credential-based authentication
-- **Email Verification:** Prevents fake/unknown email registrations
-- **Two-Factor Authentication (2FA):** Email OTP verification with 10-minute expiry
-- **OAuth Support:** Google and GitHub login integration (auto-verified)
+- **Email Verification:** 24-hour token expiry
+- **Two-Factor Authentication (2FA):** Email OTP with 10-minute expiry
+- **OAuth Support:** Google and GitHub login with profile picture
 - **Role-Based Access Control:** PATIENT, DOCTOR, ADMIN roles
 - **Password Encryption:** bcryptjs hashing (10 salt rounds)
 - **Session Management:** JWT-based sessions (30-day expiry)
@@ -54,7 +60,6 @@ A modern, secure digital healthcare platform built with Next.js 16, enabling sea
 - **Styling:** Tailwind CSS 4
 - **Animations:** Framer Motion 12.38.0
 - **Icons:** Lucide React
-- **Forms:** React Hook Form 7.72.1
 
 ### Backend
 - **API:** Next.js API Routes (Serverless)
@@ -63,10 +68,10 @@ A modern, secure digital healthcare platform built with Next.js 16, enabling sea
 - **Database:** PostgreSQL (Supabase)
 - **Storage:** Supabase Storage
 - **Email:** Nodemailer 6.9.16 (Gmail SMTP)
+- **AI Chatbot:** Groq SDK (Llama 3.1 8B Instant)
 
 ### Development
 - **Language:** TypeScript 5.x
-- **Linting:** ESLint 9
 - **Package Manager:** pnpm
 
 ---
@@ -76,8 +81,8 @@ A modern, secure digital healthcare platform built with Next.js 16, enabling sea
 ### Prerequisites
 - Node.js 18+
 - PostgreSQL database (Supabase recommended)
-- Supabase account for storage
 - Gmail account with App Password for email
+- Groq API key (free at console.groq.com)
 
 ### Setup Steps
 
@@ -92,9 +97,7 @@ cd mediscript-e
 pnpm install
 ```
 
-3. **Environment Variables**
-
-Create a `.env` file in the root directory:
+3. **Environment Variables** — Create a `.env` file:
 
 ```env
 # Database
@@ -113,7 +116,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY="your-supabase-anon-key"
 EMAIL_USER="your-email@gmail.com"
 EMAIL_PASS="your-gmail-app-password"
 
-# Cron API Key (for automated medicine reminders)
+# Cron API Key
 CRON_API_KEY="your-secret-cron-key"
 
 # Google OAuth
@@ -123,6 +126,9 @@ GOOGLE_CLIENT_SECRET="your-google-client-secret"
 # GitHub OAuth
 GITHUB_CLIENT_ID="your-github-client-id"
 GITHUB_CLIENT_SECRET="your-github-client-secret"
+
+# AI Chatbot
+GROQ_API_KEY="your-groq-api-key"
 ```
 
 4. **Generate Prisma Client**
@@ -131,109 +137,35 @@ npx prisma generate
 ```
 
 5. **Database Setup**
-
-Run via Supabase SQL Editor or Prisma migrate:
 ```bash
 npx prisma migrate dev
 ```
 
 6. **Create Supabase Storage Bucket**
 - Go to Supabase Dashboard → Storage
-- Create a bucket named `medical-reports`
-- Set it to **Public** access
+- Create a bucket named `medical-reports` → set to **Public**
 
 7. **Run Development Server**
 ```bash
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
-
 ---
 
-## 📁 Project Structure
+## 🗺️ Page Routes
 
-```
-mediscript-e/
-├── prisma/
-│   ├── schema.prisma              # Database schema
-│   └── migrations/                # Database migrations
-├── prisma.config.ts               # Prisma 7 configuration
-├── public/                        # Static assets
-├── lab-reports/                   # SDLC lab documentation
-│   ├── lab-session-3.md           # Requirements Engineering
-│   ├── lab-session-4.md           # SRS Document
-│   ├── lab-session-5.md           # Use Case Modeling
-│   ├── lab-session-6.md           # System Design & UML
-│   ├── lab-session-7.md           # Security Engineering
-│   ├── lab-session-8.md           # Software Testing
-│   ├── lab-session-9.md           # Implementation
-│   └── lab-session-10.md          # Maintenance & Ethics
-├── src/
-│   ├── app/
-│   │   ├── api/
-│   │   │   ├── admin/
-│   │   │   │   ├── stats/         # Dashboard statistics
-│   │   │   │   ├── users/         # User management
-│   │   │   │   ├── appointments/  # Appointment overview
-│   │   │   │   └── contacts/      # Contact messages
-│   │   │   ├── appointment/       # Appointment CRUD
-│   │   │   ├── auth/
-│   │   │   │   └── 2fa/
-│   │   │   │       ├── send/      # Send OTP
-│   │   │   │       └── verify/    # Verify OTP
-│   │   │   ├── contact/           # Contact form
-│   │   │   ├── doctors/           # Doctor list
-│   │   │   ├── medicine-reminder/ # Medicine reminders
-│   │   │   ├── prescription/      # Prescription API
-│   │   │   ├── register/          # User registration
-│   │   │   ├── settings/
-│   │   │   │   ├── 2fa/           # Toggle 2FA
-│   │   │   │   ├── password/      # Change password
-│   │   │   │   └── profile/       # Update profile
-│   │   │   ├── vault/             # Medical vault
-│   │   │   ├── verify-email/      # Email verification
-│   │   │   └── resend-verification/
-│   │   ├── dashboard/             # Dashboard page
-│   │   ├── login/                 # Login page
-│   │   ├── register/              # Register page
-│   │   ├── settings/              # Settings page
-│   │   ├── verify-2fa/            # 2FA OTP verification page
-│   │   ├── verify-email/          # Email verification page
-│   │   ├── layout.tsx             # Root layout
-│   │   └── page.tsx               # Landing page
-│   ├── components/
-│   │   ├── AdminDashboard.tsx
-│   │   ├── AppointmentOverview.tsx
-│   │   ├── BookAppointment.tsx
-│   │   ├── ContactMessages.tsx
-│   │   ├── ContactSection.tsx
-│   │   ├── DashboardLayout.tsx
-│   │   ├── DashboardSidebar.tsx
-│   │   ├── DoctorAppointments.tsx
-│   │   ├── DownloadPDF.tsx
-│   │   ├── FeatureModal.tsx
-│   │   ├── FileUpload.tsx
-│   │   ├── Footer.tsx
-│   │   ├── LandingPage.tsx
-│   │   ├── MyAppointments.tsx
-│   │   ├── Navbar.tsx
-│   │   ├── PowerFeatures.tsx
-│   │   ├── PrescriptionForm.tsx
-│   │   ├── SecuritySection.tsx
-│   │   ├── SettingsForm.tsx
-│   │   └── UserManagement.tsx
-│   ├── hooks/
-│   │   └── useScrollHash.ts       # Scroll-based hash navigation
-│   └── lib/
-│       ├── auth.ts                # NextAuth configuration
-│       ├── db.ts                  # Prisma client with pg adapter
-│       └── supabase.ts            # Supabase client
-├── vercel.json                    # Vercel deployment config
-├── .env.example                   # Example environment variables
-├── next.config.ts                 # Next.js config
-└── tsconfig.json                  # TypeScript config
-```
+| Route | Description | Access |
+|-------|-------------|--------|
+| `/` | Landing page | Public |
+| `/dashboard` | Overview with stats | All roles |
+| `/appointments` | Appointments management | All roles |
+| `/prescriptions` | Prescriptions | Patient + Doctor |
+| `/reminders` | Medicine reminders | Patient |
+| `/vault` | Medical vault | Patient |
+| `/feedback` | Share feedback | Patient + Doctor |
+| `/users` | User management | Admin |
+| `/contacts` | Contact messages | Admin |
+| `/settings` | Account settings | All roles |
 
 ---
 
@@ -244,10 +176,11 @@ mediscript-e/
 - **DoctorProfile** — Specialization, license number
 - **PatientProfile** — Date of birth, blood group
 - **Appointment** — Booking with status tracking
-- **Prescription** — Digital prescriptions
+- **Prescription** — Digital prescriptions with archive support
 - **MedicineReminder** — Medication schedules with email alerts
 - **MedicalVault** — Uploaded medical documents
 - **ContactMessage** — Contact form submissions
+- **Testimonial** — User feedback and ratings
 
 ### Appointment Status Flow
 ```
@@ -265,7 +198,6 @@ CANCELLED
 |--------|----------|-------------|
 | POST | `/api/register` | User registration |
 | POST | `/api/verify-email` | Verify email token |
-| POST | `/api/resend-verification` | Resend verification email |
 | POST | `/api/auth/2fa/send` | Send 2FA OTP |
 | POST | `/api/auth/2fa/verify` | Verify 2FA OTP |
 
@@ -274,14 +206,16 @@ CANCELLED
 |--------|----------|-------------|
 | GET | `/api/appointment` | Get user appointments |
 | POST | `/api/appointment` | Create appointment |
-| PATCH | `/api/appointment/[id]` | Update appointment status |
+| PATCH | `/api/appointment/[id]` | Update status |
 | DELETE | `/api/appointment/[id]` | Delete appointment |
 
-### Prescriptions & Doctors
+### Prescriptions
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/api/doctors` | Get all doctors |
 | GET/POST | `/api/prescription` | Get/Create prescription |
+| PATCH | `/api/prescription/[id]` | Edit/Archive prescription |
+| DELETE | `/api/prescription/[id]` | Delete prescription |
 
 ### Medicine Reminders
 | Method | Endpoint | Description |
@@ -291,16 +225,13 @@ CANCELLED
 | DELETE | `/api/medicine-reminder/[id]` | Delete reminder |
 | POST | `/api/medicine-reminder/send-notifications` | Send email alerts (cron) |
 
-### Medical Vault
+### Other
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | POST | `/api/vault` | Upload medical record |
-| DELETE | `/api/vault/[id]` | Delete record |
-
-### Settings
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| PATCH | `/api/settings/profile` | Update profile name |
+| POST | `/api/chatbot` | AI chatbot (Groq) |
+| GET | `/api/search?q=` | Global search |
+| PATCH | `/api/settings/profile` | Update profile |
 | PATCH | `/api/settings/password` | Change password |
 | PATCH | `/api/settings/2fa` | Toggle 2FA |
 
@@ -324,35 +255,14 @@ CANCELLED
 3. Add all environment variables
 4. Deploy
 
-> **Note:** Use `vercel --prod` CLI for manual deployments if GitHub webhook is not triggering.
+> **Note:** Use `vercel --prod` CLI for manual deployments.
 
 ### Important Production Notes
 - `DATABASE_URL` must include `?sslmode=no-verify` for Supabase pooler
 - `NEXTAUTH_URL` must be set to your production URL
-- Google OAuth: Add `https://your-domain.vercel.app/api/auth/callback/google` to authorized redirect URIs
-- GitHub OAuth: Add `https://your-domain.vercel.app/api/auth/callback/github` to callback URLs
-
----
-
-## 📝 Usage Guide
-
-### For Patients
-1. Register as PATIENT → select blood group
-2. Verify email via inbox link
-3. Login → optionally enable 2FA in Settings
-4. Book appointments, set medicine reminders, upload medical records
-5. View and download prescriptions as PDF
-
-### For Doctors
-1. Register as DOCTOR → provide license number and specialization
-2. Verify email via inbox link
-3. Login → manage appointments (confirm/cancel/complete)
-4. Issue prescriptions with diagnosis and medications
-
-### For Administrators
-1. Login with admin credentials
-2. Monitor real-time dashboard statistics
-3. Manage users, appointments, and contact messages
+- `GROQ_API_KEY` must be added to Vercel environment variables
+- Google OAuth: Add `https://your-domain.vercel.app/api/auth/callback/google`
+- GitHub OAuth: Add `https://your-domain.vercel.app/api/auth/callback/github`
 
 ---
 
@@ -367,9 +277,8 @@ CANCELLED
 - ✅ CSRF protection via NextAuth
 - ✅ SSL/TLS database connections
 - ✅ Input validation on all API routes
-- ✅ File upload validation (type and size)
-- ✅ Environment variables for all secrets
 - ✅ OAuth auto-verification (Google, GitHub)
+- ✅ Appointment ownership authorization
 
 ---
 
@@ -380,11 +289,10 @@ CANCELLED
 | Primary | `#1A6080` (Teal Blue) |
 | Font | Geist (Next.js default) |
 | Headings | font-black (900) |
-| Body | font-medium (500) |
 
 ---
 
-## 👨‍💻 Author
+## 👨💻 Author
 
 **Tushar**
 - GitHub: [@tusharsno](https://github.com/tusharsno)
@@ -400,6 +308,8 @@ CANCELLED
 - [Prisma](https://prisma.io) — ORM
 - [NextAuth.js](https://next-auth.js.org) — Authentication
 - [Tailwind CSS](https://tailwindcss.com) — Styling
+- [Groq](https://groq.com) — AI inference (MediBot)
+- [Framer Motion](https://www.framer.com/motion) — Animations
 
 ---
 

@@ -31,6 +31,7 @@ MediScript-E follows a **3-Tier Architecture**:
 │   Next.js 16 App Router (React 19)      │
 │   Tailwind CSS + Framer Motion          │
 │   Client Components + Server Components │
+│   Dedicated Routes per Feature          │
 └─────────────────────────────────────────┘
                     │
                     ▼
@@ -40,6 +41,7 @@ MediScript-E follows a **3-Tier Architecture**:
 │   NextAuth.js (Authentication)          │
 │   Prisma ORM (Data Access Layer)        │
 │   Nodemailer (Email Service)            │
+│   Groq SDK (AI Chatbot)                 │
 └─────────────────────────────────────────┘
                     │
                     ▼
@@ -55,12 +57,13 @@ MediScript-E follows a **3-Tier Architecture**:
 | Component | Technology | Responsibility |
 |-----------|-----------|----------------|
 | Frontend | Next.js 16, React 19, Tailwind CSS | UI rendering, user interaction |
-| Authentication | NextAuth.js 4, bcryptjs | Session management, OAuth, 2FA |
+| Authentication | NextAuth.js 4, bcryptjs | Session management, OAuth, 2FA, profile pictures |
 | API Layer | Next.js API Routes (Serverless) | Business logic, data validation |
 | ORM | Prisma 7 | Database queries, schema management |
 | Database | PostgreSQL (Supabase) | Persistent data storage |
 | File Storage | Supabase Storage | Medical document storage |
 | Email | Nodemailer (Gmail SMTP) | Verification, OTP, reminders |
+| AI Chatbot | Groq SDK (Llama 3.1) | MediBot AI assistant |
 | Deployment | Vercel | Hosting, CI/CD, serverless functions |
 
 ### Deployment Architecture
@@ -79,7 +82,9 @@ MediScript-E follows a **3-Tier Architecture**:
                     │
                     ├──► [Supabase Storage] (File Storage)
                     │
-                    └──► [Gmail SMTP] (Email Service)
+                    ├──► [Gmail SMTP] (Email Service)
+                    │
+                    └──► [Groq API] (AI Chatbot)
 ```
 
 ---
@@ -88,8 +93,107 @@ MediScript-E follows a **3-Tier Architecture**:
 
 ### Entity Relationship Overview
 
-```
-[Entity Relationship Diagram - MediScript-E]
+```mermaid
+erDiagram
+    User {
+        string id PK
+        string name
+        string email
+        string password
+        enum role
+        boolean emailVerified
+        string verificationToken
+        datetime verificationExpires
+        boolean twoFactorEnabled
+        string twoFactorCode
+        datetime twoFactorExpires
+        datetime createdAt
+        datetime updatedAt
+    }
+    DoctorProfile {
+        string id PK
+        string specialization
+        string licenseNo
+        string userId FK
+    }
+    PatientProfile {
+        string id PK
+        datetime dob
+        string bloodGroup
+        string userId FK
+    }
+    Appointment {
+        string id PK
+        datetime date
+        string time
+        string reason
+        string status
+        string doctorId FK
+        string patientId FK
+        datetime createdAt
+        datetime updatedAt
+    }
+    Prescription {
+        string id PK
+        string diagnosis
+        string medications
+        boolean archivedByDoctor
+        string doctorId FK
+        string patientId FK
+        datetime createdAt
+    }
+    MedicineReminder {
+        string id PK
+        string medicineName
+        string dosage
+        string frequency
+        string time
+        datetime startDate
+        datetime endDate
+        boolean taken
+        datetime takenAt
+        string patientId FK
+        datetime createdAt
+        datetime updatedAt
+    }
+    MedicalVault {
+        string id PK
+        string fileName
+        string fileUrl
+        string patientId FK
+        datetime createdAt
+    }
+    ContactMessage {
+        string id PK
+        string name
+        string email
+        string phone
+        string company
+        datetime createdAt
+    }
+    Testimonial {
+        string id PK
+        string userId
+        string name
+        string role
+        string designation
+        int rating
+        string comment
+        string avatar
+        boolean verified
+        boolean featured
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    User ||--o| DoctorProfile : "has one"
+    User ||--o| PatientProfile : "has one"
+    DoctorProfile ||--o{ Appointment : "has many"
+    PatientProfile ||--o{ Appointment : "has many"
+    DoctorProfile ||--o{ Prescription : "has many"
+    PatientProfile ||--o{ Prescription : "has many"
+    PatientProfile ||--o{ MedicineReminder : "has many"
+    PatientProfile ||--o{ MedicalVault : "has many"
 ```
 
 ### Database Models
@@ -151,12 +255,13 @@ Appointment {
 #### Prescription Model
 ```
 Prescription {
-  id          String   (PK, CUID)
-  diagnosis   String
-  medications String
-  doctorId    String   (FK → DoctorProfile.id)
-  patientId   String   (FK → PatientProfile.id)
-  createdAt   DateTime
+  id               String   (PK, CUID)
+  diagnosis        String
+  medications      String
+  archivedByDoctor Boolean  (default: false)
+  doctorId         String   (FK → DoctorProfile.id)
+  patientId        String   (FK → PatientProfile.id)
+  createdAt        DateTime
 }
 ```
 
@@ -201,14 +306,160 @@ ContactMessage {
 }
 ```
 
+#### Testimonial Model
+```
+Testimonial {
+  id          String   (PK, CUID)
+  userId      String
+  name        String
+  role        String
+  designation String?
+  rating      Int
+  comment     String
+  avatar      String?
+  verified    Boolean  (default: false)
+  featured    Boolean  (default: false)
+  createdAt   DateTime
+  updatedAt   DateTime
+}
+```
+
 ---
 
-## Task 3: UML Diagrams
+## Task 3: Page Route Design
 
-### 3.1 Class Diagram
+### Professional Route Structure
 
-```
-[Class Diagram - MediScript-E]
+| Route | Description | Access |
+|-------|-------------|--------|
+| `/` | Landing page | Public |
+| `/login` | Login page | Public |
+| `/register` | Registration page | Public |
+| `/verify-email` | Email verification | Public |
+| `/verify-2fa` | 2FA OTP verification | Public |
+| `/dashboard` | Overview with stats | All roles |
+| `/appointments` | Appointments management | All roles |
+| `/prescriptions` | Prescriptions | Patient + Doctor |
+| `/reminders` | Medicine reminders | Patient |
+| `/vault` | Medical vault | Patient |
+| `/feedback` | Share feedback | Patient + Doctor |
+| `/users` | User management | Admin |
+| `/contacts` | Contact messages | Admin |
+| `/settings` | Account settings | All roles |
+| `/notifications` | Notifications | All roles |
+
+---
+
+## Task 4: UML Diagrams
+
+### 4.1 Class Diagram
+
+```mermaid
+classDiagram
+    class User {
+        +String id
+        +String name
+        +String email
+        +String password
+        +Role role
+        +Boolean emailVerified
+        +String verificationToken
+        +DateTime verificationExpires
+        +Boolean twoFactorEnabled
+        +String twoFactorCode
+        +DateTime twoFactorExpires
+        +DateTime createdAt
+        +DateTime updatedAt
+    }
+    class DoctorProfile {
+        +String id
+        +String specialization
+        +String licenseNo
+        +String userId
+    }
+    class PatientProfile {
+        +String id
+        +DateTime dob
+        +String bloodGroup
+        +String userId
+    }
+    class Appointment {
+        +String id
+        +DateTime date
+        +String time
+        +String reason
+        +String status
+        +String doctorId
+        +String patientId
+        +DateTime createdAt
+        +DateTime updatedAt
+    }
+    class Prescription {
+        +String id
+        +String diagnosis
+        +String medications
+        +Boolean archivedByDoctor
+        +String doctorId
+        +String patientId
+        +DateTime createdAt
+    }
+    class MedicineReminder {
+        +String id
+        +String medicineName
+        +String dosage
+        +String frequency
+        +String time
+        +DateTime startDate
+        +DateTime endDate
+        +Boolean taken
+        +DateTime takenAt
+        +String patientId
+        +DateTime createdAt
+        +DateTime updatedAt
+    }
+    class MedicalVault {
+        +String id
+        +String fileName
+        +String fileUrl
+        +String patientId
+        +DateTime createdAt
+    }
+    class ContactMessage {
+        +String id
+        +String name
+        +String email
+        +String phone
+        +String company
+        +DateTime createdAt
+    }
+    class Testimonial {
+        +String id
+        +String userId
+        +String name
+        +String role
+        +Int rating
+        +String comment
+        +Boolean verified
+        +Boolean featured
+        +DateTime createdAt
+        +DateTime updatedAt
+    }
+    class Role {
+        <<enumeration>>
+        PATIENT
+        DOCTOR
+        ADMIN
+    }
+
+    User "1" --> "0..1" DoctorProfile : has one
+    User "1" --> "0..1" PatientProfile : has one
+    User --> Role : has
+    DoctorProfile "1" --> "0..*" Appointment : has many
+    PatientProfile "1" --> "0..*" Appointment : has many
+    DoctorProfile "1" --> "0..*" Prescription : has many
+    PatientProfile "1" --> "0..*" Prescription : has many
+    PatientProfile "1" --> "0..*" MedicineReminder : has many
+    PatientProfile "1" --> "0..*" MedicalVault : has many
 ```
 
 **Key Classes and Relationships:**
@@ -226,13 +477,7 @@ ContactMessage {
 
 ---
 
-### 3.2 Sequence Diagram — User Login with 2FA
-
-```
-[Sequence Diagram - Login with 2FA]
-```
-
-**Sequence Description:**
+### 4.2 Sequence Diagram — User Login with 2FA
 
 ```
 User          Browser         NextAuth        Database        EmailService
@@ -260,55 +505,42 @@ User          Browser         NextAuth        Database        EmailService
 
 ---
 
-### 3.3 Sequence Diagram — Book Appointment
-
-```
-[Sequence Diagram - Book Appointment]
-```
-
-**Sequence Description:**
-
-```
-Patient       Browser         API Route       Database
-  │               │               │               │
-  │──select doctor│               │               │
-  │──select date  │               │               │
-  │──submit form─►│               │               │
-  │               │──POST /api/appointment────────►│
-  │               │               │──getServerSession()
-  │               │               │──create Appointment(PENDING)─►│
-  │               │               │◄──appointment data────────────│
-  │               │◄──201 success──│               │
-  │◄──show confirmation            │               │
-```
-
----
-
-### 3.4 Sequence Diagram — Issue Prescription
-
-```
-[Sequence Diagram - Issue Prescription]
-```
-
-**Sequence Description:**
+### 4.3 Sequence Diagram — Issue Prescription with Auto-Complete
 
 ```
 Doctor        Browser         API Route       Database
   │               │               │               │
-  │──enter patientId, diagnosis, medications      │
+  │──select patient, diagnosis, medications       │
   │──submit form─►│               │               │
   │               │──POST /api/prescription───────►│
   │               │               │──verify doctor session
   │               │               │──findUnique(patientId)─►│
   │               │               │──create Prescription───►│
-  │               │               │◄──prescription data─────│
+  │               │               │──update Appointment(COMPLETED)─►│
+  │               │               │◄──success──────────────│
   │               │◄──201 success──│               │
   │◄──show confirmation            │               │
 ```
 
 ---
 
-## Task 4: API Route Design
+### 4.4 Sequence Diagram — AI Chatbot (MediBot)
+
+```
+User          Browser         API Route       Groq API
+  │               │               │               │
+  │──type message─►│               │               │
+  │               │──POST /api/chatbot─────────────►│
+  │               │               │──system prompt + messages──►│
+  │               │               │◄──AI response──────────────│
+  │               │               │──strip markdown formatting  │
+  │               │◄──reply text───│               │
+  │◄──display in chat              │               │
+```
+
+---
+
+## Task 5: API Route Design
 
 ### Authentication APIs
 
@@ -330,13 +562,21 @@ Doctor        Browser         API Route       Database
 | PATCH | `/api/appointment/[id]` | Update appointment status | Yes |
 | DELETE | `/api/appointment/[id]` | Delete appointment | Yes |
 | GET | `/api/doctors` | Get all doctors | Yes |
-| POST | `/api/prescription` | Create prescription | Yes (Doctor) |
-| GET | `/api/medicine-reminder` | Get reminders | Yes (Patient) |
-| POST | `/api/medicine-reminder` | Create reminder | Yes (Patient) |
+| GET/POST | `/api/prescription` | Get/Create prescription | Yes |
+| PATCH | `/api/prescription/[id]` | Edit/Archive prescription | Yes (Doctor) |
+| DELETE | `/api/prescription/[id]` | Delete prescription | Yes (Doctor) |
+| GET/POST | `/api/medicine-reminder` | Get/Create reminders | Yes (Patient) |
 | PATCH | `/api/medicine-reminder/[id]` | Mark taken/undo | Yes (Patient) |
 | DELETE | `/api/medicine-reminder/[id]` | Delete reminder | Yes (Patient) |
 | POST | `/api/vault` | Upload medical document | Yes (Patient) |
 | DELETE | `/api/vault/[id]` | Delete document | Yes (Patient) |
+
+### AI & Search APIs
+
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | `/api/chatbot` | AI chatbot response (Groq) | No |
+| GET | `/api/search?q=` | Global search (role-based) | Yes |
 
 ### Settings APIs
 
@@ -359,9 +599,10 @@ Doctor        Browser         API Route       Database
 ---
 
 ## Key Findings / Learning Outcomes
-- Designed a clean **3-tier architecture** separating presentation, business logic, and data layers
-- Applied **Next.js App Router** conventions for both frontend and serverless API design
-- Modeled **8 database entities** with proper relationships using Prisma schema
-- Created UML sequence diagrams for critical workflows: Login with 2FA, Book Appointment, Issue Prescription
-- Understood how architectural decisions (serverless, connection pooling, SSL) directly impact production reliability
-- Recognized that low coupling between modules (auth, appointments, prescriptions, vault) enables independent development and testing
+- Designed a clean **3-tier architecture** with Groq AI as an additional external service
+- Added `archivedByDoctor` field to Prescription model for archive functionality
+- Added `Testimonial` model for user feedback
+- Professional route structure uses dedicated pages per feature (not hash-based navigation)
+- New sequence diagrams added for prescription auto-complete and AI chatbot flow
+- Recognized that dedicated routes improve sidebar navigation highlighting and user experience
+- AI chatbot integration requires careful system prompt design to keep responses on-topic

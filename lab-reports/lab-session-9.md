@@ -24,137 +24,185 @@ Implementation must:
 ### Module 1: Authentication System
 
 **Files Implemented:**
-- `src/lib/auth.ts` — NextAuth configuration with credentials, Google, GitHub providers
+- `src/lib/auth.ts` — NextAuth configuration with credentials, Google, GitHub providers + profile picture in JWT/session
 - `src/lib/db.ts` — Prisma client singleton with pg adapter and SSL configuration
 - `src/app/api/register/route.ts` — User registration API
 - `src/app/api/verify-email/route.ts` — Email verification API
-- `src/app/api/resend-verification/route.ts` — Resend verification email API
 - `src/app/api/auth/2fa/send/route.ts` — 2FA OTP send API
 - `src/app/api/auth/2fa/verify/route.ts` — 2FA OTP verify API
 - `src/app/login/page.tsx` — Login page with credentials and OAuth
 - `src/app/register/page.tsx` — Registration page
 - `src/app/verify-2fa/page.tsx` — 2FA OTP verification page
+- `src/components/UserAvatar.tsx` — Reusable avatar with image/initials fallback
 
-**Key Implementation — 2FA Send OTP (`src/app/api/auth/2fa/send/route.ts`):**
+**Key Implementation — OAuth Profile Picture in Session:**
 ```typescript
-function generateOTP(): string {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-}
-
-export async function POST(req: NextRequest) {
-  const { email } = await req.json();
-
-  const user = await db.user.findUnique({
-    where: { email },
-    select: { id: true, email: true, name: true, twoFactorEnabled: true },
-  });
-
-  if (!user || !user.twoFactorEnabled) {
-    return NextResponse.json({ message: "2FA not enabled" }, { status: 400 });
+// src/lib/auth.ts
+async jwt({ token, user, account, profile }) {
+  if (user) {
+    token.id = user.id;
+    token.role = (user as any).role || "PATIENT";
+    token.image = user.image ?? null;
+  } else if (account?.provider !== "credentials" && token.email) {
+    const dbUser = await db.user.findUnique({ where: { email: token.email } });
+    if (dbUser) { token.id = dbUser.id; token.role = dbUser.role; }
+    if (profile?.image) token.image = profile.image as string;
+    else if ((profile as any)?.avatar_url) token.image = (profile as any).avatar_url;
   }
-
-  const otp = generateOTP();
-  const expires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
-
-  await db.user.update({
-    where: { email },
-    data: { twoFactorCode: otp, twoFactorExpires: expires },
-  });
-
-  // Send OTP via Nodemailer
-  await transporter.sendMail({ to: email, subject: "Your 2FA Code", html: `...` });
-}
+  return token;
+},
+async session({ session, token }) {
+  if (session.user) {
+    session.user.id = token.id as string;
+    session.user.role = token.role as Role;
+    session.user.image = token.image ?? null;
+  }
+  return session;
+},
 ```
 
-**Key Implementation — Auth.ts 2FA Check:**
+**Key Implementation — UserAvatar Component:**
 ```typescript
-async authorize(credentials) {
-  const user = await db.user.findUnique({ where: { email: credentials.email } });
-
-  if (!user.emailVerified) throw new Error("Please verify your email before logging in");
-
-  // 2FA bypass verification
-  if (credentials.twoFactorVerified === "true" && credentials.password === "__2fa_verified__") {
-    if (user.twoFactorCode !== null) throw new Error("Invalid credentials");
-    return { id: user.id, email: user.email, name: user.name, role: user.role };
+// src/components/UserAvatar.tsx
+export default function UserAvatar({ name, image, size, gradient }: UserAvatarProps) {
+  if (image) {
+    return (
+      <Image src={image} alt={name ?? "User"} width={size} height={size}
+        className="rounded-full object-cover" referrerPolicy="no-referrer" />
+    );
   }
-
-  const isPasswordMatch = await bcrypt.compare(credentials.password, user.password);
-  if (!isPasswordMatch) throw new Error("Incorrect password");
-
-  if (user.twoFactorEnabled) throw new Error("2FA_REQUIRED:" + user.email);
-
-  return { id: user.id, email: user.email, name: user.name, role: user.role };
+  return (
+    <div className={`rounded-full bg-gradient-to-br ${gradient} flex items-center justify-center text-white font-black`}
+      style={{ width: size, height: size }}>
+      {name?.charAt(0).toUpperCase() ?? "U"}
+    </div>
+  );
 }
 ```
 
 ---
 
-### Module 2: Appointment System
+### Module 2: Professional Dashboard Structure
 
 **Files Implemented:**
-- `src/app/api/appointment/route.ts` — GET (fetch appointments), POST (create appointment)
-- `src/app/api/appointment/[id]/route.ts` — PATCH (update status), DELETE (delete appointment)
-- `src/components/BookAppointment.tsx` — Patient appointment booking UI
-- `src/components/MyAppointments.tsx` — Patient appointments list UI
-- `src/components/DoctorAppointments.tsx` — Doctor appointments management UI
+- `src/app/dashboard/page.tsx` — Overview with stats and quick actions
+- `src/app/appointments/page.tsx` — Dedicated appointments page
+- `src/app/prescriptions/page.tsx` — Dedicated prescriptions page
+- `src/app/reminders/page.tsx` — Dedicated medicine reminders page
+- `src/app/vault/page.tsx` — Dedicated medical vault page
+- `src/app/users/page.tsx` — Admin user management page
+- `src/app/contacts/page.tsx` — Admin contact messages page
+- `src/app/feedback/page.tsx` — Share feedback page
+- `src/components/DashboardLayout.tsx` — Layout with sidebar + header + page transitions
+- `src/components/DashboardHeader.tsx` — Top header with search bar and user avatar
+- `src/components/DashboardSidebar.tsx` — Sidebar with role-based navigation
+- `src/components/PageTransition.tsx` — Framer Motion page transitions
+- `src/components/ConditionalNavbar.tsx` — Hides navbar on dashboard routes
 
-**Key Implementation — Create Appointment:**
+**Key Implementation — Page Transition:**
 ```typescript
-export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-
-  const { doctorId, date, time, reason } = await req.json();
-
-  const patientProfile = await db.patientProfile.findUnique({
-    where: { userId: session.user.id },
-  });
-
-  const appointment = await db.appointment.create({
-    data: {
-      doctorId,
-      patientId: patientProfile.id,
-      date: new Date(date),
-      time,
-      reason,
-      status: "PENDING",
-    },
-  });
-
-  return NextResponse.json({ appointment }, { status: 201 });
+// src/components/PageTransition.tsx
+export default function PageTransition({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div key={pathname}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -8 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}>
+        {children}
+      </motion.div>
+    </AnimatePresence>
+  );
 }
 ```
 
----
-
-### Module 3: Prescription System
-
-**Files Implemented:**
-- `src/app/api/prescription/route.ts` — POST (create prescription), GET (fetch prescriptions)
-- `src/components/PrescriptionForm.tsx` — Doctor prescription issuance UI
-- `src/components/DownloadPDF.tsx` — PDF generation using html2canvas + jsPDF
-
-**Key Implementation — PDF Download:**
+**Key Implementation — Sidebar Active State:**
 ```typescript
-const handleDownload = async () => {
-  const element = document.getElementById(`prescription-${prescription.id}`);
-  const canvas = await html2canvas(element);
-  const imgData = canvas.toDataURL("image/png");
-  const pdf = new jsPDF();
-  pdf.addImage(imgData, "PNG", 0, 0, 210, 297);
-  pdf.save(`prescription-${prescription.id}.pdf`);
+// src/components/DashboardSidebar.tsx
+const isActive = (href: string, exact?: boolean) => {
+  if (exact) return pathname === "/dashboard";
+  return pathname === href || pathname.startsWith(href + "/");
 };
 ```
 
 ---
 
-### Module 4: Medicine Reminder System
+### Module 3: Appointment System
+
+**Files Implemented:**
+- `src/app/api/appointment/route.ts` — GET (fetch appointments), POST (create appointment)
+- `src/app/api/appointment/[id]/route.ts` — PATCH (update status with ownership check), DELETE
+- `src/components/BookAppointment.tsx` — Patient appointment booking UI
+- `src/components/MyAppointments.tsx` — Patient appointments list with filter tabs
+- `src/components/DoctorAppointments.tsx` — Doctor appointments with confirmation dialogs
+
+**Key Implementation — Appointment Ownership Authorization:**
+```typescript
+// src/app/api/appointment/[id]/route.ts
+if (session.user.role === "DOCTOR") {
+  const doctor = await db.doctorProfile.findUnique({ where: { userId: session.user.id } });
+  if (!doctor || appointment.doctorId !== doctor.id)
+    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+} else if (session.user.role === "PATIENT") {
+  const patient = await db.patientProfile.findUnique({ where: { userId: session.user.id } });
+  if (!patient || appointment.patientId !== patient.id)
+    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+}
+```
+
+---
+
+### Module 4: Prescription System
+
+**Files Implemented:**
+- `src/app/api/prescription/route.ts` — POST (create + auto-complete appointment), GET
+- `src/app/api/prescription/[id]/route.ts` — PATCH (edit/archive), DELETE
+- `src/components/PrescriptionForm.tsx` — Doctor prescription issuance with patient dropdown
+- `src/components/DoctorPrescriptionList.tsx` — Active/Archived tabs with edit/archive/delete
+- `src/components/DownloadPDF.tsx` — PDF generation
+
+**Key Implementation — Auto-Complete Appointment on Prescription:**
+```typescript
+// src/app/api/prescription/route.ts
+const newPrescription = await db.prescription.create({
+  data: { diagnosis, medications, doctorId: doctor.doctorProfile.id, patientId },
+});
+
+// Auto-complete the specific appointment
+if (appointmentId) {
+  await db.appointment.update({
+    where: { id: appointmentId },
+    data: { status: "COMPLETED" },
+  });
+}
+```
+
+**Key Implementation — Archive Toggle:**
+```typescript
+// src/app/api/prescription/[id]/route.ts
+const { diagnosis, medications, archivedByDoctor } = await req.json();
+
+if (typeof archivedByDoctor === "boolean") {
+  const updated = await db.prescription.update({
+    where: { id },
+    data: { archivedByDoctor },
+  });
+  return NextResponse.json({ message: "Prescription updated", prescription: updated });
+}
+```
+
+---
+
+### Module 5: Medicine Reminder System
 
 **Files Implemented:**
 - `src/app/api/medicine-reminder/route.ts` — GET, POST reminders
 - `src/app/api/medicine-reminder/[id]/route.ts` — PATCH (mark taken), DELETE
 - `src/app/api/medicine-reminder/send-notifications/route.ts` — Cron job endpoint
+- `src/components/AddMedicineReminder.tsx` — Dynamic time inputs based on frequency
+- `src/components/MedicineReminders.tsx` — Active/inactive separation
 
 **Key Implementation — Send Notifications (Cron):**
 ```typescript
@@ -163,18 +211,11 @@ export async function POST(req: NextRequest) {
   if (apiKey !== process.env.CRON_API_KEY) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
-
-  const today = new Date();
+  // Uses Bangladesh time (UTC+6) for matching
   const reminders = await db.medicineReminder.findMany({
-    where: {
-      taken: false,
-      startDate: { lte: today },
-      endDate: { gte: today },
-    },
+    where: { taken: false, startDate: { lte: endOfTomorrow }, endDate: { gte: startOfToday } },
     include: { patient: { include: { user: true } } },
   });
-
-  // Send email for each due reminder
   for (const reminder of reminders) {
     await transporter.sendMail({ to: reminder.patient.user.email, ... });
   }
@@ -183,40 +224,72 @@ export async function POST(req: NextRequest) {
 
 ---
 
-### Module 5: Medical Vault
+### Module 6: Medical Vault
 
 **Files Implemented:**
 - `src/app/api/vault/route.ts` — POST (upload document)
 - `src/app/api/vault/[id]/route.ts` — DELETE (delete document)
 - `src/components/FileUpload.tsx` — File upload UI with Supabase Storage integration
+- `src/components/RecordItem.tsx` — Individual record display component
 
-**Key Implementation — File Upload:**
+---
+
+### Module 7: AI Chatbot (MediBot)
+
+**Files Implemented:**
+- `src/app/api/chatbot/route.ts` — Groq API integration with system prompt
+- `src/components/Chatbot.tsx` — Floating chat UI with conversation history
+
+**Key Implementation — Chatbot API with Markdown Stripping:**
 ```typescript
-export async function POST(req: NextRequest) {
-  const session = await getServerSession(authOptions);
-  const formData = await req.formData();
-  const file = formData.get("file") as File;
+// src/app/api/chatbot/route.ts
+const completion = await groq.chat.completions.create({
+  model: "llama-3.1-8b-instant",
+  messages: [
+    { role: "system", content: SYSTEM_PROMPT },
+    ...messages.map((m) => ({ role: m.role, content: m.content })),
+  ],
+  max_tokens: 512,
+});
 
-  // Upload to Supabase Storage
-  const { data, error } = await supabase.storage
-    .from("medical-reports")
-    .upload(`${session.user.id}/${file.name}`, file);
-
-  if (error) return NextResponse.json({ message: "Upload failed" }, { status: 500 });
-
-  const { data: urlData } = supabase.storage
-    .from("medical-reports")
-    .getPublicUrl(data.path);
-
-  await db.medicalVault.create({
-    data: { fileName: file.name, fileUrl: urlData.publicUrl, patientId: patientProfile.id },
-  });
-}
+const raw = completion.choices[0].message.content ?? "";
+// Strip all markdown formatting
+const reply = raw
+  .replace(/\*\*(.*?)\*\*/g, "$1")
+  .replace(/\*(.*?)\*/g, "$1")
+  .replace(/^[*-]\s/gm, "")
+  .replace(/#{1,6}\s/g, "")
+  .trim();
 ```
 
 ---
 
-### Module 6: Admin Dashboard
+### Module 8: Global Search
+
+**Files Implemented:**
+- `src/app/api/search/route.ts` — Role-based search API
+- `src/components/DashboardHeader.tsx` — Search bar with debounce and dropdown
+
+**Key Implementation — Debounced Search:**
+```typescript
+// src/components/DashboardHeader.tsx
+useEffect(() => {
+  if (!query.trim()) { setResults({}); setOpen(false); return; }
+  if (debounceRef.current) clearTimeout(debounceRef.current);
+  debounceRef.current = setTimeout(async () => {
+    setLoading(true);
+    const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+    const data = await res.json();
+    setResults(data.results || {});
+    setOpen(true);
+    setLoading(false);
+  }, 350);
+}, [query]);
+```
+
+---
+
+### Module 9: Admin Dashboard
 
 **Files Implemented:**
 - `src/app/api/admin/stats/route.ts` — Real-time statistics
@@ -224,33 +297,13 @@ export async function POST(req: NextRequest) {
 - `src/app/api/admin/users/[id]/route.ts` — Delete user
 - `src/app/api/admin/appointments/route.ts` — All appointments
 - `src/app/api/admin/contacts/route.ts` — Contact messages
-- `src/components/AdminDashboard.tsx` — Admin dashboard UI
-
-**Key Implementation — Admin Stats:**
-```typescript
-export async function GET() {
-  const session = await getServerSession(authOptions);
-  if (session?.user?.role !== "ADMIN") {
-    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
-  }
-
-  const [users, patients, doctors, appointments, prescriptions, contacts] =
-    await Promise.all([
-      db.user.count(),
-      db.patientProfile.count(),
-      db.doctorProfile.count(),
-      db.appointment.count(),
-      db.prescription.count(),
-      db.contactMessage.count(),
-    ]);
-
-  return NextResponse.json({ users, patients, doctors, appointments, prescriptions, contacts });
-}
-```
+- `src/components/AdminDashboard.tsx` — Admin stats component
+- `src/components/UserManagement.tsx` — User management component
+- `src/components/AppointmentOverview.tsx` — Appointment overview component
 
 ---
 
-### Module 7: Settings
+### Module 10: Settings
 
 **Files Implemented:**
 - `src/app/api/settings/profile/route.ts` — Update profile name
@@ -265,43 +318,26 @@ export async function GET() {
 ### Repository
 - **GitHub Repository:** `https://github.com/tusharsno/mediscript-e`
 - **Branch:** `main`
-- **Deployment:** Vercel (auto-deploy on push to `main`)
-
-### Git Workflow Used
-
-```
-1. Feature development on local machine
-2. git add . — Stage all changes
-3. git commit -m "descriptive message" — Commit with clear message
-4. git push origin main — Push to GitHub
-5. Vercel auto-deploys from GitHub
-```
+- **Deployment:** Vercel (manual `vercel --prod` CLI)
 
 ### Key Commits
 
 | Commit Message | Description |
 |---------------|-------------|
-| `Initial project setup` | Next.js 16 project initialization with Prisma, NextAuth |
+| `Initial project setup` | Next.js 16 project initialization |
 | `Add authentication system` | Registration, login, email verification |
 | `Add appointment booking` | Patient and doctor appointment management |
 | `Add prescription system` | Doctor prescription issuance and PDF download |
 | `Add medicine reminders` | Reminder scheduling with cron job |
 | `Add medical vault` | Supabase Storage file upload |
 | `Add admin dashboard` | Real-time stats and user management |
-| `Fix Vercel deployment - Prisma 7 config` | Production deployment fix |
-| `Fix SSL with sslmode=no-verify` | Database SSL connection fix |
 | `Add 2FA email OTP verification` | Two-factor authentication feature |
-| `Add SecuritySection to landing page` | Security section UI |
-
-### .gitignore Configuration
-```
-.env
-.env.local
-.env.production
-node_modules/
-.next/
-.vercel/
-```
+| `feat: add MediBot AI chatbot powered by Groq` | AI chatbot integration |
+| `feat: dashboard search bar with global search` | Global search feature |
+| `feat: prescription archive/unarchive for doctors` | Prescription management |
+| `feat: profile picture support for OAuth users` | OAuth profile pictures |
+| `feat: professional dashboard restructure` | Dedicated routes per feature |
+| `feat: page transition animations` | Framer Motion transitions |
 
 ---
 
@@ -314,56 +350,22 @@ node_modules/
 | Password hashing | `bcrypt.hash(password, 10)` — never stored in plaintext |
 | Environment variables | All secrets in `.env` — never hardcoded in source code |
 | Role-based authorization | `getServerSession()` checked on every protected API route |
+| Ownership authorization | Appointment PATCH/DELETE checks user owns the resource |
 | TypeScript strict typing | All components and API routes use TypeScript interfaces |
 | Selective data queries | Prisma `select` used to return only required fields |
 | Token expiry | Verification tokens (24h), OTP (10min), JWT sessions (30 days) |
 | Error handling | Try-catch blocks on all async operations |
 | SSL/TLS | Database connection uses `sslmode=no-verify` for Supabase |
-
----
-
-## README File
-
-```markdown
-# MediScript-E — Digital Healthcare Platform
-
-A modern, secure digital healthcare platform built with Next.js 16.
-
-## Tech Stack
-- Frontend: Next.js 16, React 19, Tailwind CSS 4, Framer Motion
-- Backend: Next.js API Routes, NextAuth.js, Prisma 7
-- Database: PostgreSQL (Supabase)
-- Storage: Supabase Storage
-- Email: Nodemailer (Gmail SMTP)
-- Deployment: Vercel
-
-## Features
-- Email/Password + OAuth (Google, GitHub) authentication
-- Email verification + Two-Factor Authentication (2FA)
-- Appointment booking and management
-- Digital prescriptions with PDF download
-- Medicine reminders with automated email alerts
-- Medical vault for secure document storage
-- Admin dashboard with real-time statistics
-
-## Setup
-1. Clone: `git clone https://github.com/tusharsno/mediscript-e.git`
-2. Install: `pnpm install`
-3. Configure: Copy `.env.example` to `.env` and fill in values
-4. Generate Prisma client: `npx prisma generate`
-5. Run: `pnpm dev`
-
-## Live Demo
-https://mediscript-e.vercel.app
-```
+| AI content safety | System prompt restricts chatbot to platform-related responses |
+| Markdown stripping | AI responses stripped of markdown before display |
 
 ---
 
 ## Key Findings / Learning Outcomes
-- Successfully implemented **7 major modules** with **30+ API endpoints** following the design from Lab Session 6
-- Learned that **TypeScript strict typing** catches bugs at compile time, reducing runtime errors
-- Understood the importance of **Git commit messages** — clear messages make project history readable
-- Applied **secure coding practices** throughout: input validation, parameterized queries, environment variables
-- Recognized that **Prisma ORM** significantly reduces boilerplate code while ensuring type-safe database operations
-- Learned that **serverless architecture** (Vercel) requires careful consideration of connection pooling and cold starts
+- Successfully implemented **10 major modules** with **40+ API endpoints** following the design from Lab Session 6
+- Learned that **professional web apps** use dedicated routes per feature rather than single-page scroll navigation
+- Understood that **OAuth profile pictures** require image domain whitelisting in Next.js config
+- Recognized that **AI chatbot** requires careful system prompt design and response post-processing
+- Applied **ownership authorization** on appointment endpoints to prevent cross-user data access
+- Learned that **page transitions** with Framer Motion significantly improve perceived performance
 - Version control enabled safe experimentation — broken changes could be reverted using `git revert`

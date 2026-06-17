@@ -41,6 +41,9 @@ Security engineering protects systems from misuse and attacks. In a healthcare p
 | FS-13 | SQL injection via user input | Database layer | Critical - Data breach | Low |
 | FS-14 | Session token theft (XSS) | Frontend / NextAuth | Critical - Account hijacking | Low |
 | FS-15 | Concurrent appointment booking conflict | Appointment module | Medium - Double booking | Medium |
+| FS-16 | Groq API unavailable | AI Chatbot (MediBot) | Low - Chatbot unavailable | Low |
+| FS-17 | AI chatbot providing harmful medical advice | MediBot | High - Patient harm | Low |
+| FS-18 | Search returning other users' data | Search module | Critical - Privacy breach | Low |
 
 ---
 
@@ -56,17 +59,19 @@ Security engineering protects systems from misuse and attacks. In a healthcare p
 | File Upload Success | > 98% | Per upload attempt | Supabase Storage |
 | OTP Delivery | > 95% within 60 seconds | Per OTP request | Gmail SMTP |
 | Cron Job Execution | > 99% on schedule | Per scheduled run | External cron service |
+| AI Chatbot Response | > 95% within 3 seconds | Per message | Groq API (Llama 3.1) |
 
 ### Reliability Design Decisions
 
 | Decision | Justification |
-|----------|--------------|
+|----------|--------------| 
 | Supabase managed PostgreSQL | Automatic backups, high availability, managed SSL |
 | Vercel serverless deployment | Auto-scaling, zero-downtime deployments |
 | Connection pooling (pg Pool, max: 20) | Prevents database connection exhaustion |
 | JWT session strategy | Stateless, no server-side session storage needed |
 | OTP expiry (10 minutes) | Balances security and usability |
 | Email verification token expiry (24 hours) | Sufficient time for user action |
+| Groq API with system prompt | Restricts AI to platform-related responses only |
 
 ---
 
@@ -93,14 +98,16 @@ Security engineering protects systems from misuse and attacks. In a healthcare p
 | T-10 | Insecure file upload | Uploading malicious files | Low | High |
 | T-11 | Data exposure via API | API returning sensitive fields | Medium | High |
 | T-12 | CSRF attack | Forged cross-site requests | Low | High |
+| T-13 | Search returning cross-user data | Missing role-based search filters | Low | Critical |
 
 ### 3.3 Infrastructure Threats
 
 | Threat ID | Threat | Attack Vector | Likelihood | Impact |
 |-----------|--------|--------------|------------|--------|
-| T-13 | Environment variable exposure | Leaked .env file in repository | Low | Critical |
-| T-14 | Database credential exposure | Hardcoded credentials in code | Very Low | Critical |
-| T-15 | DDoS attack | Flooding API endpoints | Low | High |
+| T-14 | Environment variable exposure | Leaked .env file in repository | Low | Critical |
+| T-15 | Hardcoded credentials in code | Developer mistake | Very Low | Critical |
+| T-16 | DDoS attack | Flooding API endpoints | Low | High |
+| T-17 | AI prompt injection | Malicious user input to chatbot | Low | Medium |
 
 ---
 
@@ -127,24 +134,20 @@ Security engineering protects systems from misuse and attacks. In a healthcare p
 | T-10 Malicious file upload | File type and size validation | Validated before Supabase Storage upload |
 | T-11 Data exposure | Selective field queries | Prisma `select` used to return only required fields |
 | T-12 CSRF | NextAuth CSRF protection | Built-in CSRF token in NextAuth |
+| T-13 Cross-user search | Role-based search filtering | Search API filters by authenticated user's ID and role |
 
 ### 4.3 Infrastructure Security Controls
 
 | Threat | Security Control | Implementation in MediScript-E |
 |--------|-----------------|-------------------------------|
-| T-13 Env variable exposure | `.env` in `.gitignore` | `.env` never committed to repository |
-| T-14 Hardcoded credentials | Environment variables only | All secrets in `.env` / Vercel environment variables |
-| T-15 DDoS | Vercel rate limiting | Vercel platform-level DDoS protection |
+| T-14 Env variable exposure | `.env` in `.gitignore` | `.env` never committed to repository |
+| T-15 Hardcoded credentials | Environment variables only | All secrets in `.env` / Vercel environment variables |
+| T-16 DDoS | Vercel rate limiting | Vercel platform-level DDoS protection |
+| T-17 AI prompt injection | System prompt restrictions | MediBot system prompt restricts to platform topics only |
 
 ---
 
 ## Security Design Document
-
-### Security Architecture Overview
-
-```
-[Security Architecture Diagram - MediScript-E]
-```
 
 ### Security Layers
 
@@ -158,26 +161,28 @@ Layer 2: Authentication Security
 ├── bcryptjs password hashing (10 salt rounds)
 ├── Email verification (24-hour token expiry)
 ├── JWT session management (30-day expiry)
-├── OAuth via Google & GitHub (auto-verified)
+├── OAuth via Google & GitHub (auto-verified, profile picture)
 └── 2FA Email OTP (10-minute expiry, single use)
 
 Layer 3: Authorization Security
 ├── Role-Based Access Control (PATIENT / DOCTOR / ADMIN)
 ├── getServerSession() on all protected API routes
 ├── Admin cannot delete own account
-└── Patients can only access their own data
+├── Patients can only access their own data
+└── Search results filtered by user role and ownership
 
 Layer 4: Input Security
 ├── Prisma ORM (prevents SQL injection)
 ├── Input validation on all API routes
 ├── File type and size validation for uploads
-└── Email format validation on registration
+├── Email format validation on registration
+└── AI chatbot system prompt prevents harmful responses
 
 Layer 5: Data Security
 ├── Passwords never stored in plaintext
 ├── OTP cleared from database after use
 ├── Verification tokens cleared after use
-├── Selective field queries (no sensitive data exposure)
+└── Selective field queries (no sensitive data exposure)
 ```
 
 ### RBAC Matrix
@@ -185,10 +190,12 @@ Layer 5: Data Security
 | Action | Public | Patient | Doctor | Admin |
 |--------|--------|---------|--------|-------|
 | View landing page | ✅ | ✅ | ✅ | ✅ |
+| Use AI chatbot | ✅ | ✅ | ✅ | ✅ |
 | Register / Login | ✅ | ✅ | ✅ | ✅ |
 | Book appointment | ❌ | ✅ | ❌ | ❌ |
 | Manage appointments | ❌ | ❌ | ✅ | ❌ |
 | Issue prescription | ❌ | ❌ | ✅ | ❌ |
+| Archive/Edit/Delete prescription | ❌ | ❌ | ✅ | ❌ |
 | View prescription | ❌ | ✅ | ✅ | ❌ |
 | Upload medical document | ❌ | ✅ | ❌ | ❌ |
 | Set medicine reminder | ❌ | ✅ | ❌ | ❌ |
@@ -196,14 +203,15 @@ Layer 5: Data Security
 | Delete users | ❌ | ❌ | ❌ | ✅ |
 | View all appointments | ❌ | ❌ | ❌ | ✅ |
 | Toggle 2FA | ❌ | ✅ | ✅ | ❌ |
+| Global search | ❌ | ✅ | ✅ | ✅ |
 
 ---
 
 ## Key Findings / Learning Outcomes
-- Identified **15 failure scenarios** and **15 security threats** specific to MediScript-E
-- Understood that healthcare platforms require multiple security layers due to sensitive medical data
+- Identified **18 failure scenarios** and **17 security threats** specific to MediScript-E
+- New threats added: AI prompt injection (T-17), cross-user search data (T-13), Groq API failure (FS-16)
+- Understood that AI chatbot introduces new security considerations — system prompt must restrict harmful responses
+- Recognized that search functionality must be role-based to prevent cross-user data exposure
 - Learned that **Prisma ORM** inherently prevents SQL injection through parameterized queries
 - Recognized that **2FA** significantly reduces account takeover risk even when passwords are compromised
-- Understood the importance of **environment variables** for protecting credentials in production
 - Designed a comprehensive **RBAC matrix** ensuring each role has access only to relevant features
-- Learned that **SSL/TLS** at the database connection level is critical for data-in-transit protection

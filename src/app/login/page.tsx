@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Image from "next/image";
 
@@ -11,8 +11,9 @@ interface LoginFormData {
   password: string;
 }
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [oauthLoading, setOauthLoading] = useState<string | null>(null);
   const [error, setError] = useState("");
@@ -22,11 +23,31 @@ export default function LoginPage() {
   const [resendMessage, setResendMessage] = useState("");
   const { register, handleSubmit } = useForm<LoginFormData>();
 
+  useEffect(() => {
+    const urlError = searchParams.get("error");
+    if (urlError === "DOCTOR_PENDING_APPROVAL") {
+      setError("Your doctor account is pending admin approval. You will be notified once approved.");
+    }
+  }, [searchParams]);
+
   const onSubmit: SubmitHandler<LoginFormData> = async (data) => {
     setLoading(true);
     setError("");
     setShowResend(false);
-    
+
+    // Pre-check doctor approval status before NextAuth
+    const statusRes = await fetch("/api/auth/check-status", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: data.email }),
+    });
+    const statusData = await statusRes.json();
+    if (statusData.status === "DOCTOR_PENDING_APPROVAL") {
+      setError("Your doctor account is pending admin approval. You will be notified once approved.");
+      setLoading(false);
+      return;
+    }
+
     const res = await signIn("credentials", {
       email: data.email,
       password: data.password,
@@ -194,5 +215,13 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }

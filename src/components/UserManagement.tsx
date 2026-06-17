@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Trash2, Mail, Calendar, Users } from "lucide-react";
+import { Trash2, Mail, Calendar, Users, CheckCircle, XCircle } from "lucide-react";
 
 interface User {
   id: string;
   name: string | null;
   email: string;
   role: string;
+  doctorVerified: boolean;
   createdAt: string;
   doctorProfile?: {
     specialization: string;
@@ -22,6 +23,7 @@ export default function UserManagement() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [verifying, setVerifying] = useState<string | null>(null);
   const [filter, setFilter] = useState("ALL");
 
   useEffect(() => {
@@ -40,16 +42,40 @@ export default function UserManagement() {
     }
   };
 
-  const handleDelete = async (userId: string) => {
-    if (!confirm("Are you sure you want to delete this user? This action cannot be undone.")) {
-      return;
+  const handleDoctorVerification = async (userId: string, approve: boolean) => {
+    if (!confirm(`Are you sure you want to ${approve ? "approve" : "reject"} this doctor?`)) return;
+
+    setVerifying(userId);
+    try {
+      const res = await fetch(`/api/admin/users/${userId}/verify-doctor`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ approve }),
+      });
+
+      if (res.ok) {
+        if (approve) {
+          setUsers(users.map((u) => u.id === userId ? { ...u, doctorVerified: true } : u));
+        } else {
+          setUsers(users.filter((u) => u.id !== userId));
+        }
+      } else {
+        const data = await res.json();
+        alert(data.error || "Action failed");
+      }
+    } catch {
+      alert("Action failed");
+    } finally {
+      setVerifying(null);
     }
+  };
+
+  const handleDelete = async (userId: string) => {
+    if (!confirm("Are you sure you want to delete this user? This action cannot be undone.")) return;
 
     setDeleting(userId);
     try {
-      const res = await fetch(`/api/admin/users/${userId}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(`/api/admin/users/${userId}`, { method: "DELETE" });
 
       if (res.ok) {
         setUsers(users.filter((u) => u.id !== userId));
@@ -64,6 +90,18 @@ export default function UserManagement() {
     } finally {
       setDeleting(null);
     }
+  };
+
+  const getFilteredUsers = () => {
+    if (filter === "PENDING") return users.filter((u) => u.role === "DOCTOR" && !u.doctorVerified);
+    if (filter === "ALL") return users;
+    return users.filter((u) => u.role === filter);
+  };
+
+  const getCount = (f: string) => {
+    if (f === "ALL") return users.length;
+    if (f === "PENDING") return users.filter((u) => u.role === "DOCTOR" && !u.doctorVerified).length;
+    return users.filter((u) => u.role === f).length;
   };
 
   if (loading) {
@@ -90,20 +128,23 @@ export default function UserManagement() {
       <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
         {/* Filter Tabs */}
         <div className="px-6 py-4 border-b border-slate-200 flex items-center gap-2 flex-wrap">
-          {["ALL", "PATIENT", "DOCTOR", "ADMIN"].map((f) => (
+          {["ALL", "PATIENT", "DOCTOR", "PENDING", "ADMIN"].map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
               className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
                 filter === f
                   ? "bg-slate-900 text-white"
+                  : f === "PENDING" && getCount("PENDING") > 0
+                  ? "bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
             >
-              {f} ({f === "ALL" ? users.length : users.filter((u) => u.role === f).length})
+              {f} ({getCount(f)})
             </button>
           ))}
         </div>
+
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-slate-50 border-b border-slate-200">
@@ -116,7 +157,7 @@ export default function UserManagement() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200">
-              {(filter === "ALL" ? users : users.filter((u) => u.role === filter)).map((user) => (
+              {getFilteredUsers().map((user) => (
                 <tr key={user.id} className="hover:bg-slate-50 transition-colors">
                   <td className="px-6 py-4">
                     <div>
@@ -143,10 +184,13 @@ export default function UserManagement() {
                   <td className="px-6 py-4">
                     {user.doctorProfile && (
                       <div className="text-sm">
-                        <p className="text-slate-900 font-semibold">
-                          {user.doctorProfile.specialization}
-                        </p>
+                        <p className="text-slate-900 font-semibold">{user.doctorProfile.specialization}</p>
                         <p className="text-slate-600">License: {user.doctorProfile.licenseNo}</p>
+                        {!user.doctorVerified && (
+                          <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700">
+                            Pending Approval
+                          </span>
+                        )}
                       </div>
                     )}
                     {user.patientProfile && (
@@ -165,14 +209,36 @@ export default function UserManagement() {
                     </p>
                   </td>
                   <td className="px-6 py-4">
-                    <button
-                      onClick={() => handleDelete(user.id)}
-                      disabled={deleting === user.id}
-                      className="text-red-600 hover:text-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                      title="Delete user"
-                    >
-                      <Trash2 className="h-5 w-5" />
-                    </button>
+                    <div className="flex items-center gap-2">
+                      {user.role === "DOCTOR" && !user.doctorVerified && (
+                        <>
+                          <button
+                            onClick={() => handleDoctorVerification(user.id, true)}
+                            disabled={verifying === user.id}
+                            className="text-green-600 hover:text-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            title="Approve doctor"
+                          >
+                            <CheckCircle className="h-5 w-5" />
+                          </button>
+                          <button
+                            onClick={() => handleDoctorVerification(user.id, false)}
+                            disabled={verifying === user.id}
+                            className="text-orange-500 hover:text-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            title="Reject doctor"
+                          >
+                            <XCircle className="h-5 w-5" />
+                          </button>
+                        </>
+                      )}
+                      <button
+                        onClick={() => handleDelete(user.id)}
+                        disabled={deleting === user.id}
+                        className="text-red-600 hover:text-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        title="Delete user"
+                      >
+                        <Trash2 className="h-5 w-5" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Calendar, Clock, User, Stethoscope, ChevronDown } from "lucide-react";
+import { Calendar, Clock, User, ChevronDown } from "lucide-react";
 
 interface Doctor {
   id: string;
@@ -29,6 +29,7 @@ export default function BookAppointment() {
   const [success, setSuccess] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [timeDropdownOpen, setTimeDropdownOpen] = useState(false);
+  const [bookedSlots, setBookedSlots] = useState<string[]>([]);
 
   useEffect(() => {
     fetch("/api/doctors")
@@ -36,6 +37,17 @@ export default function BookAppointment() {
       .then((data) => setDoctors(data))
       .catch((err) => console.error(err));
   }, []);
+
+  useEffect(() => {
+    if (!selectedDoctor || !date) {
+      setBookedSlots([]);
+      return;
+    }
+    fetch(`/api/appointment/booked-slots?doctorId=${selectedDoctor}&date=${date}`)
+      .then((res) => res.json())
+      .then((data) => setBookedSlots(data.bookedSlots ?? []))
+      .catch(() => setBookedSlots([]));
+  }, [selectedDoctor, date]);
 
   const selectedDoctorData = doctors.find((d) => d.id === selectedDoctor);
 
@@ -210,18 +222,26 @@ export default function BookAppointment() {
                 {timeDropdownOpen && (
                   <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-xl z-10 overflow-hidden">
                     <div className="grid grid-cols-2">
-                      {TIME_SLOTS.map((slot) => (
-                        <button
-                          key={slot}
-                          type="button"
-                          onClick={() => { setTime(slot); setTimeDropdownOpen(false); }}
-                          className={`p-3 text-sm font-bold text-left border-b border-r border-slate-100 hover:bg-blue-50 transition-colors ${
-                            time === slot ? "bg-blue-50 text-blue-600" : "text-slate-700"
-                          }`}
-                        >
-                          {slot}
-                        </button>
-                      ))}
+                      {TIME_SLOTS.map((slot) => {
+                        const isBooked = bookedSlots.includes(slot);
+                        return (
+                          <button
+                            key={slot}
+                            type="button"
+                            onClick={() => { if (!isBooked) { setTime(slot); setTimeDropdownOpen(false); } }}
+                            disabled={isBooked}
+                            className={`p-3 text-sm font-bold text-left border-b border-r border-slate-100 transition-colors ${
+                              isBooked
+                                ? "bg-red-50 text-red-300 cursor-not-allowed line-through"
+                                : time === slot
+                                ? "bg-blue-50 text-blue-600"
+                                : "text-slate-700 hover:bg-blue-50"
+                            }`}
+                          >
+                            {slot}{isBooked ? " (Booked)" : ""}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
                 )}
